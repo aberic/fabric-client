@@ -1,0 +1,155 @@
+!!com.viewhigh.chain.init.bean.ConfigTX
+Application: &id008
+  Capabilities: &id001
+    V1_1: false
+    V1_2: false
+    V1_3: true
+  Organizations:
+    - &id005
+      AnchorPeers:
+        - Host: peer0.league01-org1-vh-cn
+          Port: 7051
+      ID: Org1MSP
+      MSPDir: ./crypto-config/peerOrganizations/league01-org1-vh-cn/msp
+      Name: Org1MSP
+      Policies:
+        Admins:
+          Rule: OR('Org1MSP.admin')
+          Type: Signature
+        Readers:
+          Rule: OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')
+          Type: Signature
+        Writers:
+          Rule: OR('Org1MSP.admin', 'Org1MSP.client')
+          Type: Signature
+    - &id006
+      AnchorPeers:
+        - Host: peer0.league01-org2-vh-cn
+          Port: 7051
+      ID: Org2MSP
+      MSPDir: ./crypto-config/peerOrganizations/league01-org2-vh-cn/msp
+      Name: Org2MSP
+      Policies:
+        Admins:
+          Rule: OR('Org2MSP.admin')
+          Type: Signature
+        Readers:
+          Rule: OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')
+          Type: Signature
+        Writers:
+          Rule: OR('Org2MSP.admin', 'Org2MSP.client')
+          Type: Signature
+    - &id007
+      AnchorPeers:
+        - Host: peer0.league01-org3-vh-cn
+          Port: 7051
+      ID: Org3MSP
+      MSPDir: ./crypto-config/peerOrganizations/league01-org3-vh-cn/msp
+      Name: Org3MSP
+      Policies:
+        Admins:
+          Rule: OR('Org3MSP.admin')
+          Type: Signature
+        Readers:
+          Rule: OR('Org3MSP.admin', 'Org3MSP.peer', 'Org3MSP.client')
+          Type: Signature
+        Writers:
+          Rule: OR('Org3MSP.admin', 'Org3MSP.client')
+          Type: Signature
+  Policies:
+    Admins:
+      Rule: MAJORITY Admins
+      Type: ImplicitMeta
+    Readers:
+      Rule: ANY Readers
+      Type: ImplicitMeta
+    Writers:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+Capabilities:
+  Application: *id001
+  Channel: &id002
+    V1_3: true
+  Orderer: &id003
+    V1_1: true
+Channel:
+  Capabilities: *id002
+  Policies: &id010
+    Admins:
+      Rule: MAJORITY Admins
+      Type: ImplicitMeta
+    Readers:
+      Rule: ANY Readers
+      Type: ImplicitMeta
+    Writers:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+Orderer: &id009
+  Addresses:
+    - order0.league01-vh-cn:7050
+    - order1.league01-vh-cn:7050
+    - order2.league01-vh-cn:7050
+  BatchSize:
+    AbsoluteMaxBytes: 98 MB
+    MaxMessageCount: 2000
+    PreferredMaxBytes: 512 KB
+  BatchTimeout: 1s
+  Capabilities: *id003
+  Kafka:
+    Brokers:
+      - kafka1.league01:9092
+      - kafka2.league01:9092
+      - kafka3.league01:9092
+      - kafka4.league01:9092
+      - kafka5.league01:9092
+      - kafka6.league01:9092
+      - kafka7.league01:9092
+  OrdererType: kafka
+  Organizations:
+    - &id004
+      AnchorPeers: null
+      ID: OrdererMSP
+      MSPDir: ./crypto-config/ordererOrganizations/league01-vh-cn/msp
+      Name: OrdererOrg
+      Policies:
+        Admins:
+          Rule: OR('OrdererMSP.admin')
+          Type: Signature
+        Readers:
+          Rule: OR('OrdererMSP.member')
+          Type: Signature
+        Writers:
+          Rule: OR('OrdererMSP.member')
+          Type: Signature
+  Policies:
+    Admins:
+      Rule: MAJORITY Admins
+      Type: ImplicitMeta
+    BlockValidation:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+    Readers:
+      Rule: ANY Readers
+      Type: ImplicitMeta
+    Writers:
+      Rule: ANY Writers
+      Type: ImplicitMeta
+Organizations:
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+Profiles:
+  HBaaSChannel:
+    Application: *id008
+    Consortium: HBaaSConsortium
+  HBaaSOrdererGenesis:
+    Capabilities: *id002
+    Consortiums:
+      HBaaSConsortium:
+        Organizations:
+          - *id005
+          - *id006
+          - *id007
+    Orderer: *id009
+    Policies: *id010

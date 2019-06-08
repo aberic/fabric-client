@@ -1,0 +1,37 @@
+!!com.viewhigh.chain.init.bean.CryptoConfig
+OrdererOrgs:
+  - CA: &id001
+      Country: CN
+      Locality: Beijing
+      Province: Beijing
+    Domain: league01-vh-cn
+    Name: Orderer
+    Specs:
+      - Hostname: order0
+      - Hostname: order1
+      - Hostname: order2
+PeerOrgs:
+  - CA: *id001
+    Domain: league01-org1-vh-cn
+    EnableNodeOUs: true
+    Name: Org1
+    Template:
+      Count: 3
+    Users:
+      Count: 3
+  - CA: *id001
+    Domain: league01-org2-vh-cn
+    EnableNodeOUs: true
+    Name: Org2
+    Template:
+      Count: 3
+    Users:
+      Count: 3
+  - CA: *id001
+    Domain: league01-org3-vh-cn
+    EnableNodeOUs: true
+    Name: Org3
+    Template:
+      Count: 3
+    Users:
+      Count: 3

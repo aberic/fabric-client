@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  operation:
+    image: aberic/fabric:1.0-RC1
+    ports:
+      - 19865:19865
+    environment:
+      # 开放端口，便于其它应用访问
+      - PORT=80
+    volumes:
+      - /data/mount/dev/chain:/data/chain
+    networks:
+      - tmp
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  tmp:
+    driver: overlay
