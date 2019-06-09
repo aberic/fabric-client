@@ -41,14 +41,14 @@ func channelClient(orgName, orgUser, channelID string, sdk *fabsdk.FabricSDK) *c
 }
 
 // channelConfigPath mychannel.tx
-func createChannel(orgName, orgAdmin, channelID, channelConfigPath string, sdk *fabsdk.FabricSDK, client *resmgmt.Client) *response.Result {
+func createChannel(orgName, orgUser, channelID, channelConfigPath string, sdk *fabsdk.FabricSDK, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
 	mspClient, err := mspclient.New(sdk.Context(), mspclient.WithOrg(orgName))
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 	} else {
-		adminIdentity, err := mspClient.GetSigningIdentity(orgAdmin)
+		adminIdentity, err := mspClient.GetSigningIdentity(orgUser)
 		if err != nil {
 			log.Self.Error(err.Error())
 			result.Fail(err.Error())
@@ -70,10 +70,10 @@ func createChannel(orgName, orgAdmin, channelID, channelConfigPath string, sdk *
 
 // ordererUrl "orderer.example.com"
 // peerUrl grpc://peerUrl or grpcs://peerUrl
-func joinChannel(orgName, orgAdmin, channelID, peerUrl string, sdk *fabsdk.FabricSDK) *response.Result {
+func joinChannel(orgName, orgUser, channelID, peerUrl string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser(orgAdmin), fabsdk.WithOrg(orgName))
+	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {

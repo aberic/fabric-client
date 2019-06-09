@@ -17,25 +17,100 @@ package sdk
 
 import (
 	"github.com/ennoo/rivet/trans/response"
-	"github.com/ennoo/rivet/utils/log"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
-	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/common/discovery/dynamicdiscovery"
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
+	contextApi "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	"github.com/hyperledger/fabric-sdk-go/pkg/context"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fab/comm"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fab/discovery"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	discclient "github.com/hyperledger/fabric/discovery/client"
+	"time"
 )
 
-func discoveryService(orgName, orgUser, channelID, orderURL string, sdk *fabsdk.FabricSDK) *response.Result {
+func discoveryService(sdk *fabsdk.FabricSDK) *response.Result {
+	result := response.Result{}
+	var (
+		contextClient context.Client
+		err           error
+	)
+	//prepare context
+	ctx := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Org1"))
+	if contextClient, err = getClient(ctx); nil != err {
+		goto ERR
+	}
+
+	if disClient, err := discovery.New(contextClient); nil != err {
+		goto ERR
+	} else {
+		reqCtx, cancel := context.NewRequest(contextClient, context.WithTimeout(10*time.Second))
+		defer cancel()
+
+		req := discclient.NewRequest().OfChannel("mychannel").AddPeersQuery()
+
+		peerCfg1, err := comm.NetworkPeerConfig(contextClient.EndpointConfig(), "peer0.league01-org1-vh-cn")
+		if nil != err {
+			goto ERR
+		}
+		responses, err := disClient.Send(reqCtx, req, peerCfg1.PeerConfig)
+		if nil != err {
+			goto ERR
+		}
+		resp := responses[0]
+		chanResp := resp.ForChannel("mychannel")
+
+		peers, err := chanResp.Peers()
+		if nil != err {
+			goto ERR
+		}
+
+		result.Success(peers)
+		return &result
+	}
+
+ERR:
+	result.FailErr(err)
+	return &result
+}
+
+func getClient(ctx contextApi.ClientProvider) (context.Client, error) {
+	return ctx()
+}
+
+func discoveryServiceOld(sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
-	// Org resource management client
-	orgResMgmt, err := resmgmt.New(adminContext)
+	adminContext := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Org1"))
+	//ctx := mocks.NewMockContext(mspmocks.NewMockSigningIdentity("test", mspID1))
+	mspClient, err := msp.New(adminContext)
+	signingIdentity, err := mspClient.GetSigningIdentity("Admin")
+	ctx := mocks.NewMockContext(signingIdentity)
 
-	channelCfg, err := orgResMgmt.QueryConfigFromOrderer(channelID, resmgmt.WithOrdererEndpoint(orderURL), resmgmt.WithRetry(retry.DefaultResMgmtOpts))
-	if err != nil {
-		log.Self.Error("QueryConfig return error" + err.Error())
-		result.Fail("QueryConfig return error: " + err.Error())
+	var service *dynamicdiscovery.ChannelService
+	service, err = dynamicdiscovery.NewChannelService(
+		ctx, mocks.NewMockMembership(), "mychannel",
+		dynamicdiscovery.WithRefreshInterval(10*time.Millisecond),
+		dynamicdiscovery.WithResponseTimeout(100*time.Millisecond),
+		dynamicdiscovery.WithErrorHandler(
+			func(ctxt fab.ClientContext, channelID string, err error) {
+				derr, ok := err.(dynamicdiscovery.DiscoveryError)
+				if ok && derr.Error() == dynamicdiscovery.AccessDenied {
+					service.Close()
+				}
+			},
+		),
+	)
+	if nil != err {
+		result.FailErr(err)
 	} else {
-		result.Success(channelCfg.Orderers())
+		defer service.Close()
+		if peers, err := service.GetPeers(); err == nil {
+			result.Success(peers)
+		} else {
+			result.FailErr(err)
+		}
 	}
 	return &result
 }

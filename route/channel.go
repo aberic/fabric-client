@@ -41,7 +41,7 @@ func create(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Create(channelCreate.OrderOrgName, channelCreate.OrgName, channelCreate.OrgAdmin, channelCreate.ChannelID,
+		sdk.Create(channelCreate.OrderOrgName, channelCreate.OrgName, channelCreate.OrgUser, channelCreate.ChannelID,
 			channelCreate.ChannelConfigPath, service.GetBytes(channelCreate.ConfigID)).Say(router.Context)
 	})
 }
@@ -57,7 +57,7 @@ func join(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Join(channelJoin.OrgName, channelJoin.OrgAdmin, channelJoin.ChannelID, channelJoin.PeerUrl,
+		sdk.Join(channelJoin.OrgName, channelJoin.OrgUser, channelJoin.ChannelID, channelJoin.PeerUrl,
 			service.GetBytes(channelJoin.ConfigID)).Say(router.Context)
 	})
 }
@@ -73,7 +73,7 @@ func list(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Channels(channelList.OrgName, channelList.OrgAdmin, channelList.PeerName,
+		sdk.Channels(channelList.OrgName, channelList.OrgUser, channelList.PeerName,
 			service.GetBytes(channelList.ConfigID)).Say(router.Context)
 	})
 }

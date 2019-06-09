@@ -183,3 +183,28 @@ func query(chaincodeID, fcn string, args [][]byte, client *channel.Client, targe
 	}
 	return &result
 }
+
+func queryCollectionsConfig(orgName, orgUser, peerName, channelID, chaincodeID string, sdk *fabsdk.FabricSDK) *response.Result {
+	result := response.Result{}
+	//prepare context
+	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
+	// Org resource management client
+	orgResMgmt, err := resmgmt.New(adminContext)
+	if err != nil {
+		log.Self.Error("Failed to query channels: " + err.Error())
+		result.Fail("Failed to query channels: " + err.Error())
+	} else {
+		if nil != orgResMgmt {
+			coll, err := orgResMgmt.QueryCollectionsConfig(channelID, chaincodeID, resmgmt.WithTargetEndpoints(peerName))
+			if err != nil {
+				log.Self.Error("Failed to query channels: peer cannot be nil", log.Error(err))
+				result.Fail("Failed to query channels: peer cannot be nil")
+			}
+			result.Success(coll)
+		} else {
+			log.Self.Error("orgResMgmt error should be nil. ")
+			result.Fail("orgResMgmt error should be nil. ")
+		}
+	}
+	return &result
+}

@@ -77,9 +77,29 @@ func TestQuery(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	fmt.Printf("--- dump:\n%s\n\n", string(confData))
 	result := Query("care", "Org1", "Admin", "mychannel",
 		"query", [][]byte{[]byte("A")}, []string{}, confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryCollectionsConfig(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryCollectionsConfig("care", "Org1", "Admin", "mychannel",
+		"peer0.league01-org1-vh-cn", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestDiscoveryService(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := DiscoveryService(confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 

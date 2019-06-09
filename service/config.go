@@ -113,7 +113,7 @@ func AddOrSetOrgForOrganizations(org *OrganizationsOrg) error {
 	return nil
 }
 
-func AddOrSetOrderer(order *Orderer) error {
+func AddOrSetOrderer(order *Order) error {
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}

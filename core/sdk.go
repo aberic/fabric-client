@@ -26,20 +26,20 @@ import (
 
 // setupAndRun enables testing an end-to-end scenario against the supplied SDK options
 // the createChannel flag will be used to either create a channel and the example CC or not(ie run the tests with existing ch and CC)
-func Create(orderOrgName, orgName, orgAdmin, channelID, channelConfigPath string, configBytes []byte,
+func Create(orderOrgName, orgName, orgUser, channelID, channelConfigPath string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, sdk, err := resMgmtClient(orderOrgName, orgAdmin, configBytes, sdkOpts...)
+	resMgmtClient, sdk, err := resMgmtClient(orderOrgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
 	}
-	return createChannel(orgName, orgAdmin, channelID, channelConfigPath, sdk, resMgmtClient)
+	return createChannel(orgName, orgUser, channelID, channelConfigPath, sdk, resMgmtClient)
 }
 
-func Join(orgName, orgAdmin, channelID, peerUrl string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func Join(orgName, orgUser, channelID, peerUrl string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -48,7 +48,7 @@ func Join(orgName, orgAdmin, channelID, peerUrl string, configBytes []byte, sdkO
 		return &result
 	}
 	defer sdk.Close()
-	return joinChannel(orgName, orgAdmin, channelID, peerUrl, sdk)
+	return joinChannel(orgName, orgUser, channelID, peerUrl, sdk)
 }
 
 func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -164,6 +164,31 @@ func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, 
 	defer sdk.Close()
 	channelClient := channelClient(orgName, orgUser, channelID, sdk)
 	return query(chaincodeID, fcn, args, channelClient, targetEndpoints...)
+}
+
+func QueryCollectionsConfig(chaincodeID, orgName, orgUser, channelID, peerName string, configBytes []byte,
+	sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryCollectionsConfig(orgName, orgUser, peerName, channelID, chaincodeID, sdk)
+}
+
+func DiscoveryService(configBytes []byte,
+	sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	return discoveryService(sdk)
 }
 
 func sdk(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {

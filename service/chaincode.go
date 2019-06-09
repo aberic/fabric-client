@@ -67,3 +67,12 @@ type Query struct {
 	Invoke
 	TargetEndpoints []string `json:"targetEndpoints"`
 }
+
+type ChainCodeCollectionsConfig struct {
+	ConfigID    string `json:"configID"` // ConfigID 配置唯一ID
+	ChainCodeID string `json:"chainCodeID"`
+	OrgName     string `json:"orgName"`
+	OrgUser     string `json:"orgUser"`
+	ChannelID   string `json:"channelID"`
+	PeerName    string `json:"peerName"`
+}

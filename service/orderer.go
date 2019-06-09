@@ -15,7 +15,7 @@
 
 package service
 
-type Orderer struct {
+type Order struct {
 	ConfigID              string `json:"configID"` // ConfigID 配置唯一ID
 	OrderName             string `json:"orderName"`
 	URL                   string `json:"url"`
@@ -26,4 +26,12 @@ type Orderer struct {
 	KeepAlivePermit       bool   `json:"keepAlivePermit"`
 	FailFast              bool   `json:"failFast"`
 	AllowInsecure         bool   `json:"allowInsecure"`
+}
+
+type OrderConfig struct {
+	ConfigID  string `json:"configID"` // ConfigID 配置唯一ID
+	OrgName   string `json:"orgName"`
+	OrgUser   string `json:"orgUser"`
+	ChannelID string `json:"channelID"`
+	OrderURL  string `json:"orderURL"`
 }

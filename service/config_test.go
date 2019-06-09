@@ -104,7 +104,7 @@ func TGetConfig(channelName string) {
 		Peers:                  []string{"peer0.org1.example.com", "peer1.org1.example.com"},
 		CertificateAuthorities: []string{"ca.org1.example.com"},
 	})
-	_ = AddOrSetOrderer(&Orderer{
+	_ = AddOrSetOrderer(&Order{
 		ConfigID:              channelName,
 		OrderName:             "orderer0.example.com",
 		URL:                   "grpc://orderer0.example.com:7050",
@@ -113,7 +113,7 @@ func TGetConfig(channelName string) {
 		KeepAliveTimeout:      "20s",
 		TLSCACerts:            "ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem",
 	})
-	_ = AddOrSetOrderer(&Orderer{
+	_ = AddOrSetOrderer(&Order{
 		ConfigID:              channelName,
 		OrderName:             "orderer1.example.com",
 		URL:                   "grpc://orderer1.example.com:7050",

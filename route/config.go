@@ -172,7 +172,7 @@ func addOrSetOrgForOrganizations(router *response.Router) {
 
 func addOrSetOrderer(router *response.Router) {
 	rivet.Response().Do(router.Context, func(result *response.Result) {
-		var orderer = new(service.Orderer)
+		var orderer = new(service.Order)
 		if err := router.Context.ShouldBindJSON(orderer); err != nil {
 			result.SayFail(router.Context, err.Error())
 			return

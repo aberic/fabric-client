@@ -60,7 +60,7 @@ type ChannelCreate struct {
 	ConfigID          string `json:"configID"` // ConfigID 配置唯一ID
 	OrderOrgName      string `json:"orderOrgName"`
 	OrgName           string `json:"orgName"`
-	OrgAdmin          string `json:"orgAdmin"`
+	OrgUser           string `json:"orgUser"`
 	ChannelID         string `json:"channelID"`
 	ChannelConfigPath string `json:"channelConfigPath"`
 }
@@ -68,7 +68,7 @@ type ChannelCreate struct {
 type ChannelJoin struct {
 	ConfigID  string `json:"configID"` // ConfigID 配置唯一ID
 	OrgName   string `json:"orgName"`
-	OrgAdmin  string `json:"orgAdmin"`
+	OrgUser   string `json:"orgUser"`
 	ChannelID string `json:"channelID"`
 	PeerUrl   string `json:"peerUrl"`
 }
@@ -76,6 +76,6 @@ type ChannelJoin struct {
 type ChannelList struct {
 	ConfigID string `json:"configID"` // ConfigID 配置唯一ID
 	OrgName  string `json:"orgName"`
-	OrgAdmin string `json:"orgAdmin"`
+	OrgUser  string `json:"orgUser"`
 	PeerName string `json:"peerName"`
 }

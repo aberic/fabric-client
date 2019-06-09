@@ -32,6 +32,7 @@ func ChainCode(router *response.Router) {
 	router.POST("/upgrade", upgrade)
 	router.POST("/invoke", invoke)
 	router.POST("/query", query)
+	router.POST("/config", queryCollectionsConfig)
 }
 
 func install(router *response.Router) {
@@ -148,5 +149,21 @@ func query(router *response.Router) {
 		}
 		sdk.Query(query.ChainCodeID, query.OrgName, query.OrgUser, query.ChannelID, query.Fcn, query.Args, query.TargetEndpoints,
 			service.GetBytes(query.ConfigID)).Say(router.Context)
+	})
+}
+
+func queryCollectionsConfig(router *response.Router) {
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var config = new(service.ChainCodeCollectionsConfig)
+		if err := router.Context.ShouldBindJSON(instantiated); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		if nil == service.Get(config.ConfigID) {
+			result.SayFail(router.Context, "config client is not exist")
+			return
+		}
+		sdk.QueryCollectionsConfig(config.ChainCodeID, config.OrgName, config.OrgUser, config.ChannelID, config.PeerName,
+			service.GetBytes(config.ConfigID)).Say(router.Context)
 	})
 }
