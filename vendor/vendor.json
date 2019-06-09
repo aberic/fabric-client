@@ -1432,6 +1432,102 @@
 			"revisionTime": "2019-06-04T18:59:32Z"
 		},
 		{
+			"checksumSHA1": "AAsn1GYGJiULNGDQayUs7iz3xd8=",
+			"path": "github.com/hyperledger/fabric/bccsp",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "QkVkJEsZb9O2trbBidzGkBrAB9U=",
+			"path": "github.com/hyperledger/fabric/bccsp/factory",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "qGKv38J/XnWVTY9ffBk/nwA8wK4=",
+			"path": "github.com/hyperledger/fabric/bccsp/pkcs11",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "o7gfSOxuo62Tmaph3NWcgb1L6So=",
+			"path": "github.com/hyperledger/fabric/bccsp/sw",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "6VBws8YPmb8k0EJ7VjpYqJIMof0=",
+			"path": "github.com/hyperledger/fabric/bccsp/utils",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "kRXOIuBPqil7KmN4hKDprfXL6jU=",
+			"path": "github.com/hyperledger/fabric/common/flogging",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "Htx+Y8oXApXzVw6ZWYic+RVEmT0=",
+			"path": "github.com/hyperledger/fabric/common/flogging/fabenc",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "Zfgx6znAOwQehMDyYytPSjNAgLo=",
+			"path": "github.com/hyperledger/fabric/common/metadata",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "ulYpabmCnhmeJfUb0H1HKu386oM=",
+			"path": "github.com/hyperledger/fabric/common/util",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "mFNS6hL4whCiRXOcJXZCt+itjlk=",
+			"path": "github.com/hyperledger/fabric/discovery/client",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "mHzM6h21KuQqlNwQ/cDe/r0i8fk=",
+			"path": "github.com/hyperledger/fabric/gossip/api",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "riQNH7Mf9LzT76OOzkpGFnFOtOU=",
+			"path": "github.com/hyperledger/fabric/gossip/common",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "3XWOk6gmXp/PgxLPRPEym24NrEg=",
+			"path": "github.com/hyperledger/fabric/protos/common",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "XkCuDaFEWEDysCmIOCos9yS8WfI=",
+			"path": "github.com/hyperledger/fabric/protos/discovery",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "OM+jH/Zu8Kn4qi5w0Kr64ZVDARg=",
+			"path": "github.com/hyperledger/fabric/protos/gossip",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
+			"checksumSHA1": "ZzWCzHsWRI/LAxhZYUMqVcIAsZQ=",
+			"path": "github.com/hyperledger/fabric/protos/msp",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
 			"checksumSHA1": "cGQumTyZMk2jBu314CJ1MGFQ9DY=",
 			"origin": "github.com/ennoo/rivet/vendor/github.com/jinzhu/gorm",
 			"path": "github.com/jinzhu/gorm",
@@ -1472,10 +1568,24 @@
 			"revisionTime": "2018-12-31T17:19:20Z"
 		},
 		{
+			"checksumSHA1": "ih8qN/NlF7bT1baulOFhb5nz+Rk=",
+			"origin": "github.com/hyperledger/fabric/vendor/github.com/miekg/pkcs11",
+			"path": "github.com/miekg/pkcs11",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
 			"checksumSHA1": "J+g0oZePWp2zSIISD2dZZKTxmgg=",
 			"path": "github.com/mitchellh/mapstructure",
 			"revision": "3536a929edddb9a5b34bd6861dc4a9647cb459fe",
 			"revisionTime": "2018-10-05T04:51:35Z"
+		},
+		{
+			"checksumSHA1": "AuSbnsHCeoprvNSurGPgVqvg/eE=",
+			"origin": "github.com/hyperledger/fabric/vendor/github.com/op/go-logging",
+			"path": "github.com/op/go-logging",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
 		},
 		{
 			"checksumSHA1": "UHcucbwfP3legtdc0ADZQJG3/6g=",
@@ -1607,6 +1717,13 @@
 			"revisionTime": "2019-03-04T09:57:49Z"
 		},
 		{
+			"checksumSHA1": "A6QQ5N4TcV9UBnZez5VfXC0XHLI=",
+			"origin": "github.com/hyperledger/fabric/vendor/github.com/sykesm/zap-logfmt",
+			"path": "github.com/sykesm/zap-logfmt",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
+		},
+		{
 			"checksumSHA1": "D4SSpro8BDG9lC2NLDz7Km7am0s=",
 			"origin": "github.com/ennoo/rivet/vendor/github.com/ugorji/go/codec",
 			"path": "github.com/ugorji/go/codec",
@@ -1668,6 +1785,13 @@
 			"path": "go.uber.org/zap/zapcore",
 			"revision": "07b7effe4f3264d11ff56353d6e72915bb4e70dc",
 			"revisionTime": "2019-05-26T10:02:05Z"
+		},
+		{
+			"checksumSHA1": "DaEfYKpBIPTJulBRwIa9QP3ztT0=",
+			"origin": "github.com/hyperledger/fabric/vendor/go.uber.org/zap/zapgrpc",
+			"path": "go.uber.org/zap/zapgrpc",
+			"revision": "b817d804df2a17258d0a35b402b998e8b217aa14",
+			"revisionTime": "2019-06-06T03:23:05Z"
 		},
 		{
 			"checksumSHA1": "VrW/nowBxVcqQhIrqDJNxr5NWu0=",
