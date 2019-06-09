@@ -17,7 +17,9 @@ package service
 
 import (
 	"github.com/ennoo/fabric-go-client/config"
+	"github.com/ennoo/rivet/utils/log"
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -30,6 +32,14 @@ func init() {
 
 func Get(configID string) *config.Config {
 	return Configs[configID]
+}
+
+func GetBytes(configID string) []byte {
+	confData, err := yaml.Marshal(Configs[configID])
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	return confData
 }
 
 func InitClient(client *Client) error {

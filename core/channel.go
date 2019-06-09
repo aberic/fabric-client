@@ -23,10 +23,9 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
-	fcmocks "github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/peer"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
-	"strings"
 )
 
 func channelClient(orgName, orgUser, channelID string, sdk *fabsdk.FabricSDK) *channel.Client {
@@ -48,23 +47,23 @@ func createChannel(orgName, orgAdmin, channelID, channelConfigPath string, sdk *
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
-		return &result
-	}
-	adminIdentity, err := mspClient.GetSigningIdentity(orgAdmin)
-	if err != nil {
-		log.Self.Error(err.Error())
-		result.Fail(err.Error())
-		return &result
-	}
-	req := resmgmt.SaveChannelRequest{ChannelID: channelID,
-		ChannelConfigPath: channelConfigPath,
-		SigningIdentities: []msp.SigningIdentity{adminIdentity}}
-	txID, err := client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orgName))
-	if err != nil {
-		log.Self.Error("error should be nil. " + err.Error())
-		result.Fail("error should be nil. " + err.Error())
 	} else {
-		result.Success(txID.TransactionID)
+		adminIdentity, err := mspClient.GetSigningIdentity(orgAdmin)
+		if err != nil {
+			log.Self.Error(err.Error())
+			result.Fail(err.Error())
+		} else {
+			req := resmgmt.SaveChannelRequest{ChannelID: channelID,
+				ChannelConfigPath: channelConfigPath,
+				SigningIdentities: []msp.SigningIdentity{adminIdentity}}
+			txID, err := client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orgName))
+			if err != nil {
+				log.Self.Error("error should be nil. " + err.Error())
+				result.Fail("error should be nil. " + err.Error())
+			} else {
+				result.Success(txID.TransactionID)
+			}
+		}
 	}
 	return &result
 }
@@ -82,7 +81,7 @@ func joinChannel(orgName, orgAdmin, channelID, peerUrl string, sdk *fabsdk.Fabri
 		result.Fail("Failed to join channel: " + err.Error())
 	} else {
 		if nil != orgResMgmt {
-			peerNew, _ := peer.New(fcmocks.NewMockEndpointConfig(), peer.WithURL(peerUrl))
+			peerNew, _ := peer.New(mocks.NewMockEndpointConfig(), peer.WithURL(peerUrl))
 			// Org peers join channel
 			if err = orgResMgmt.JoinChannel(
 				channelID,
@@ -103,10 +102,10 @@ func joinChannel(orgName, orgAdmin, channelID, peerUrl string, sdk *fabsdk.Fabri
 }
 
 // peer 参见peer.go PeerChannel
-func queryChannels(orgName, orgAdmin, channelID string, peer *fcmocks.MockPeer, sdk *fabsdk.FabricSDK) *response.Result {
+func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser(orgAdmin), fabsdk.WithOrg(orgName))
+	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
@@ -114,27 +113,16 @@ func queryChannels(orgName, orgAdmin, channelID string, peer *fcmocks.MockPeer, 
 		result.Fail("Failed to query channels: " + err.Error())
 	} else {
 		if nil != orgResMgmt {
-			found := false
-			qcResponse, err := orgResMgmt.QueryChannels(resmgmt.WithTargets(peer))
-			if err == nil {
-				log.Self.Error("Failed to query channels: peer cannot be nil")
+			qcResponse, err := orgResMgmt.QueryChannels(resmgmt.WithTargetEndpoints(peerName))
+			if err != nil {
+				log.Self.Error("Failed to query channels: peer cannot be nil", log.Error(err))
 				result.Fail("Failed to query channels: peer cannot be nil")
 			}
 			if nil == qcResponse {
 				log.Self.Error("qcResponse error should be nil. ")
 				result.Fail("qcResponse error should be nil. ")
 			} else {
-				for _, responseChannel := range qcResponse.Channels {
-					if responseChannel.ChannelId == channelID {
-						found = true
-						break
-					}
-				}
-				if !found {
-					result.Fail(strings.Join([]string{"Peer has not joined ", channelID, " channel"}, ""))
-				} else {
-					result.Success(strings.Join([]string{"Peer has joined ", channelID, " channel"}, ""))
-				}
+				result.Success(qcResponse.Channels)
 			}
 		} else {
 			log.Self.Error("orgResMgmt error should be nil. ")

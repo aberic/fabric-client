@@ -55,3 +55,27 @@ type ChannelPolicyEvent struct {
 	BlockHeightLagThreshold          int    `json:"blockHeightLagThreshold"`
 	ReconnectBlockHeightLagThreshold int    `json:"reconnectBlockHeightLagThreshold"`
 }
+
+type ChannelCreate struct {
+	ConfigID          string `json:"configID"` // ConfigID 配置唯一ID
+	OrderOrgName      string `json:"orderOrgName"`
+	OrgName           string `json:"orgName"`
+	OrgAdmin          string `json:"orgAdmin"`
+	ChannelID         string `json:"channelID"`
+	ChannelConfigPath string `json:"channelConfigPath"`
+}
+
+type ChannelJoin struct {
+	ConfigID  string `json:"configID"` // ConfigID 配置唯一ID
+	OrgName   string `json:"orgName"`
+	OrgAdmin  string `json:"orgAdmin"`
+	ChannelID string `json:"channelID"`
+	PeerUrl   string `json:"peerUrl"`
+}
+
+type ChannelList struct {
+	ConfigID string `json:"configID"` // ConfigID 配置唯一ID
+	OrgName  string `json:"orgName"`
+	OrgAdmin string `json:"orgAdmin"`
+	PeerName string `json:"peerName"`
+}

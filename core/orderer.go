@@ -23,7 +23,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
 
-func discoveryService(orgName, orgUser, channelID, orderURL string, sdk *fabsdk.FabricSDK) *response.Result {
+func queryConfigFromOrderer(orgName, orgUser, channelID, orderURL string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
 	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))

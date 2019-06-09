@@ -22,7 +22,56 @@ import (
 	"testing"
 )
 
-func TestQueryYaml(t *testing.T) {
+func TestConfig(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	fmt.Printf("--- dump:\n%s\n\n", string(confData))
+}
+
+func TestInstalled(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := Installed("Org1", "Admin", "peer0.league01-org1-vh-cn", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestInstantiated(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := Instantiated("Org1", "Admin", "mychannel", "peer0.league01-org1-vh-cn", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestChannels(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := Channels("Org1", "Admin", "peer0.league01-org1-vh-cn", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestOrderConfig(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := OrderConfig("Org1", "Admin", "mychannel", "grpc://10.10.203.51:30054", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQuery(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
@@ -30,29 +79,18 @@ func TestQueryYaml(t *testing.T) {
 	}
 	fmt.Printf("--- dump:\n%s\n\n", string(confData))
 	result := Query("care", "Org1", "Admin", "mychannel",
-		"query", [][]byte{[]byte("A")}, []string{},
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/config_e2e_code.yaml")
-	log.Self.Debug("test query", log.Reflect("result", result))
-}
-
-func TestQueryRaw(t *testing.T) {
-	conf := TGetConfig()
-	confData, err := yaml.Marshal(&conf)
-	if err != nil {
-		log.Self.Debug("client", log.Error(err))
-	}
-	fmt.Printf("--- dump:\n%s\n\n", string(confData))
-	result := QueryRaw("care", "Org1", "Admin", "mychannel",
 		"query", [][]byte{[]byte("A")}, []string{}, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
 func TGetConfig() *config.Config {
+	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
-	conf.InitClient(false, "Org1", "debug",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt")
+	_ = conf.InitClient(false, "Org1", "debug",
+		rootPath+"/config/crypto-config",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt")
 	conf.AddOrSetPeerForChannel("mychannel", "peer0.league01-org1-vh-cn",
 		true, true, true, true)
 	conf.AddOrSetQueryChannelPolicyForChannel("mychannel", "500ms", "5s",
@@ -62,25 +100,25 @@ func TGetConfig() *config.Config {
 	conf.AddOrSetEventServicePolicyForChannel("mychannel", "PreferOrg", "Random",
 		"6s", 5, 8)
 	conf.AddOrSetOrdererForOrganizations("OrdererMSP",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/ordererOrganizations/league01-vh-cn/users/Admin@league01-vh-cn/msp")
+		rootPath+"/config/crypto-config/ordererOrganizations/league01-vh-cn/users/Admin@league01-vh-cn/msp")
 	conf.AddOrSetOrgForOrganizations("Org1", "Org1MSP",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/msp",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/msp",
 		[]string{"peer0.league01-org1-vh-cn"},
 		[]string{"ca0.league01-org1-vh-cn"},
 	)
 	conf.AddOrSetOrderer("order0.league01-vh-cn:7050", "grpc://10.10.203.51:30054",
 		"order0.league01-vh-cn", "0s", "20s",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/ordererOrganizations/league01-vh-cn/tlsca/tlsca.league01-vh-cn-cert.pem",
+		rootPath+"/config/crypto-config/ordererOrganizations/league01-vh-cn/tlsca/tlsca.league01-vh-cn-cert.pem",
 		false, false, false)
 	conf.AddOrSetPeer("peer0.league01-org1-vh-cn", "grpc://10.10.203.51:30056",
 		"grpc://10.10.203.51:30058", "peer0.league01-org1-vh-cn",
 		"0s", "20s",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",
 		false, false, false)
 	conf.AddOrSetCertificateAuthority("ca.league01-vh-cn", "https://10.10.203.51:30059",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt",
 		"admin", "adminpw", "ca.league01-vh-cn")
 	return &conf
 }

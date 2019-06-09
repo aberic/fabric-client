@@ -26,12 +26,12 @@ import (
 
 // setupAndRun enables testing an end-to-end scenario against the supplied SDK options
 // the createChannel flag will be used to either create a channel and the example CC or not(ie run the tests with existing ch and CC)
-func Create(ordererOrgName, orgName, orgAdmin, channelID, channelConfigPath string, configYmlPath string,
+func Create(orderOrgName, orgName, orgAdmin, channelID, channelConfigPath string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, sdk, err := resMgmtClient(ordererOrgName, orgAdmin, configYmlPath, sdkOpts...)
+	resMgmtClient, sdk, err := resMgmtClient(orderOrgName, orgAdmin, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
@@ -39,9 +39,9 @@ func Create(ordererOrgName, orgName, orgAdmin, channelID, channelConfigPath stri
 	return createChannel(orgName, orgAdmin, channelID, channelConfigPath, sdk, resMgmtClient)
 }
 
-func Join(orgName, orgAdmin, channelID, peerUrl string, configYmlPath string, sdkOpts ...fabsdk.Option) *response.Result {
+func Join(orgName, orgAdmin, channelID, peerUrl string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	sdk, err := sdk(configYmlPath, sdkOpts...)
+	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
@@ -51,12 +51,24 @@ func Join(orgName, orgAdmin, channelID, peerUrl string, configYmlPath string, sd
 	return joinChannel(orgName, orgAdmin, channelID, peerUrl, sdk)
 }
 
-func Install(ordererOrgName, orgAdmin, name, source, path, version, configYmlPath string,
+func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryChannels(orgName, orgUser, peerName, sdk)
+}
+
+func Install(orderOrgName, orgUser, name, source, path, version string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, _, err := resMgmtClient(ordererOrgName, orgAdmin, configYmlPath, sdkOpts...)
+	resMgmtClient, _, err := resMgmtClient(orderOrgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
@@ -64,12 +76,36 @@ func Install(ordererOrgName, orgAdmin, name, source, path, version, configYmlPat
 	return install(name, source, path, version, resMgmtClient)
 }
 
-func Instantiate(ordererOrgName, orgAdmin, channelID, name, path, version string, orgPolicies []string, args [][]byte,
-	configYmlPath string, sdkOpts ...fabsdk.Option) *response.Result {
+func OrderConfig(orgName, orgUser, channelID, orderURL string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryConfigFromOrderer(orgName, orgUser, channelID, orderURL, sdk)
+}
+
+func Installed(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryInstalled(orgName, orgUser, peerName, sdk)
+}
+
+func Instantiate(orderOrgName, orgAdmin, channelID, name, path, version string, orgPolicies []string, args [][]byte,
+	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, _, err := resMgmtClient(ordererOrgName, orgAdmin, configYmlPath, sdkOpts...)
+	resMgmtClient, _, err := resMgmtClient(orderOrgName, orgAdmin, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
@@ -77,12 +113,24 @@ func Instantiate(ordererOrgName, orgAdmin, channelID, name, path, version string
 	return instantiate(channelID, name, path, version, orgPolicies, args, resMgmtClient)
 }
 
+func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryInstantiate(orgName, orgUser, channelID, peerName, sdk)
+}
+
 func Upgrade(ordererOrgName, orgAdmin, channelID, name, path, version string, orgPolicies []string, args [][]byte,
-	configYmlPath string, sdkOpts ...fabsdk.Option) *response.Result {
+	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, _, err := resMgmtClient(ordererOrgName, orgAdmin, configYmlPath, sdkOpts...)
+	resMgmtClient, _, err := resMgmtClient(ordererOrgName, orgAdmin, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
@@ -90,10 +138,10 @@ func Upgrade(ordererOrgName, orgAdmin, channelID, name, path, version string, or
 	return upgrade(channelID, name, path, version, orgPolicies, args, resMgmtClient)
 }
 
-func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, configYmlPath string,
+func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	sdk, err := sdk(configYmlPath, sdkOpts...)
+	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
@@ -104,10 +152,10 @@ func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte,
 	return invoke(chaincodeID, fcn, args, channelClient)
 }
 
-func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configYmlPath string,
+func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	sdk, err := sdk(configYmlPath, sdkOpts...)
+	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
@@ -118,33 +166,7 @@ func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, 
 	return query(chaincodeID, fcn, args, channelClient, targetEndpoints...)
 }
 
-func QueryRaw(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
-	sdk, err := sdkRaw(configBytes, sdkOpts...)
-	if err != nil {
-		log.Self.Error(err.Error())
-		result.Fail(err.Error())
-		return &result
-	}
-	defer sdk.Close()
-	channelClient := channelClient(orgName, orgUser, channelID, sdk)
-	return query(chaincodeID, fcn, args, channelClient, targetEndpoints...)
-}
-
-func sdk(configYmlPath string, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {
-	configOpt := config.FromFile(configYmlPath)
-	sdk, err := fabsdk.New(configOpt, sdkOpts...)
-	if err != nil {
-		return nil, err
-	}
-	if nil == sdk {
-		return nil, fmt.Errorf("sdk error should be nil")
-	}
-	return sdk, nil
-}
-
-func sdkRaw(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {
+func sdk(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {
 	configOpt := config.FromRaw(configBytes, "yaml")
 	sdk, err := fabsdk.New(configOpt, sdkOpts...)
 	if err != nil {
@@ -156,9 +178,9 @@ func sdkRaw(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, er
 	return sdk, nil
 }
 
-func resMgmtClient(ordererOrgName, orgAdmin, configYmlPath string,
+func resMgmtClient(ordererOrgName, orgAdmin string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) (*resmgmt.Client, *fabsdk.FabricSDK, error) {
-	sdk, err := sdk(configYmlPath, sdkOpts...)
+	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
 		return nil, nil, err
 	}

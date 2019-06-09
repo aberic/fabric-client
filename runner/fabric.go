@@ -24,7 +24,7 @@ func main() {
 	rivet.Initialize(false, false, false)
 	// rivet.UseDiscovery(discovery.ComponentConsul, "127.0.0.1:8500", "test", "127.0.0.1", 8081)
 	rivet.ListenAndServe(&rivet.ListenServe{
-		Engine:      rivet.SetupRouter(route.ChainCode, route.Config),
+		Engine:      rivet.SetupRouter(route.Config, route.Channel, route.ChainCode),
 		DefaultPort: "19865",
 	})
 }

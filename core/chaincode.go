@@ -22,7 +22,6 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
-	fcmocks "github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
 	"net/http"
@@ -56,10 +55,10 @@ func install(name, source, path, version string, client *resmgmt.Client) *respon
 }
 
 // peer 参见peer.go Peer
-func queryInstalled(orgName, orgAdmin string, peer *fcmocks.MockPeer, sdk *fabsdk.FabricSDK) *response.Result {
+func queryInstalled(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser(orgAdmin), fabsdk.WithOrg(orgName))
+	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
@@ -67,7 +66,7 @@ func queryInstalled(orgName, orgAdmin string, peer *fcmocks.MockPeer, sdk *fabsd
 		result.Fail("Failed to query installed: " + err.Error())
 	} else {
 		if nil != orgResMgmt {
-			qiResponse, err := orgResMgmt.QueryInstalledChaincodes(resmgmt.WithTargets(peer))
+			qiResponse, err := orgResMgmt.QueryInstalledChaincodes(resmgmt.WithTargetEndpoints(peerName))
 			if err != nil {
 				log.Self.Error("Failed to query installed: " + err.Error())
 				result.Fail("Failed to query installed: " + err.Error())
@@ -102,10 +101,10 @@ func instantiate(channelID, name, path, version string, orgPolicies []string, ar
 }
 
 // peer 参见peer.go Peer
-func queryInstantiate(orgName, orgAdmin, channelID string, peer *fcmocks.MockPeer, sdk *fabsdk.FabricSDK) *response.Result {
+func queryInstantiate(orgName, orgUser, channelID, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser(orgAdmin), fabsdk.WithOrg(orgName))
+	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
@@ -113,7 +112,7 @@ func queryInstantiate(orgName, orgAdmin, channelID string, peer *fcmocks.MockPee
 		result.Fail("Failed to query instantiate: " + err.Error())
 	} else {
 		if nil != orgResMgmt {
-			qiResponse, err := orgResMgmt.QueryInstantiatedChaincodes(channelID, resmgmt.WithTargets(peer))
+			qiResponse, err := orgResMgmt.QueryInstantiatedChaincodes(channelID, resmgmt.WithTargetEndpoints(peerName))
 			if err != nil {
 				log.Self.Error("Failed to query instantiate: " + err.Error())
 				result.Fail("Failed to query instantiate: " + err.Error())
