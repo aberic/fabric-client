@@ -179,7 +179,7 @@ func QueryCollectionsConfig(chaincodeID, orgName, orgUser, channelID, peerName s
 	return queryCollectionsConfig(orgName, orgUser, peerName, channelID, chaincodeID, sdk)
 }
 
-func DiscoveryService(channelID, orgName, orgUser, peerName string, configBytes []byte,
+func DiscoveryClientPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
@@ -188,7 +188,31 @@ func DiscoveryService(channelID, orgName, orgUser, peerName string, configBytes 
 		result.Fail(err.Error())
 		return &result
 	}
-	return discoveryService(channelID, orgName, orgUser, peerName, sdk)
+	return discoveryClientPeers(channelID, orgName, orgUser, peerName, sdk)
+}
+
+func DiscoveryClientLocalPeers(orgName, orgUser, peerName string, configBytes []byte,
+	sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	return discoveryClientLocalPeers(orgName, orgUser, peerName, sdk)
+}
+
+func DiscoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
+	sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	return discoveryClientConfigPeers(channelID, orgName, orgUser, peerName, sdk)
 }
 
 func sdk(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {

@@ -25,7 +25,7 @@ import (
 	"time"
 )
 
-func discoveryService(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
+func discoveryClientPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	var (
 		contextClient pc.Client
@@ -57,6 +57,97 @@ func discoveryService(channelID, orgName, orgUser, peerName string, sdk *fabsdk.
 		chanResp := resp.ForChannel(channelID)
 
 		peers, err := chanResp.Peers()
+		if nil != err {
+			goto ERR
+		}
+
+		result.Success(peers)
+		return &result
+	}
+
+ERR:
+	result.FailErr(err)
+	return &result
+}
+
+func discoveryClientLocalPeers(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
+	result := response.Result{}
+	var (
+		contextClient pc.Client
+		err           error
+	)
+	//prepare context
+	ctx := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
+	if contextClient, err = ctx(); nil != err {
+		goto ERR
+	}
+
+	if disClient, err := discovery.New(contextClient); nil != err {
+		goto ERR
+	} else {
+		reqCtx, cancel := context.NewRequest(contextClient, context.WithTimeout(10*time.Second))
+		defer cancel()
+
+		//req := discclient.NewRequest().OfChannel("mychannel").AddPeersQuery()
+
+		peerCfg1, err := comm.NetworkPeerConfig(contextClient.EndpointConfig(), peerName)
+		if nil != err {
+			goto ERR
+		}
+		responses, err := disClient.Send(reqCtx, disClient.ReqLocal(), peerCfg1.PeerConfig)
+		if nil != err {
+			goto ERR
+		}
+		resp := responses[0]
+		localResp := resp.ForLocal()
+
+		peers, err := localResp.Peers()
+		if nil != err {
+			goto ERR
+		}
+
+		result.Success(peers)
+		return &result
+	}
+
+ERR:
+	result.FailErr(err)
+	return &result
+}
+
+// 未调通
+func discoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
+	result := response.Result{}
+	var (
+		contextClient pc.Client
+		err           error
+	)
+	//prepare context
+	ctx := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
+	if contextClient, err = ctx(); nil != err {
+		goto ERR
+	}
+
+	if disClient, err := discovery.New(contextClient); nil != err {
+		goto ERR
+	} else {
+		reqCtx, cancel := context.NewRequest(contextClient, context.WithTimeout(10*time.Second))
+		defer cancel()
+
+		//req := discclient.NewRequest().OfChannel("mychannel").AddPeersQuery()
+
+		peerCfg1, err := comm.NetworkPeerConfig(contextClient.EndpointConfig(), peerName)
+		if nil != err {
+			goto ERR
+		}
+		responses, err := disClient.Send(reqCtx, disClient.ReqConfig(channelID), peerCfg1.PeerConfig)
+		if nil != err {
+			goto ERR
+		}
+		resp := responses[0]
+		localResp := resp.ForLocal()
+
+		peers, err := localResp.Peers()
 		if nil != err {
 			goto ERR
 		}
