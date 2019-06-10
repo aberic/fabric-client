@@ -31,6 +31,16 @@ func TestConfig(t *testing.T) {
 	fmt.Printf("--- dump:\n%s\n\n", string(confData))
 }
 
+func TestJoin(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := Join("order0.league01-vh-cn:7050", "Org2", "Admin", "mychannel", "grpc://10.10.203.51:30065", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
 func TestInstalled(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
@@ -99,13 +109,13 @@ func TestDiscoveryService(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := DiscoveryService(confData)
+	result := DiscoveryService("mychannel", "Org2", "Admin", "peer1.league01-org2-vh-cn", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
 func TGetConfig() *config.Config {
-	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",
@@ -123,8 +133,13 @@ func TGetConfig() *config.Config {
 		rootPath+"/config/crypto-config/ordererOrganizations/league01-vh-cn/users/Admin@league01-vh-cn/msp")
 	conf.AddOrSetOrgForOrganizations("Org1", "Org1MSP",
 		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/msp",
-		[]string{"peer0.league01-org1-vh-cn"},
+		[]string{"peer0.league01-org1-vh-cn", "peer1.league01-org1-vh-cn"},
 		[]string{"ca0.league01-org1-vh-cn"},
+	)
+	conf.AddOrSetOrgForOrganizations("Org2", "Org2MSP",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org2-vh-cn/users/Admin@league01-org2-vh-cn/msp",
+		[]string{"peer1.league01-org2-vh-cn"},
+		[]string{"ca0.league01-org2-vh-cn"},
 	)
 	conf.AddOrSetOrderer("order0.league01-vh-cn:7050", "grpc://10.10.203.51:30054",
 		"order0.league01-vh-cn", "0s", "20s",
@@ -134,6 +149,16 @@ func TGetConfig() *config.Config {
 		"grpc://10.10.203.51:30058", "peer0.league01-org1-vh-cn",
 		"0s", "20s",
 		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",
+		false, false, false)
+	conf.AddOrSetPeer("peer1.league01-org1-vh-cn", "grpc://10.10.203.51:30061",
+		"grpc://10.10.203.51:30063", "peer1.league01-org1-vh-cn",
+		"0s", "20s",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",
+		false, false, false)
+	conf.AddOrSetPeer("peer1.league01-org2-vh-cn", "grpc://10.10.203.51:30065",
+		"grpc://10.10.203.51:30067", "peer1.league01-org2-vh-cn",
+		"0s", "20s",
+		rootPath+"/config/crypto-config/peerOrganizations/league01-org2-vh-cn/tlsca/tlsca.league01-org2-vh-cn-cert.pem",
 		false, false, false)
 	conf.AddOrSetCertificateAuthority("ca.league01-vh-cn", "https://10.10.203.51:30059",
 		rootPath+"/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem",

@@ -11,7 +11,6 @@ This library supports TOML version
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/4aepwwjori266hkt/branch/master?svg=true)](https://ci.appveyor.com/project/pelletier/go-toml/branch/master)
 [![codecov](https://codecov.io/gh/pelletier/go-toml/branch/master/graph/badge.svg)](https://codecov.io/gh/pelletier/go-toml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/pelletier/go-toml)](https://goreportcard.com/report/github.com/pelletier/go-toml)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpelletier%2Fgo-toml.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpelletier%2Fgo-toml?ref=badge_shield)
 
 ## Features
 
@@ -101,23 +100,6 @@ Go-toml provides two handy command line tools:
     tomljson --help
     ```
 
-### Docker image
-
-Those tools are also availble as a Docker image from
-[dockerhub](https://hub.docker.com/r/pelletier/go-toml). For example, to
-use `tomljson`:
-
-```
-docker run -v $PWD:/workdir pelletier/go-toml tomljson /workdir/example.toml
-```
-
-Only master (`latest`) and tagged versions are published to dockerhub. You
-can build your own image as usual:
-
-```
-docker build -t go-toml .
-```
-
 ## Contribute
 
 Feel free to report bugs and patches using GitHub's pull requests system on
@@ -126,7 +108,12 @@ much appreciated!
 
 ### Run tests
 
-`go test ./...`
+You have to make sure two kind of tests run:
+
+1. The Go unit tests
+2. The TOML examples base
+
+You can run both of them using `./test.sh`.
 
 ### Fuzzing
 

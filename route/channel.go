@@ -57,7 +57,7 @@ func join(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Join(channelJoin.OrgName, channelJoin.OrgUser, channelJoin.ChannelID, channelJoin.PeerUrl,
+		sdk.Join(channelJoin.OrderName, channelJoin.OrgName, channelJoin.OrgUser, channelJoin.ChannelID, channelJoin.PeerUrl,
 			service.GetBytes(channelJoin.ConfigID)).Say(router.Context)
 	})
 }

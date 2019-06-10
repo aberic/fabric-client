@@ -21,7 +21,6 @@ package rivet
 
 import (
 	"github.com/ennoo/rivet/bow"
-	"github.com/ennoo/rivet/keeps"
 	"github.com/ennoo/rivet/shunt"
 	"github.com/ennoo/rivet/trans/request"
 	"github.com/ennoo/rivet/trans/response"
@@ -34,12 +33,8 @@ import (
 // Version rivet version
 const Version = "0.1"
 
-var (
-	// serviceID 自身服务唯一 id
-	serviceID = xid.New().String()
-	// Keepers websocket 对象集合
-	Keepers []*keeps.Keeper
-)
+// serviceID 自身服务唯一 id
+var serviceID = xid.New().String()
 
 // ServiceID 服务唯一 id
 func ServiceID() string {

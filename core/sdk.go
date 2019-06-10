@@ -39,7 +39,7 @@ func Create(orderOrgName, orgName, orgUser, channelID, channelConfigPath string,
 	return createChannel(orgName, orgUser, channelID, channelConfigPath, sdk, resMgmtClient)
 }
 
-func Join(orgName, orgUser, channelID, peerUrl string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func Join(orderName, orgName, orgUser, channelID, peerUrl string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -48,7 +48,7 @@ func Join(orgName, orgUser, channelID, peerUrl string, configBytes []byte, sdkOp
 		return &result
 	}
 	defer sdk.Close()
-	return joinChannel(orgName, orgUser, channelID, peerUrl, sdk)
+	return joinChannel(orderName, orgName, orgUser, channelID, peerUrl, sdk)
 }
 
 func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -179,7 +179,7 @@ func QueryCollectionsConfig(chaincodeID, orgName, orgUser, channelID, peerName s
 	return queryCollectionsConfig(orgName, orgUser, peerName, channelID, chaincodeID, sdk)
 }
 
-func DiscoveryService(configBytes []byte,
+func DiscoveryService(channelID, orgName, orgUser, peerName string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
@@ -188,7 +188,7 @@ func DiscoveryService(configBytes []byte,
 		result.Fail(err.Error())
 		return &result
 	}
-	return discoveryService(sdk)
+	return discoveryService(channelID, orgName, orgUser, peerName, sdk)
 }
 
 func sdk(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {

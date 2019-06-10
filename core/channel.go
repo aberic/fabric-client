@@ -70,7 +70,7 @@ func createChannel(orgName, orgUser, channelID, channelConfigPath string, sdk *f
 
 // ordererUrl "orderer.example.com"
 // peerUrl grpc://peerUrl or grpcs://peerUrl
-func joinChannel(orgName, orgUser, channelID, peerUrl string, sdk *fabsdk.FabricSDK) *response.Result {
+func joinChannel(orderName, orgName, orgUser, channelID, peerUrl string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	//prepare context
 	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
@@ -86,7 +86,7 @@ func joinChannel(orgName, orgUser, channelID, peerUrl string, sdk *fabsdk.Fabric
 			if err = orgResMgmt.JoinChannel(
 				channelID,
 				resmgmt.WithRetry(retry.DefaultResMgmtOpts),
-				resmgmt.WithOrdererEndpoint(orgName),
+				resmgmt.WithOrdererEndpoint(orderName),
 				resmgmt.WithTargets(peerNew)); err != nil {
 				log.Self.Error("Org peers failed to JoinChannel: " + err.Error())
 				result.Fail("Org peers failed to JoinChannel: " + err.Error())

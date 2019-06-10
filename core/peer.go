@@ -17,28 +17,23 @@ package sdk
 
 import (
 	"github.com/ennoo/rivet/trans/response"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/common/discovery/dynamicdiscovery"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
-	contextApi "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
-	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	pc "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/comm"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/discovery"
-	"github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
-	discclient "github.com/hyperledger/fabric/discovery/client"
 	"time"
 )
 
-func discoveryService(sdk *fabsdk.FabricSDK) *response.Result {
+func discoveryService(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
 	var (
-		contextClient context.Client
+		contextClient pc.Client
 		err           error
 	)
 	//prepare context
-	ctx := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Org1"))
-	if contextClient, err = getClient(ctx); nil != err {
+	ctx := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
+	if contextClient, err = ctx(); nil != err {
 		goto ERR
 	}
 
@@ -48,18 +43,18 @@ func discoveryService(sdk *fabsdk.FabricSDK) *response.Result {
 		reqCtx, cancel := context.NewRequest(contextClient, context.WithTimeout(10*time.Second))
 		defer cancel()
 
-		req := discclient.NewRequest().OfChannel("mychannel").AddPeersQuery()
+		//req := discclient.NewRequest().OfChannel("mychannel").AddPeersQuery()
 
-		peerCfg1, err := comm.NetworkPeerConfig(contextClient.EndpointConfig(), "peer0.league01-org1-vh-cn")
+		peerCfg1, err := comm.NetworkPeerConfig(contextClient.EndpointConfig(), peerName)
 		if nil != err {
 			goto ERR
 		}
-		responses, err := disClient.Send(reqCtx, req, peerCfg1.PeerConfig)
+		responses, err := disClient.Send(reqCtx, disClient.Req(channelID), peerCfg1.PeerConfig)
 		if nil != err {
 			goto ERR
 		}
 		resp := responses[0]
-		chanResp := resp.ForChannel("mychannel")
+		chanResp := resp.ForChannel(channelID)
 
 		peers, err := chanResp.Peers()
 		if nil != err {
@@ -72,45 +67,5 @@ func discoveryService(sdk *fabsdk.FabricSDK) *response.Result {
 
 ERR:
 	result.FailErr(err)
-	return &result
-}
-
-func getClient(ctx contextApi.ClientProvider) (context.Client, error) {
-	return ctx()
-}
-
-func discoveryServiceOld(sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
-	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser("Admin"), fabsdk.WithOrg("Org1"))
-	//ctx := mocks.NewMockContext(mspmocks.NewMockSigningIdentity("test", mspID1))
-	mspClient, err := msp.New(adminContext)
-	signingIdentity, err := mspClient.GetSigningIdentity("Admin")
-	ctx := mocks.NewMockContext(signingIdentity)
-
-	var service *dynamicdiscovery.ChannelService
-	service, err = dynamicdiscovery.NewChannelService(
-		ctx, mocks.NewMockMembership(), "mychannel",
-		dynamicdiscovery.WithRefreshInterval(10*time.Millisecond),
-		dynamicdiscovery.WithResponseTimeout(100*time.Millisecond),
-		dynamicdiscovery.WithErrorHandler(
-			func(ctxt fab.ClientContext, channelID string, err error) {
-				derr, ok := err.(dynamicdiscovery.DiscoveryError)
-				if ok && derr.Error() == dynamicdiscovery.AccessDenied {
-					service.Close()
-				}
-			},
-		),
-	)
-	if nil != err {
-		result.FailErr(err)
-	} else {
-		defer service.Close()
-		if peers, err := service.GetPeers(); err == nil {
-			result.Success(peers)
-		} else {
-			result.FailErr(err)
-		}
-	}
 	return &result
 }

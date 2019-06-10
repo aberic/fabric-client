@@ -67,6 +67,7 @@ type ChannelCreate struct {
 
 type ChannelJoin struct {
 	ConfigID  string `json:"configID"` // ConfigID 配置唯一ID
+	OrderName string `json:"orderName"`
 	OrgName   string `json:"orgName"`
 	OrgUser   string `json:"orgUser"`
 	ChannelID string `json:"channelID"`

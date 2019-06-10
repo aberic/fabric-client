@@ -54,6 +54,10 @@ type Response interface {
 	Target() string
 }
 
+func (c *Client) Req(channelID string) *discclient.Request {
+	return discclient.NewRequest().OfChannel(channelID).AddPeersQuery()
+}
+
 // Send retrieves information about channel peers, endorsers, and MSP config from the
 // given set of peers. A set of successful responses is returned and/or an error
 // is returned from each of the peers that was unsuccessful (note that if more than one peer returned
