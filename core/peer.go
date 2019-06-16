@@ -49,6 +49,18 @@ func discoveryClientPeers(channelID, orgName, orgUser, peerName string, sdk *fab
 		if nil != err {
 			goto ERR
 		}
+
+		//func (c *Client) Req(channelID string) *discclient.Request {
+		//	return discclient.NewRequest().OfChannel(channelID).AddPeersQuery()
+		//}
+		//
+		//func (c *Client) ReqLocal() *discclient.Request {
+		//	return discclient.NewRequest().AddLocalPeersQuery()
+		//}
+		//
+		//func (c *Client) ReqConfig(channelID string) *discclient.Request {
+		//	return discclient.NewRequest().OfChannel(channelID).AddConfigQuery()
+		//}
 		responses, err := disClient.Send(reqCtx, disClient.Req(channelID), peerCfg1.PeerConfig)
 		if nil != err {
 			goto ERR

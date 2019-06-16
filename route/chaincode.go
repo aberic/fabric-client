@@ -46,7 +46,7 @@ func install(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Install(install.OrderOrgName, install.OrgAdmin, install.Name, install.Source, install.Path, install.Version,
+		sdk.Install(install.OrderOrgName, install.OrgUser, install.Name, install.Source, install.Path, install.Version,
 			service.GetBytes(install.ConfigID)).Say(router.Context)
 	})
 }
@@ -62,7 +62,7 @@ func installed(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Installed(installed.OrgName, installed.OrgAdmin, installed.PeerName,
+		sdk.Installed(installed.OrgName, installed.OrgUser, installed.PeerName,
 			service.GetBytes(installed.ConfigID)).Say(router.Context)
 	})
 }
@@ -78,7 +78,7 @@ func instantiate(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Instantiate(instantiate.OrderOrgName, instantiate.OrgAdmin, instantiate.ChannelID, instantiate.Name,
+		sdk.Instantiate(instantiate.OrderOrgName, instantiate.OrgUser, instantiate.ChannelID, instantiate.Name,
 			instantiate.Path, instantiate.Version, instantiate.OrgPolicies, instantiate.Args,
 			service.GetBytes(instantiate.ConfigID)).Say(router.Context)
 	})
@@ -95,7 +95,7 @@ func instantiated(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Instantiated(instantiated.OrgName, instantiated.OrgAdmin, instantiated.ChannelID, instantiated.PeerName,
+		sdk.Instantiated(instantiated.OrgName, instantiated.OrgUser, instantiated.ChannelID, instantiated.PeerName,
 			service.GetBytes(instantiated.ConfigID)).Say(router.Context)
 	})
 }
@@ -111,7 +111,7 @@ func upgrade(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Instantiate(upgrade.OrderOrgName, upgrade.OrgAdmin, upgrade.ChannelID, upgrade.Name,
+		sdk.Instantiate(upgrade.OrderOrgName, upgrade.OrgUser, upgrade.ChannelID, upgrade.Name,
 			upgrade.Path, upgrade.Version, upgrade.OrgPolicies, upgrade.Args,
 			service.GetBytes(upgrade.ConfigID)).Say(router.Context)
 	})

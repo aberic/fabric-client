@@ -1,6 +1,7 @@
-// Protocol Buffers - Google's data interchange format
-// Copyright 2008 Google Inc.  All rights reserved.
-// https://developers.google.com/protocol-buffers/
+// Go support for Protocol Buffers - Google's data interchange format
+//
+// Copyright 2010 The Go Authors.  All rights reserved.
+// https://github.com/golang/protobuf
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -28,25 +29,23 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-syntax = "proto3";
+/*
+	A plugin for the Google protocol buffer compiler to generate Go code.
+	Run it by building this program and putting it in your path with the name
+		protoc-gen-go
+	That word 'go' at the end becomes part of the option string set for the
+	protocol compiler, so once the protocol compiler (protoc) is installed
+	you can run
+		protoc --go_out=output_directory input_directory/file.proto
+	to generate Go bindings for the protocol defined by file.proto.
+	With that input, the output will be written to
+		output_directory/file.pb.go
 
-package google.protobuf;
+	The generated code is documented in the package comment for
+	the library.
 
-option csharp_namespace = "Google.Protobuf.WellKnownTypes";
-option go_package = "github.com/golang/protobuf/ptypes/empty";
-option java_package = "com.google.protobuf";
-option java_outer_classname = "EmptyProto";
-option java_multiple_files = true;
-option objc_class_prefix = "GPB";
-option cc_enable_arenas = true;
+	See the README and documentation for protocol buffers to learn more:
+		https://developers.google.com/protocol-buffers/
 
-// A generic empty message that you can re-use to avoid defining duplicated
-// empty messages in your APIs. A typical example is to use it as the request
-// or the response type of an API method. For instance:
-//
-//     service Foo {
-//       rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
-//     }
-//
-// The JSON representation for `Empty` is empty JSON object `{}`.
-message Empty {}
+*/
+package documentation

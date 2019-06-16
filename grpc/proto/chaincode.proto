@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package proto;
+
+import "grpc/proto/result.proto";
+
+message CCList {
+    repeated ChainCodeInfo data = 1;
+}
+
+message Install {
+    string configID = 1;
+    string orderOrgName = 2;
+    string orgUser = 3;
+    string name = 4;
+    string source = 5;
+    string path = 6;
+    string version = 7;
+}
+
+message Installed {
+    string configID = 1;
+    string orgName = 2;
+    string orgUser = 3;
+    string peerName = 4;
+}
+
+message ChainCodeInfo {
+    string name = 1;
+    string version = 2;
+    string path = 3;
+    string input = 4;
+    string escc = 5;
+    string vscc = 6;
+    bytes id = 7;
+}
+
+service ChainCode {
+    rpc InstallCC (Install) returns (Result) {
+    }
+    rpc InstalledCC (Installed) returns (CCList) {
+    }
+}

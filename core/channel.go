@@ -26,6 +26,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/peer"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	peer2 "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 )
 
 func channelClient(orgName, orgUser, channelID string, sdk *fabsdk.FabricSDK) *channel.Client {
@@ -101,6 +102,10 @@ func joinChannel(orderName, orgName, orgUser, channelID, peerUrl string, sdk *fa
 	return &result
 }
 
+type ChannelArr struct {
+	Channels []*peer2.ChannelInfo `json:"channels"`
+}
+
 // peer 参见peer.go PeerChannel
 func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
@@ -122,7 +127,7 @@ func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *re
 				log.Self.Error("qcResponse error should be nil. ")
 				result.Fail("qcResponse error should be nil. ")
 			} else {
-				result.Success(qcResponse.Channels)
+				result.Success(&ChannelArr{qcResponse.Channels})
 			}
 		} else {
 			log.Self.Error("orgResMgmt error should be nil. ")
