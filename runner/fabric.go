@@ -19,12 +19,14 @@ import (
 	pb "github.com/ennoo/fabric-go-client/grpc/proto"
 	server2 "github.com/ennoo/fabric-go-client/grpc/server"
 	"github.com/ennoo/fabric-go-client/route"
+	"github.com/ennoo/fabric-go-client/service"
 	"github.com/ennoo/rivet"
 	"google.golang.org/grpc"
 	"net"
 )
 
 func main() {
+	service.Configs["test"] = service.TestConfig()
 	go httpListener()
 	grpcListener()
 }
