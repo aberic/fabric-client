@@ -133,9 +133,19 @@ func TestDiscoveryClientConfigPeers(t *testing.T) {
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
+func TestDiscoveryClientEndorsersPeers(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := DiscoveryClientEndorsersPeers("mychannel", "Org2", "Admin", "peer1.league01-org2-vh-cn", "care", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
 func TGetConfig() *config.Config {
-	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",

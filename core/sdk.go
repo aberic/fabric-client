@@ -215,6 +215,18 @@ func DiscoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, co
 	return discoveryClientConfigPeers(channelID, orgName, orgUser, peerName, sdk)
 }
 
+func DiscoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID string, configBytes []byte,
+	sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	return discoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID, sdk)
+}
+
 func sdk(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {
 	configOpt := config.FromRaw(configBytes, "yaml")
 	sdk, err := fabsdk.New(configOpt, sdkOpts...)
