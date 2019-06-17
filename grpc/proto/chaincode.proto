@@ -36,7 +36,7 @@ message ChainCodeInfo {
 }
 
 service ChainCode {
-    rpc InstallCC (Install) returns (Result) {
+    rpc InstallCC (Install) returns (String) {
     }
     rpc InstalledCC (Installed) returns (CCList) {
     }
