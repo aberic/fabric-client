@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package proto;
+
+message Result {
+    string data = 3;
+}
+
+message ResultArr {
+    repeated string data = 3;
+}

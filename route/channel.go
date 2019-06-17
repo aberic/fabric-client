@@ -65,7 +65,7 @@ func join(router *response.Router) {
 func list(router *response.Router) {
 	rivet.Response().Do(router.Context, func(result *response.Result) {
 		var channelList = new(service.ChannelList)
-		if err := router.Context.ShouldBindJSON(installed); err != nil {
+		if err := router.Context.ShouldBindJSON(channelList); err != nil {
 			result.SayFail(router.Context, err.Error())
 			return
 		}

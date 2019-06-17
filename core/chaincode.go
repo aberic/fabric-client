@@ -24,6 +24,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
+	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 	"net/http"
 )
 
@@ -54,6 +55,10 @@ func install(name, source, path, version string, client *resmgmt.Client) *respon
 	return &result
 }
 
+type ChainCodeInfoArr struct {
+	ChainCodes []*peer.ChaincodeInfo `json:"chaincodes"`
+}
+
 // peer 参见peer.go Peer
 func queryInstalled(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}
@@ -71,7 +76,7 @@ func queryInstalled(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *r
 				log.Self.Error("Failed to query installed: " + err.Error())
 				result.Fail("Failed to query installed: " + err.Error())
 			} else {
-				result.Success(qiResponse.Chaincodes)
+				result.Success(&ChainCodeInfoArr{qiResponse.Chaincodes})
 			}
 		} else {
 			log.Self.Error("orgResMgmt error should be nil. ")

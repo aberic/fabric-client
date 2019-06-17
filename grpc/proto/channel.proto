@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package proto;
+
+import "grpc/proto/result.proto";
+
+message ChannelCreate {
+    string configID = 1;
+    string orderOrgName = 2;
+    string orgName = 3;
+    string orgUser = 4;
+    string channelID = 5;
+    string channelConfigPath = 6;
+}
+
+message ChannelJoin {
+    string configID = 1;
+    string orderName = 2;
+    string orgName = 3;
+    string orgUser = 4;
+    string channelID = 5;
+    string peerUrl = 6;
+}
+
+message ChannelList {
+    string configID = 1;
+    string orgName = 2;
+    string orgUser = 3;
+    string peerName = 4;
+}
+
+service Channel {
+    rpc Create (ChannelCreate) returns (Result) {
+    }
+    rpc Join (ChannelJoin) returns (Result) {
+    }
+    rpc List (ChannelList) returns (ResultArr) {
+    }
+}

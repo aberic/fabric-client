@@ -16,11 +16,22 @@
 package main
 
 import (
+	pb "github.com/ennoo/fabric-go-client/grpc/proto"
+	server2 "github.com/ennoo/fabric-go-client/grpc/server"
 	"github.com/ennoo/fabric-go-client/route"
+	"github.com/ennoo/fabric-go-client/service"
 	"github.com/ennoo/rivet"
+	"google.golang.org/grpc"
+	"net"
 )
 
 func main() {
+	service.Configs["test"] = service.TestConfig()
+	go httpListener()
+	grpcListener()
+}
+
+func httpListener() {
 	rivet.Initialize(false, false, false)
 	// rivet.UseDiscovery(discovery.ComponentConsul, "127.0.0.1:8500", "test", "127.0.0.1", 8081)
 	rivet.ListenAndServe(&rivet.ListenServe{
@@ -32,4 +43,26 @@ func main() {
 		),
 		DefaultPort: "19865",
 	})
+}
+
+func grpcListener() {
+	var (
+		listener net.Listener
+		err      error
+	)
+	//  创建server端监听端口
+	if listener, err = net.Listen("tcp", ":19877"); nil != err {
+		panic(err)
+	}
+	//  创建grpc的server
+	server := grpc.NewServer()
+
+	//  注册我们自定义的helloworld服务
+	pb.RegisterChannelServer(server, &server2.ChannelServer{})
+	pb.RegisterChainCodeServer(server, &server2.ChainCodeServer{})
+
+	//  启动grpc服务
+	if err = server.Serve(listener); nil != err {
+		panic(err)
+	}
 }

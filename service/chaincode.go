@@ -18,7 +18,7 @@ package service
 type Install struct {
 	ConfigID     string `json:"configID"` // ConfigID 配置唯一ID
 	OrderOrgName string `json:"orderOrgName"`
-	OrgAdmin     string `json:"orgAdmin"`
+	OrgUser      string `json:"orgUser"`
 	Name         string `json:"name"`
 	Source       string `json:"source"`
 	Path         string `json:"path"`
@@ -28,14 +28,14 @@ type Install struct {
 type Installed struct {
 	ConfigID string `json:"configID"` // ConfigID 配置唯一ID
 	OrgName  string `json:"orgName"`
-	OrgAdmin string `json:"orgAdmin"`
+	OrgUser  string `json:"orgUser"`
 	PeerName string `json:"peerName"`
 }
 
 type Instantiate struct {
 	ConfigID     string   `json:"configID"` // ConfigID 配置唯一ID
 	OrderOrgName string   `json:"orderOrgName"`
-	OrgAdmin     string   `json:"orgAdmin"`
+	OrgUser      string   `json:"orgUser"`
 	ChannelID    string   `json:"channelID"`
 	Name         string   `json:"name"`
 	Path         string   `json:"path"`
