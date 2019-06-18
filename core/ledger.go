@@ -17,12 +17,9 @@ package sdk
 
 import (
 	"github.com/ennoo/rivet/trans/response"
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
-	"github.com/hyperledger/fabric-sdk-go/pkg/context"
-	ch "github.com/hyperledger/fabric-sdk-go/pkg/fab/channel"
-	"github.com/hyperledger/fabric-sdk-go/pkg/fab/comm"
-	"time"
 )
 
 type Info struct {
@@ -37,169 +34,92 @@ type BCI struct {
 	previousBlockHash string
 }
 
-func queryInfo(channelID, peerName string, client ctx.Client) *response.Result {
+func queryLedgerInfo(channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
-	var (
-		ledger  *ch.Ledger
-		peerCfg *fab.NetworkPeer
-		peerFab fab.Peer
-		res     []*fab.BlockchainInfoResponse
-		err     error
-	)
-	if ledger, err = ch.NewLedger(channelID); nil != err {
-		goto ERR
+	// Ledger client
+	if client, err := ledger.New(channelProvider); nil != err {
+		result.FailErr(err)
 	} else {
-		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
-		defer cancel()
-		if peerCfg, err = comm.NetworkPeerConfig(client.EndpointConfig(), peerName); nil != err {
-			goto ERR
+		if ledgerInfo, err := client.QueryInfo(); nil != err {
+			result.FailErr(err)
+		} else {
+			result.Success(ledgerInfo)
 		}
-		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
-			goto ERR
-		}
-		if res, err = ledger.QueryInfo(reqCtx, []fab.ProposalProcessor{peerFab}, nil); nil != err {
-			goto ERR
-		}
-		result.Success(res)
-		return &result
 	}
-ERR:
-	result.Fail(err.Error())
 	return &result
 }
 
-func queryBlockByHeight(channelID, peerName string, height uint64, client ctx.Client) *response.Result {
+func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
-	var (
-		ledger  *ch.Ledger
-		peerCfg *fab.NetworkPeer
-		peerFab fab.Peer
-		err     error
-	)
-	if ledger, err = ch.NewLedger(channelID); nil != err {
-		goto ERR
+	// Ledger client
+	if client, err := ledger.New(channelProvider); nil != err {
+		result.FailErr(err)
 	} else {
-		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
-		defer cancel()
-		if peerCfg, err = comm.NetworkPeerConfig(client.EndpointConfig(), peerName); nil != err {
-			goto ERR
+		if block, err := client.QueryBlock(height); nil != err {
+			result.FailErr(err)
+		} else {
+			result.Success(block)
 		}
-		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
-			goto ERR
-		}
-		res, err := ledger.QueryBlock(reqCtx, height, []fab.ProposalProcessor{peerFab}, nil)
-		if nil != err {
-			result.Fail(err.Error())
-			return &result
-		}
-		//for _, d := range res[0].Data.Data {
-		//	if nil == d {
-		//		continue
-		//	}
-		//	if envelope, err := utils.GetEnvelopeFromBlock(d);nil!=err {
-		//		log.Self.Error("error", log.Error(err))
-		//	} else {
-		//		log.Self.Info("envelope", log.Reflect("envelope", envelope))
-		//	}
-		//
-		//}
-		result.Success(res)
-		return &result
 	}
-ERR:
-	result.Fail(err.Error())
 	return &result
 }
 
-func queryBlockByHash(channelID, peerName, hash string, client ctx.Client) *response.Result {
+func queryLedgerBlockByHash(hash []byte, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
-	var (
-		ledger  *ch.Ledger
-		peerCfg *fab.NetworkPeer
-		peerFab fab.Peer
-		err     error
-	)
-	if ledger, err = ch.NewLedger(channelID); nil != err {
-		goto ERR
+	// Ledger client
+	if client, err := ledger.New(channelProvider); nil != err {
+		result.FailErr(err)
 	} else {
-		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
-		defer cancel()
-		if peerCfg, err = comm.NetworkPeerConfig(client.EndpointConfig(), peerName); nil != err {
-			goto ERR
+		if block, err := client.QueryBlockByHash(hash); nil != err {
+			result.FailErr(err)
+		} else {
+			result.Success(block)
 		}
-		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
-			goto ERR
-		}
-		res, err := ledger.QueryBlockByHash(reqCtx, []byte(hash), []fab.ProposalProcessor{peerFab}, nil)
-		result.Success(res)
-		if nil != err {
-			result.Fail(err.Error())
-		}
-		return &result
 	}
-ERR:
-	result.Fail(err.Error())
 	return &result
 }
 
-func queryBlockByTxID(channelID, peerName, txID string, client ctx.Client) *response.Result {
+func queryLedgerBlockByTxID(txID string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
-	var (
-		ledger  *ch.Ledger
-		peerCfg *fab.NetworkPeer
-		peerFab fab.Peer
-		res     interface{}
-		err     error
-	)
-	if ledger, err = ch.NewLedger(channelID); nil != err {
-		goto ERR
+	// Ledger client
+	if client, err := ledger.New(channelProvider); nil != err {
+		result.FailErr(err)
 	} else {
-		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
-		defer cancel()
-		if peerCfg, err = comm.NetworkPeerConfig(client.EndpointConfig(), peerName); nil != err {
-			goto ERR
+		if block, err := client.QueryBlockByTxID(fab.TransactionID(txID)); nil != err {
+			result.FailErr(err)
+		} else {
+			result.Success(block)
 		}
-		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
-			goto ERR
-		}
-		if res, err = ledger.QueryBlockByTxID(reqCtx, fab.TransactionID(txID), []fab.ProposalProcessor{peerFab}, nil); nil != err {
-			goto ERR
-		}
-		result.Success(res)
-		return &result
 	}
-ERR:
-	result.Fail(err.Error())
 	return &result
 }
 
-func queryTransaction(channelID, peerName, txID string, client ctx.Client) *response.Result {
+func queryLedgerTransaction(txID string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
-	var (
-		ledger  *ch.Ledger
-		peerCfg *fab.NetworkPeer
-		peerFab fab.Peer
-		res     interface{}
-		err     error
-	)
-	if ledger, err = ch.NewLedger(channelID); nil != err {
-		goto ERR
+	// Ledger client
+	if client, err := ledger.New(channelProvider); nil != err {
+		result.FailErr(err)
 	} else {
-		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
-		defer cancel()
-		if peerCfg, err = comm.NetworkPeerConfig(client.EndpointConfig(), peerName); nil != err {
-			goto ERR
+		if processedTransaction, err := client.QueryTransaction(fab.TransactionID(txID)); nil != err {
+			result.FailErr(err)
+		} else {
+			result.Success(processedTransaction)
 		}
-		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
-			goto ERR
-		}
-		if res, err = ledger.QueryTransaction(reqCtx, fab.TransactionID(txID), []fab.ProposalProcessor{peerFab}, nil); nil != err {
-			goto ERR
-		}
-		result.Success(res)
-		return &result
 	}
-ERR:
-	result.Fail(err.Error())
+	return &result
+}
+
+func queryLedgerConfig(channelProvider ctx.ChannelProvider) *response.Result {
+	result := response.Result{}
+	// Ledger client
+	if client, err := ledger.New(channelProvider); nil != err {
+		result.FailErr(err)
+	} else {
+		if channelCfg, err := client.QueryConfig(); nil != err {
+			result.FailErr(err)
+		} else {
+			result.Success(channelCfg)
+		}
+	}
 	return &result
 }

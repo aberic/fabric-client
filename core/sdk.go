@@ -65,67 +65,79 @@ func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...
 	return queryChannels(orgName, orgUser, peerName, sdk)
 }
 
-func QueryInfo(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerInfo(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	var (
-		client ctx.Client
-		err    error
-	)
-	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
-	defer sdk.Close()
-	if client, err = clientContext(); nil != err {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	}
-	return queryInfo(channelID, peerName, client)
+	defer sdk.Close()
+	return queryLedgerInfo(channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryBlockByHeight(channelID, orgName, orgUser, peerName string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHeight(channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	var (
-		client ctx.Client
-		err    error
-	)
-	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
-	defer sdk.Close()
-	if client, err = clientContext(); nil != err {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	}
-	return queryBlockByHeight(channelID, peerName, height, client)
+	defer sdk.Close()
+	return queryLedgerBlockByHeight(height, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryBlockByHash(channelID, orgName, orgUser, peerName, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHash(channelID, orgName, orgUser string, hash, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	var (
-		client ctx.Client
-		err    error
-	)
-	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
-	defer sdk.Close()
-	if client, err = clientContext(); nil != err {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	}
-	return queryBlockByHash(channelID, peerName, hash, client)
+	defer sdk.Close()
+	return queryLedgerBlockByHash(hash, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryBlockByTxID(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByTxID(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	var (
-		client ctx.Client
-		err    error
-	)
-	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
-	defer sdk.Close()
-	if client, err = clientContext(); nil != err {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	}
-	return queryBlockByTxID(channelID, peerName, txID, client)
+	defer sdk.Close()
+	return queryLedgerBlockByTxID(txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryTransaction(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerTransaction(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryLedgerTransaction(txID, channelProvider(orgName, orgUser, channelID, sdk))
+}
+
+func QueryLedgerConfig(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	}
+	defer sdk.Close()
+	return queryLedgerConfig(channelProvider(orgName, orgUser, channelID, sdk))
+}
+
+func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	var (
 		client ctx.Client
@@ -137,7 +149,67 @@ func QueryTransaction(channelID, orgName, orgUser, peerName, txID string, config
 		result.Fail(err.Error())
 		return &result
 	}
-	return queryTransaction(channelID, peerName, txID, client)
+	return queryChannelInfo(channelID, peerName, client)
+}
+
+func QueryChannelBlockByHeight(channelID, orgName, orgUser, peerName string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	var (
+		client ctx.Client
+		err    error
+	)
+	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
+	defer sdk.Close()
+	if client, err = clientContext(); nil != err {
+		result.Fail(err.Error())
+		return &result
+	}
+	return queryChannelBlockByHeight(channelID, peerName, height, client)
+}
+
+func QueryChannelBlockByHash(channelID, orgName, orgUser, peerName, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	var (
+		client ctx.Client
+		err    error
+	)
+	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
+	defer sdk.Close()
+	if client, err = clientContext(); nil != err {
+		result.Fail(err.Error())
+		return &result
+	}
+	return queryChannelBlockByHash(channelID, peerName, hash, client)
+}
+
+func QueryChannelBlockByTxID(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	var (
+		client ctx.Client
+		err    error
+	)
+	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
+	defer sdk.Close()
+	if client, err = clientContext(); nil != err {
+		result.Fail(err.Error())
+		return &result
+	}
+	return queryChannelBlockByTxID(channelID, peerName, txID, client)
+}
+
+func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	var (
+		client ctx.Client
+		err    error
+	)
+	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
+	defer sdk.Close()
+	if client, err = clientContext(); nil != err {
+		result.Fail(err.Error())
+		return &result
+	}
+	return queryChannelTransaction(channelID, peerName, txID, client)
 }
 
 func Install(orderOrgName, orgUser, name, source, path, version string, configBytes []byte,

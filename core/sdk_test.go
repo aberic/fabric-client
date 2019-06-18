@@ -41,53 +41,113 @@ func TestJoin(t *testing.T) {
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
-func TestQueryInfo(t *testing.T) {
+func TestQueryLedgerInfo(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryInfo("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", confData)
+	result := QueryLedgerInfo("mychannel", "Org1", "Admin", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
-func TestQueryBlockByHeight(t *testing.T) {
+func TestQueryLedgerBlockByHeight(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryBlockByHeight("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", 2, confData)
+	result := QueryLedgerBlockByHeight("mychannel", "Org1", "Admin", 2, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
-func TestQueryBlockByHash(t *testing.T) {
+func TestQueryLedgerBlockByHash(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryBlockByHash("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	result := QueryLedgerBlockByHash("mychannel", "Org1", "Admin", []byte{}, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
-func TestQueryBlockByTxID(t *testing.T) {
+func TestQueryLedgerBlockByTxID(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryBlockByTxID("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	result := QueryLedgerBlockByTxID("mychannel", "Org1", "Admin", "", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
-func TestQueryTransaction(t *testing.T) {
+func TestQueryLedgerTransaction(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryTransaction("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	result := QueryLedgerTransaction("mychannel", "Org1", "Admin", "", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerConfig(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryLedgerConfig("mychannel", "Org1", "Admin", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryChannelInfo(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryChannelInfo("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryChannelBlockByHeight(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryChannelBlockByHeight("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", 2, confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryChannelBlockByHash(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryChannelBlockByHash("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryChannelBlockByTxID(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryChannelBlockByTxID("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryChannelTransaction(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryChannelTransaction("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -194,8 +254,8 @@ func TestDiscoveryClientEndorsersPeers(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",
