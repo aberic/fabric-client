@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto;
+
+import "grpc/proto/result.proto";
+import "grpc/proto/channel.proto";
+import "grpc/proto/chaincode.proto";
+
+service Channel {
+    rpc Create (ChannelCreate) returns (String) {
+    }
+    rpc Join (ChannelJoin) returns (String) {
+    }
+    rpc List (ChannelList) returns (StringArr) {
+    }
+}
+
+service ChainCode {
+    rpc InstallCC (Install) returns (String) {
+    }
+    rpc InstalledCC (Installed) returns (CCList) {
+    }
+    rpc InstantiateCC (Instantiate) returns (String) {
+    }
+    rpc InstantiatedCC (Instantiated) returns (CCList) {
+    }
+    rpc UpgradeCC (Upgrade) returns (String) {
+    }
+    rpc InvokeCC (Invoke) returns (Bytes) {
+    }
+    rpc QueryCC (Query) returns (Bytes) {
+    }
+}

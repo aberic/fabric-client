@@ -4,10 +4,8 @@
 package proto
 
 import (
-	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	grpc "google.golang.org/grpc"
 	math "math"
 )
 
@@ -20,7 +18,94 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
+type ChainCodeInfo struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Version              string   `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
+	Path                 string   `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
+	Input                string   `protobuf:"bytes,4,opt,name=input,proto3" json:"input,omitempty"`
+	Escc                 string   `protobuf:"bytes,5,opt,name=escc,proto3" json:"escc,omitempty"`
+	Vscc                 string   `protobuf:"bytes,6,opt,name=vscc,proto3" json:"vscc,omitempty"`
+	Id                   []byte   `protobuf:"bytes,7,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ChainCodeInfo) Reset()         { *m = ChainCodeInfo{} }
+func (m *ChainCodeInfo) String() string { return proto.CompactTextString(m) }
+func (*ChainCodeInfo) ProtoMessage()    {}
+func (*ChainCodeInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_53e911910cd781a8, []int{0}
+}
+
+func (m *ChainCodeInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ChainCodeInfo.Unmarshal(m, b)
+}
+func (m *ChainCodeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ChainCodeInfo.Marshal(b, m, deterministic)
+}
+func (m *ChainCodeInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ChainCodeInfo.Merge(m, src)
+}
+func (m *ChainCodeInfo) XXX_Size() int {
+	return xxx_messageInfo_ChainCodeInfo.Size(m)
+}
+func (m *ChainCodeInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_ChainCodeInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ChainCodeInfo proto.InternalMessageInfo
+
+func (m *ChainCodeInfo) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ChainCodeInfo) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *ChainCodeInfo) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+func (m *ChainCodeInfo) GetInput() string {
+	if m != nil {
+		return m.Input
+	}
+	return ""
+}
+
+func (m *ChainCodeInfo) GetEscc() string {
+	if m != nil {
+		return m.Escc
+	}
+	return ""
+}
+
+func (m *ChainCodeInfo) GetVscc() string {
+	if m != nil {
+		return m.Vscc
+	}
+	return ""
+}
+
+func (m *ChainCodeInfo) GetId() []byte {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
 
 type CCList struct {
 	Data                 []*ChainCodeInfo `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
@@ -33,7 +118,7 @@ func (m *CCList) Reset()         { *m = CCList{} }
 func (m *CCList) String() string { return proto.CompactTextString(m) }
 func (*CCList) ProtoMessage()    {}
 func (*CCList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_53e911910cd781a8, []int{0}
+	return fileDescriptor_53e911910cd781a8, []int{1}
 }
 
 func (m *CCList) XXX_Unmarshal(b []byte) error {
@@ -78,7 +163,7 @@ func (m *Install) Reset()         { *m = Install{} }
 func (m *Install) String() string { return proto.CompactTextString(m) }
 func (*Install) ProtoMessage()    {}
 func (*Install) Descriptor() ([]byte, []int) {
-	return fileDescriptor_53e911910cd781a8, []int{1}
+	return fileDescriptor_53e911910cd781a8, []int{2}
 }
 
 func (m *Install) XXX_Unmarshal(b []byte) error {
@@ -162,7 +247,7 @@ func (m *Installed) Reset()         { *m = Installed{} }
 func (m *Installed) String() string { return proto.CompactTextString(m) }
 func (*Installed) ProtoMessage()    {}
 func (*Installed) Descriptor() ([]byte, []int) {
-	return fileDescriptor_53e911910cd781a8, []int{2}
+	return fileDescriptor_53e911910cd781a8, []int{3}
 }
 
 func (m *Installed) XXX_Unmarshal(b []byte) error {
@@ -211,230 +296,541 @@ func (m *Installed) GetPeerName() string {
 	return ""
 }
 
-type ChainCodeInfo struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Version              string   `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
-	Path                 string   `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
-	Input                string   `protobuf:"bytes,4,opt,name=input,proto3" json:"input,omitempty"`
-	Escc                 string   `protobuf:"bytes,5,opt,name=escc,proto3" json:"escc,omitempty"`
-	Vscc                 string   `protobuf:"bytes,6,opt,name=vscc,proto3" json:"vscc,omitempty"`
-	Id                   []byte   `protobuf:"bytes,7,opt,name=id,proto3" json:"id,omitempty"`
+type Instantiate struct {
+	ConfigID             string   `protobuf:"bytes,1,opt,name=configID,proto3" json:"configID,omitempty"`
+	OrderOrgName         string   `protobuf:"bytes,2,opt,name=orderOrgName,proto3" json:"orderOrgName,omitempty"`
+	OrgUser              string   `protobuf:"bytes,3,opt,name=orgUser,proto3" json:"orgUser,omitempty"`
+	ChannelID            string   `protobuf:"bytes,4,opt,name=channelID,proto3" json:"channelID,omitempty"`
+	Name                 string   `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Path                 string   `protobuf:"bytes,6,opt,name=path,proto3" json:"path,omitempty"`
+	Version              string   `protobuf:"bytes,7,opt,name=version,proto3" json:"version,omitempty"`
+	OrgPolicies          []string `protobuf:"bytes,8,rep,name=orgPolicies,proto3" json:"orgPolicies,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,9,rep,name=args,proto3" json:"args,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ChainCodeInfo) Reset()         { *m = ChainCodeInfo{} }
-func (m *ChainCodeInfo) String() string { return proto.CompactTextString(m) }
-func (*ChainCodeInfo) ProtoMessage()    {}
-func (*ChainCodeInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_53e911910cd781a8, []int{3}
+func (m *Instantiate) Reset()         { *m = Instantiate{} }
+func (m *Instantiate) String() string { return proto.CompactTextString(m) }
+func (*Instantiate) ProtoMessage()    {}
+func (*Instantiate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_53e911910cd781a8, []int{4}
 }
 
-func (m *ChainCodeInfo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ChainCodeInfo.Unmarshal(m, b)
+func (m *Instantiate) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Instantiate.Unmarshal(m, b)
 }
-func (m *ChainCodeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ChainCodeInfo.Marshal(b, m, deterministic)
+func (m *Instantiate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Instantiate.Marshal(b, m, deterministic)
 }
-func (m *ChainCodeInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ChainCodeInfo.Merge(m, src)
+func (m *Instantiate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Instantiate.Merge(m, src)
 }
-func (m *ChainCodeInfo) XXX_Size() int {
-	return xxx_messageInfo_ChainCodeInfo.Size(m)
+func (m *Instantiate) XXX_Size() int {
+	return xxx_messageInfo_Instantiate.Size(m)
 }
-func (m *ChainCodeInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_ChainCodeInfo.DiscardUnknown(m)
+func (m *Instantiate) XXX_DiscardUnknown() {
+	xxx_messageInfo_Instantiate.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ChainCodeInfo proto.InternalMessageInfo
+var xxx_messageInfo_Instantiate proto.InternalMessageInfo
 
-func (m *ChainCodeInfo) GetName() string {
+func (m *Instantiate) GetConfigID() string {
+	if m != nil {
+		return m.ConfigID
+	}
+	return ""
+}
+
+func (m *Instantiate) GetOrderOrgName() string {
+	if m != nil {
+		return m.OrderOrgName
+	}
+	return ""
+}
+
+func (m *Instantiate) GetOrgUser() string {
+	if m != nil {
+		return m.OrgUser
+	}
+	return ""
+}
+
+func (m *Instantiate) GetChannelID() string {
+	if m != nil {
+		return m.ChannelID
+	}
+	return ""
+}
+
+func (m *Instantiate) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *ChainCodeInfo) GetVersion() string {
-	if m != nil {
-		return m.Version
-	}
-	return ""
-}
-
-func (m *ChainCodeInfo) GetPath() string {
+func (m *Instantiate) GetPath() string {
 	if m != nil {
 		return m.Path
 	}
 	return ""
 }
 
-func (m *ChainCodeInfo) GetInput() string {
+func (m *Instantiate) GetVersion() string {
 	if m != nil {
-		return m.Input
+		return m.Version
 	}
 	return ""
 }
 
-func (m *ChainCodeInfo) GetEscc() string {
+func (m *Instantiate) GetOrgPolicies() []string {
 	if m != nil {
-		return m.Escc
+		return m.OrgPolicies
+	}
+	return nil
+}
+
+func (m *Instantiate) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+type Instantiated struct {
+	ConfigID             string   `protobuf:"bytes,1,opt,name=configID,proto3" json:"configID,omitempty"`
+	OrderOrgName         string   `protobuf:"bytes,2,opt,name=orderOrgName,proto3" json:"orderOrgName,omitempty"`
+	OrgUser              string   `protobuf:"bytes,3,opt,name=orgUser,proto3" json:"orgUser,omitempty"`
+	ChannelID            string   `protobuf:"bytes,4,opt,name=channelID,proto3" json:"channelID,omitempty"`
+	Name                 string   `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Path                 string   `protobuf:"bytes,6,opt,name=path,proto3" json:"path,omitempty"`
+	Version              string   `protobuf:"bytes,7,opt,name=version,proto3" json:"version,omitempty"`
+	OrgPolicies          []string `protobuf:"bytes,8,rep,name=orgPolicies,proto3" json:"orgPolicies,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,9,rep,name=args,proto3" json:"args,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Instantiated) Reset()         { *m = Instantiated{} }
+func (m *Instantiated) String() string { return proto.CompactTextString(m) }
+func (*Instantiated) ProtoMessage()    {}
+func (*Instantiated) Descriptor() ([]byte, []int) {
+	return fileDescriptor_53e911910cd781a8, []int{5}
+}
+
+func (m *Instantiated) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Instantiated.Unmarshal(m, b)
+}
+func (m *Instantiated) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Instantiated.Marshal(b, m, deterministic)
+}
+func (m *Instantiated) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Instantiated.Merge(m, src)
+}
+func (m *Instantiated) XXX_Size() int {
+	return xxx_messageInfo_Instantiated.Size(m)
+}
+func (m *Instantiated) XXX_DiscardUnknown() {
+	xxx_messageInfo_Instantiated.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Instantiated proto.InternalMessageInfo
+
+func (m *Instantiated) GetConfigID() string {
+	if m != nil {
+		return m.ConfigID
 	}
 	return ""
 }
 
-func (m *ChainCodeInfo) GetVscc() string {
+func (m *Instantiated) GetOrderOrgName() string {
 	if m != nil {
-		return m.Vscc
+		return m.OrderOrgName
 	}
 	return ""
 }
 
-func (m *ChainCodeInfo) GetId() []byte {
+func (m *Instantiated) GetOrgUser() string {
 	if m != nil {
-		return m.Id
+		return m.OrgUser
+	}
+	return ""
+}
+
+func (m *Instantiated) GetChannelID() string {
+	if m != nil {
+		return m.ChannelID
+	}
+	return ""
+}
+
+func (m *Instantiated) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Instantiated) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+func (m *Instantiated) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *Instantiated) GetOrgPolicies() []string {
+	if m != nil {
+		return m.OrgPolicies
+	}
+	return nil
+}
+
+func (m *Instantiated) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+type Upgrade struct {
+	ConfigID             string   `protobuf:"bytes,1,opt,name=configID,proto3" json:"configID,omitempty"`
+	OrderOrgName         string   `protobuf:"bytes,2,opt,name=orderOrgName,proto3" json:"orderOrgName,omitempty"`
+	OrgUser              string   `protobuf:"bytes,3,opt,name=orgUser,proto3" json:"orgUser,omitempty"`
+	ChannelID            string   `protobuf:"bytes,4,opt,name=channelID,proto3" json:"channelID,omitempty"`
+	Name                 string   `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Path                 string   `protobuf:"bytes,6,opt,name=path,proto3" json:"path,omitempty"`
+	Version              string   `protobuf:"bytes,7,opt,name=version,proto3" json:"version,omitempty"`
+	OrgPolicies          []string `protobuf:"bytes,8,rep,name=orgPolicies,proto3" json:"orgPolicies,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,9,rep,name=args,proto3" json:"args,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Upgrade) Reset()         { *m = Upgrade{} }
+func (m *Upgrade) String() string { return proto.CompactTextString(m) }
+func (*Upgrade) ProtoMessage()    {}
+func (*Upgrade) Descriptor() ([]byte, []int) {
+	return fileDescriptor_53e911910cd781a8, []int{6}
+}
+
+func (m *Upgrade) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Upgrade.Unmarshal(m, b)
+}
+func (m *Upgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Upgrade.Marshal(b, m, deterministic)
+}
+func (m *Upgrade) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Upgrade.Merge(m, src)
+}
+func (m *Upgrade) XXX_Size() int {
+	return xxx_messageInfo_Upgrade.Size(m)
+}
+func (m *Upgrade) XXX_DiscardUnknown() {
+	xxx_messageInfo_Upgrade.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Upgrade proto.InternalMessageInfo
+
+func (m *Upgrade) GetConfigID() string {
+	if m != nil {
+		return m.ConfigID
+	}
+	return ""
+}
+
+func (m *Upgrade) GetOrderOrgName() string {
+	if m != nil {
+		return m.OrderOrgName
+	}
+	return ""
+}
+
+func (m *Upgrade) GetOrgUser() string {
+	if m != nil {
+		return m.OrgUser
+	}
+	return ""
+}
+
+func (m *Upgrade) GetChannelID() string {
+	if m != nil {
+		return m.ChannelID
+	}
+	return ""
+}
+
+func (m *Upgrade) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Upgrade) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
+
+func (m *Upgrade) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *Upgrade) GetOrgPolicies() []string {
+	if m != nil {
+		return m.OrgPolicies
+	}
+	return nil
+}
+
+func (m *Upgrade) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+type Invoke struct {
+	ConfigID             string   `protobuf:"bytes,1,opt,name=configID,proto3" json:"configID,omitempty"`
+	ChannelID            string   `protobuf:"bytes,2,opt,name=channelID,proto3" json:"channelID,omitempty"`
+	ChainCodeID          string   `protobuf:"bytes,3,opt,name=chainCodeID,proto3" json:"chainCodeID,omitempty"`
+	OrgName              string   `protobuf:"bytes,4,opt,name=orgName,proto3" json:"orgName,omitempty"`
+	OrgUser              string   `protobuf:"bytes,5,opt,name=orgUser,proto3" json:"orgUser,omitempty"`
+	Fcn                  string   `protobuf:"bytes,6,opt,name=fcn,proto3" json:"fcn,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,7,rep,name=args,proto3" json:"args,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Invoke) Reset()         { *m = Invoke{} }
+func (m *Invoke) String() string { return proto.CompactTextString(m) }
+func (*Invoke) ProtoMessage()    {}
+func (*Invoke) Descriptor() ([]byte, []int) {
+	return fileDescriptor_53e911910cd781a8, []int{7}
+}
+
+func (m *Invoke) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Invoke.Unmarshal(m, b)
+}
+func (m *Invoke) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Invoke.Marshal(b, m, deterministic)
+}
+func (m *Invoke) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Invoke.Merge(m, src)
+}
+func (m *Invoke) XXX_Size() int {
+	return xxx_messageInfo_Invoke.Size(m)
+}
+func (m *Invoke) XXX_DiscardUnknown() {
+	xxx_messageInfo_Invoke.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Invoke proto.InternalMessageInfo
+
+func (m *Invoke) GetConfigID() string {
+	if m != nil {
+		return m.ConfigID
+	}
+	return ""
+}
+
+func (m *Invoke) GetChannelID() string {
+	if m != nil {
+		return m.ChannelID
+	}
+	return ""
+}
+
+func (m *Invoke) GetChainCodeID() string {
+	if m != nil {
+		return m.ChainCodeID
+	}
+	return ""
+}
+
+func (m *Invoke) GetOrgName() string {
+	if m != nil {
+		return m.OrgName
+	}
+	return ""
+}
+
+func (m *Invoke) GetOrgUser() string {
+	if m != nil {
+		return m.OrgUser
+	}
+	return ""
+}
+
+func (m *Invoke) GetFcn() string {
+	if m != nil {
+		return m.Fcn
+	}
+	return ""
+}
+
+func (m *Invoke) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+type Query struct {
+	ConfigID             string   `protobuf:"bytes,1,opt,name=configID,proto3" json:"configID,omitempty"`
+	ChannelID            string   `protobuf:"bytes,2,opt,name=channelID,proto3" json:"channelID,omitempty"`
+	ChainCodeID          string   `protobuf:"bytes,3,opt,name=chainCodeID,proto3" json:"chainCodeID,omitempty"`
+	OrgName              string   `protobuf:"bytes,4,opt,name=orgName,proto3" json:"orgName,omitempty"`
+	OrgUser              string   `protobuf:"bytes,5,opt,name=orgUser,proto3" json:"orgUser,omitempty"`
+	Fcn                  string   `protobuf:"bytes,6,opt,name=fcn,proto3" json:"fcn,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,7,rep,name=args,proto3" json:"args,omitempty"`
+	TargetEndpoints      []string `protobuf:"bytes,8,rep,name=targetEndpoints,proto3" json:"targetEndpoints,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Query) Reset()         { *m = Query{} }
+func (m *Query) String() string { return proto.CompactTextString(m) }
+func (*Query) ProtoMessage()    {}
+func (*Query) Descriptor() ([]byte, []int) {
+	return fileDescriptor_53e911910cd781a8, []int{8}
+}
+
+func (m *Query) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Query.Unmarshal(m, b)
+}
+func (m *Query) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Query.Marshal(b, m, deterministic)
+}
+func (m *Query) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Query.Merge(m, src)
+}
+func (m *Query) XXX_Size() int {
+	return xxx_messageInfo_Query.Size(m)
+}
+func (m *Query) XXX_DiscardUnknown() {
+	xxx_messageInfo_Query.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Query proto.InternalMessageInfo
+
+func (m *Query) GetConfigID() string {
+	if m != nil {
+		return m.ConfigID
+	}
+	return ""
+}
+
+func (m *Query) GetChannelID() string {
+	if m != nil {
+		return m.ChannelID
+	}
+	return ""
+}
+
+func (m *Query) GetChainCodeID() string {
+	if m != nil {
+		return m.ChainCodeID
+	}
+	return ""
+}
+
+func (m *Query) GetOrgName() string {
+	if m != nil {
+		return m.OrgName
+	}
+	return ""
+}
+
+func (m *Query) GetOrgUser() string {
+	if m != nil {
+		return m.OrgUser
+	}
+	return ""
+}
+
+func (m *Query) GetFcn() string {
+	if m != nil {
+		return m.Fcn
+	}
+	return ""
+}
+
+func (m *Query) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+func (m *Query) GetTargetEndpoints() []string {
+	if m != nil {
+		return m.TargetEndpoints
 	}
 	return nil
 }
 
 func init() {
+	proto.RegisterType((*ChainCodeInfo)(nil), "proto.ChainCodeInfo")
 	proto.RegisterType((*CCList)(nil), "proto.CCList")
 	proto.RegisterType((*Install)(nil), "proto.Install")
 	proto.RegisterType((*Installed)(nil), "proto.Installed")
-	proto.RegisterType((*ChainCodeInfo)(nil), "proto.ChainCodeInfo")
+	proto.RegisterType((*Instantiate)(nil), "proto.Instantiate")
+	proto.RegisterType((*Instantiated)(nil), "proto.Instantiated")
+	proto.RegisterType((*Upgrade)(nil), "proto.Upgrade")
+	proto.RegisterType((*Invoke)(nil), "proto.Invoke")
+	proto.RegisterType((*Query)(nil), "proto.Query")
 }
 
 func init() { proto.RegisterFile("grpc/proto/chaincode.proto", fileDescriptor_53e911910cd781a8) }
 
 var fileDescriptor_53e911910cd781a8 = []byte{
-	// 359 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x52, 0x4d, 0x6e, 0xf2, 0x30,
-	0x14, 0x24, 0x01, 0x02, 0x3c, 0x7e, 0xf4, 0xc9, 0x42, 0x5f, 0xad, 0xac, 0x50, 0x56, 0x2c, 0x2a,
-	0xa8, 0xe8, 0x11, 0xdc, 0x0d, 0x52, 0x45, 0x25, 0xaa, 0x1e, 0x20, 0x8d, 0x4d, 0xb0, 0x4a, 0xed,
-	0xc8, 0x31, 0xf4, 0x38, 0x3d, 0x49, 0xef, 0x56, 0xf9, 0x07, 0x37, 0xd9, 0xb0, 0xca, 0x9b, 0x79,
-	0x63, 0x67, 0x66, 0x64, 0x48, 0x4b, 0x55, 0x15, 0xeb, 0x4a, 0x49, 0x2d, 0xd7, 0xc5, 0x31, 0xe7,
-	0xa2, 0x90, 0x94, 0xad, 0x2c, 0x46, 0x7d, 0xfb, 0x49, 0xef, 0x1a, 0x12, 0xc5, 0xea, 0xf3, 0x49,
-	0xbb, 0x7d, 0xb6, 0x81, 0x84, 0x90, 0x67, 0x5e, 0x6b, 0xb4, 0x84, 0x1e, 0xcd, 0x75, 0x8e, 0xa3,
-	0x45, 0x77, 0x39, 0xde, 0xcc, 0xdd, 0x7e, 0x45, 0xcc, 0x7d, 0x44, 0x52, 0xb6, 0x15, 0x07, 0xb9,
-	0xb7, 0x8a, 0xec, 0x27, 0x82, 0xc1, 0x56, 0xd4, 0x3a, 0x3f, 0x9d, 0x50, 0x0a, 0xc3, 0x42, 0x8a,
-	0x03, 0x2f, 0xb7, 0x4f, 0x38, 0x5a, 0x44, 0xcb, 0xd1, 0x3e, 0x60, 0x94, 0xc1, 0x44, 0x2a, 0xca,
-	0xd4, 0x8b, 0x2a, 0x77, 0xf9, 0x27, 0xc3, 0xb1, 0xdd, 0xb7, 0x38, 0x84, 0x61, 0x20, 0x55, 0xf9,
-	0x56, 0x33, 0x85, 0xbb, 0x76, 0x7d, 0x85, 0x08, 0x41, 0x4f, 0x98, 0x53, 0x3d, 0x4b, 0xdb, 0x19,
-	0xfd, 0x87, 0xa4, 0x96, 0x67, 0x55, 0x30, 0xdc, 0xb7, 0xac, 0x47, 0x46, 0x5b, 0xe5, 0xfa, 0x88,
-	0x13, 0xa7, 0x35, 0xb3, 0xb9, 0xf9, 0xc2, 0x54, 0xcd, 0xa5, 0xc0, 0x03, 0x77, 0xb3, 0x87, 0xd9,
-	0x17, 0x8c, 0xbc, 0x7d, 0x46, 0x6f, 0x06, 0x70, 0xe6, 0x1a, 0xde, 0xaf, 0xf0, 0x86, 0xed, 0x14,
-	0x86, 0x15, 0x63, 0x6a, 0xf7, 0x67, 0x3d, 0xe0, 0xec, 0x3b, 0x82, 0x69, 0xab, 0xd0, 0x10, 0x32,
-	0x6a, 0x84, 0x6c, 0x18, 0x8f, 0x5b, 0xc6, 0x43, 0xcc, 0x6e, 0x23, 0xe6, 0x1c, 0xfa, 0x5c, 0x54,
-	0x67, 0xed, 0x7f, 0xe6, 0x80, 0x51, 0xb2, 0xba, 0x28, 0x7c, 0x4d, 0x76, 0x36, 0xdc, 0xc5, 0x70,
-	0xbe, 0x24, 0x33, 0xa3, 0x19, 0xc4, 0x9c, 0xda, 0x7e, 0x26, 0xfb, 0x98, 0xd3, 0xcd, 0x07, 0x8c,
-	0x82, 0x41, 0x74, 0x1f, 0x7a, 0x22, 0x04, 0xcd, 0xfc, 0x83, 0xf0, 0x4c, 0x3a, 0xf5, 0xf8, 0x55,
-	0x2b, 0x2e, 0xca, 0xac, 0x83, 0x1e, 0x60, 0x1c, 0x5a, 0x25, 0x04, 0xfd, 0x6b, 0xeb, 0x19, 0x0d,
-	0x27, 0xdc, 0x7b, 0xcb, 0x3a, 0xef, 0x89, 0xc5, 0x8f, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x40,
-	0x55, 0x69, 0x1e, 0xc0, 0x02, 0x00, 0x00,
-}
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
-
-// ChainCodeClient is the client API for ChainCode service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type ChainCodeClient interface {
-	InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error)
-	InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error)
-}
-
-type chainCodeClient struct {
-	cc *grpc.ClientConn
-}
-
-func NewChainCodeClient(cc *grpc.ClientConn) ChainCodeClient {
-	return &chainCodeClient{cc}
-}
-
-func (c *chainCodeClient) InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InstallCC", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chainCodeClient) InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error) {
-	out := new(CCList)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InstalledCC", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ChainCodeServer is the server API for ChainCode service.
-type ChainCodeServer interface {
-	InstallCC(context.Context, *Install) (*String, error)
-	InstalledCC(context.Context, *Installed) (*CCList, error)
-}
-
-func RegisterChainCodeServer(s *grpc.Server, srv ChainCodeServer) {
-	s.RegisterService(&_ChainCode_serviceDesc, srv)
-}
-
-func _ChainCode_InstallCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Install)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChainCodeServer).InstallCC(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.ChainCode/InstallCC",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InstallCC(ctx, req.(*Install))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChainCode_InstalledCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Installed)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChainCodeServer).InstalledCC(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.ChainCode/InstalledCC",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InstalledCC(ctx, req.(*Installed))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _ChainCode_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.ChainCode",
-	HandlerType: (*ChainCodeServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "InstallCC",
-			Handler:    _ChainCode_InstallCC_Handler,
-		},
-		{
-			MethodName: "InstalledCC",
-			Handler:    _ChainCode_InstalledCC_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/proto/chaincode.proto",
+	// 478 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x94, 0x4f, 0x8a, 0xdb, 0x30,
+	0x18, 0xc5, 0x51, 0xfc, 0x2f, 0xfe, 0x92, 0xfe, 0x41, 0x0c, 0x45, 0x84, 0x2e, 0x8c, 0x57, 0x5e,
+	0xcd, 0xc0, 0xf4, 0x08, 0x49, 0x17, 0x86, 0x32, 0x6d, 0x0d, 0x73, 0x00, 0x55, 0x52, 0x1c, 0xd1,
+	0x54, 0x32, 0xb2, 0x92, 0xd2, 0xd3, 0xf4, 0x24, 0xed, 0x75, 0x7a, 0x86, 0x2e, 0x5a, 0x8a, 0x6c,
+	0xc7, 0x23, 0x0f, 0x34, 0xd0, 0x45, 0x17, 0xc3, 0xac, 0xf2, 0xbd, 0x97, 0x8f, 0xe4, 0xfd, 0x9e,
+	0x90, 0x60, 0x55, 0x9b, 0x86, 0x5d, 0x35, 0x46, 0x5b, 0x7d, 0xc5, 0x76, 0x54, 0x2a, 0xa6, 0xb9,
+	0xb8, 0xec, 0x34, 0x8e, 0xba, 0x8f, 0xfc, 0x2b, 0x82, 0x27, 0x6b, 0xf7, 0xd5, 0x5a, 0x73, 0x51,
+	0xaa, 0xad, 0xc6, 0x18, 0x42, 0x45, 0x3f, 0x09, 0x82, 0x32, 0x54, 0xa4, 0x55, 0x37, 0x63, 0x02,
+	0xc9, 0x51, 0x98, 0x56, 0x6a, 0x45, 0x66, 0x9d, 0x7d, 0x92, 0x6e, 0xbb, 0xa1, 0x76, 0x47, 0x82,
+	0x7e, 0xdb, 0xcd, 0xf8, 0x02, 0x22, 0xa9, 0x9a, 0x83, 0x25, 0x61, 0x67, 0xf6, 0xc2, 0x6d, 0x8a,
+	0x96, 0x31, 0x12, 0xf5, 0x9b, 0x6e, 0x76, 0xde, 0xd1, 0x79, 0x71, 0xef, 0xb9, 0x19, 0x3f, 0x85,
+	0x99, 0xe4, 0x24, 0xc9, 0x50, 0xb1, 0xac, 0x66, 0x92, 0xe7, 0xd7, 0x10, 0xaf, 0xd7, 0x6f, 0x64,
+	0x6b, 0x71, 0x01, 0x21, 0xa7, 0x96, 0x12, 0x94, 0x05, 0xc5, 0xe2, 0xfa, 0xa2, 0x07, 0xb9, 0x9c,
+	0xa4, 0xaf, 0xba, 0x8d, 0xfc, 0x1b, 0x82, 0xa4, 0x54, 0xad, 0xa5, 0xfb, 0x3d, 0x5e, 0xc1, 0x9c,
+	0x69, 0xb5, 0x95, 0x75, 0xb9, 0x19, 0x98, 0x46, 0x8d, 0x73, 0x58, 0x6a, 0xc3, 0x85, 0x79, 0x6b,
+	0xea, 0x1b, 0xc7, 0xdc, 0xc3, 0x4d, 0x3c, 0xc7, 0xae, 0x4d, 0x7d, 0xdb, 0x0a, 0x33, 0x40, 0x9e,
+	0xe4, 0xd8, 0x54, 0xe8, 0x35, 0xf5, 0x02, 0xe2, 0x56, 0x1f, 0x0c, 0x13, 0x03, 0xe7, 0xa0, 0xc6,
+	0x9e, 0x62, 0xaf, 0x27, 0xaf, 0xd5, 0x64, 0xd2, 0x6a, 0xfe, 0x19, 0xd2, 0x21, 0xbe, 0xe0, 0x67,
+	0x01, 0xfa, 0x70, 0x5e, 0xf6, 0x93, 0x3c, 0x13, 0x7b, 0x05, 0xf3, 0x46, 0x08, 0x73, 0x73, 0x17,
+	0x7d, 0xd4, 0xf9, 0x2f, 0x04, 0x8b, 0xee, 0x9f, 0x95, 0x95, 0xd4, 0x8a, 0xff, 0x58, 0xde, 0x4b,
+	0x48, 0xd9, 0x8e, 0x2a, 0x25, 0xf6, 0xe5, 0x66, 0x88, 0x71, 0x67, 0x8c, 0xd5, 0x46, 0x5e, 0xb5,
+	0xff, 0x54, 0x21, 0xce, 0x60, 0xa1, 0x4d, 0xfd, 0x4e, 0xef, 0x25, 0x93, 0xa2, 0x25, 0xf3, 0x2c,
+	0x28, 0xd2, 0xca, 0xb7, 0xdc, 0xef, 0x51, 0x53, 0xb7, 0x24, 0xcd, 0x82, 0x62, 0x59, 0x75, 0x73,
+	0xfe, 0x1b, 0xc1, 0xd2, 0xe3, 0xe7, 0x8f, 0xae, 0x80, 0x9f, 0x08, 0x92, 0xdb, 0xa6, 0x36, 0x94,
+	0x3f, 0xbe, 0xc3, 0xff, 0x8e, 0x20, 0x2e, 0xd5, 0x51, 0x7f, 0x3c, 0x8f, 0x3e, 0x09, 0x3f, 0xbb,
+	0x1f, 0x3e, 0x83, 0x05, 0x1b, 0x5f, 0xa4, 0xcd, 0x00, 0xee, 0x5b, 0xfe, 0x9d, 0x0d, 0xff, 0x7a,
+	0x67, 0xa3, 0x69, 0x61, 0xcf, 0x21, 0xd8, 0x32, 0x35, 0xd0, 0xbb, 0x71, 0x04, 0x48, 0x3c, 0x80,
+	0x1f, 0x08, 0xa2, 0xf7, 0x07, 0x61, 0xbe, 0x3c, 0xcc, 0xfc, 0xb8, 0x80, 0x67, 0x96, 0x9a, 0x5a,
+	0xd8, 0xd7, 0x8a, 0x37, 0x5a, 0x2a, 0x7b, 0x3a, 0xba, 0xfb, 0xf6, 0x87, 0xb8, 0x7b, 0xfb, 0x5f,
+	0xfd, 0x09, 0x00, 0x00, 0xff, 0xff, 0x9f, 0x13, 0x3c, 0xf0, 0xe2, 0x06, 0x00, 0x00,
 }

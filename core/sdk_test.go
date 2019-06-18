@@ -41,6 +41,56 @@ func TestJoin(t *testing.T) {
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
+func TestQueryInfo(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryInfo("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryBlockByHeight(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryBlockByHeight("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", 2, confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryBlockByHash(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryBlockByHash("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryBlockByTxID(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryBlockByTxID("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryTransaction(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryTransaction("mychannel", "Org1", "Admin", "peer0.league01-org1-vh-cn", "", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
 func TestInstalled(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)

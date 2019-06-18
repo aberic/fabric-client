@@ -9,3 +9,7 @@ message String {
 message StringArr {
     repeated string data = 1;
 }
+
+message Bytes {
+    bytes payload = 1;
+}

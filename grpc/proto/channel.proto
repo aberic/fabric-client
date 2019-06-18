@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package proto;
 
-import "grpc/proto/result.proto";
-
 message ChannelCreate {
     string configID = 1;
     string orderOrgName = 2;
@@ -27,13 +25,4 @@ message ChannelList {
     string orgName = 2;
     string orgUser = 3;
     string peerName = 4;
-}
-
-service Channel {
-    rpc Create (ChannelCreate) returns (String) {
-    }
-    rpc Join (ChannelJoin) returns (String) {
-    }
-    rpc List (ChannelList) returns (StringArr) {
-    }
 }

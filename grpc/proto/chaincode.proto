@@ -2,7 +2,15 @@ syntax = "proto3";
 
 package proto;
 
-import "grpc/proto/result.proto";
+message ChainCodeInfo {
+    string name = 1;
+    string version = 2;
+    string path = 3;
+    string input = 4;
+    string escc = 5;
+    string vscc = 6;
+    bytes id = 7;
+}
 
 message CCList {
     repeated ChainCodeInfo data = 1;
@@ -25,19 +33,59 @@ message Installed {
     string peerName = 4;
 }
 
-message ChainCodeInfo {
-    string name = 1;
-    string version = 2;
-    string path = 3;
-    string input = 4;
-    string escc = 5;
-    string vscc = 6;
-    bytes id = 7;
+message Instantiate {
+    string configID = 1;
+    string orderOrgName = 2;
+    string orgUser = 3;
+    string channelID = 4;
+    string name = 5;
+    string path = 6;
+    string version = 7;
+    repeated string orgPolicies = 8;
+    repeated bytes args = 9;
 }
 
-service ChainCode {
-    rpc InstallCC (Install) returns (String) {
-    }
-    rpc InstalledCC (Installed) returns (CCList) {
-    }
+message Instantiated {
+    string configID = 1;
+    string orderOrgName = 2;
+    string orgUser = 3;
+    string channelID = 4;
+    string name = 5;
+    string path = 6;
+    string version = 7;
+    repeated string orgPolicies = 8;
+    repeated bytes args = 9;
+}
+
+message Upgrade {
+    string configID = 1;
+    string orderOrgName = 2;
+    string orgUser = 3;
+    string channelID = 4;
+    string name = 5;
+    string path = 6;
+    string version = 7;
+    repeated string orgPolicies = 8;
+    repeated bytes args = 9;
+}
+
+message Invoke {
+    string configID = 1;
+    string channelID = 2;
+    string chainCodeID = 3;
+    string orgName = 4;
+    string orgUser = 5;
+    string fcn = 6;
+    repeated bytes args = 7;
+}
+
+message Query {
+    string configID = 1;
+    string channelID = 2;
+    string chainCodeID = 3;
+    string orgName = 4;
+    string orgUser = 5;
+    string fcn = 6;
+    repeated bytes args = 7;
+    repeated string targetEndpoints = 8;
 }

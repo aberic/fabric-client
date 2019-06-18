@@ -18,7 +18,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type String struct {
 	Data                 string   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
@@ -98,19 +98,61 @@ func (m *StringArr) GetData() []string {
 	return nil
 }
 
+type Bytes struct {
+	Payload              []byte   `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Bytes) Reset()         { *m = Bytes{} }
+func (m *Bytes) String() string { return proto.CompactTextString(m) }
+func (*Bytes) ProtoMessage()    {}
+func (*Bytes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dd050a8ca4934905, []int{2}
+}
+
+func (m *Bytes) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Bytes.Unmarshal(m, b)
+}
+func (m *Bytes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Bytes.Marshal(b, m, deterministic)
+}
+func (m *Bytes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Bytes.Merge(m, src)
+}
+func (m *Bytes) XXX_Size() int {
+	return xxx_messageInfo_Bytes.Size(m)
+}
+func (m *Bytes) XXX_DiscardUnknown() {
+	xxx_messageInfo_Bytes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Bytes proto.InternalMessageInfo
+
+func (m *Bytes) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*String)(nil), "proto.String")
 	proto.RegisterType((*StringArr)(nil), "proto.StringArr")
+	proto.RegisterType((*Bytes)(nil), "proto.Bytes")
 }
 
 func init() { proto.RegisterFile("grpc/proto/result.proto", fileDescriptor_dd050a8ca4934905) }
 
 var fileDescriptor_dd050a8ca4934905 = []byte{
-	// 95 bytes of a gzipped FileDescriptorProto
+	// 120 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0x2f, 0x2a, 0x48,
 	0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x2f, 0x4a, 0x2d, 0x2e, 0xcd, 0x29, 0xd1, 0x03, 0x73,
 	0x84, 0x58, 0xc1, 0x94, 0x92, 0x0c, 0x17, 0x5b, 0x70, 0x49, 0x51, 0x66, 0x5e, 0xba, 0x90, 0x10,
 	0x17, 0x4b, 0x4a, 0x62, 0x49, 0xa2, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x98, 0xad, 0x24,
-	0xcf, 0xc5, 0x09, 0x91, 0x75, 0x2c, 0x2a, 0x42, 0x52, 0xc0, 0x0c, 0x53, 0x90, 0xc4, 0x06, 0x36,
-	0xc5, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x37, 0x4d, 0x84, 0x44, 0x67, 0x00, 0x00, 0x00,
+	0xcf, 0xc5, 0x09, 0x91, 0x75, 0x2c, 0x2a, 0x42, 0x52, 0xc0, 0x0c, 0x57, 0xa0, 0xc8, 0xc5, 0xea,
+	0x54, 0x59, 0x92, 0x5a, 0x2c, 0x24, 0xc1, 0xc5, 0x5e, 0x90, 0x58, 0x99, 0x93, 0x9f, 0x98, 0x02,
+	0x36, 0x80, 0x27, 0x08, 0xc6, 0x4d, 0x62, 0x03, 0x5b, 0x64, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff,
+	0xf2, 0xb3, 0x82, 0x53, 0x8a, 0x00, 0x00, 0x00,
 }
