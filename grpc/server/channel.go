@@ -26,27 +26,27 @@ import (
 type ChannelServer struct {
 }
 
-func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.Result, error) {
+func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.String, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Create(in.OrderOrgName, in.OrgName, in.OrgUser, in.ChannelID, in.ChannelConfigPath, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.Result{Data: res.Data.(string)}, nil
+		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)
 }
 
-func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.Result, error) {
+func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.String, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Join(in.OrderName, in.OrgName, in.OrgUser, in.ChannelID, in.PeerUrl, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.Result{Data: res.Data.(string)}, nil
+		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)
 }
 
-func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.ResultArr, error) {
+func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.StringArr, error) {
 	var (
 		res        *response.Result
 		channelArr *sdk.ChannelArr
@@ -58,7 +58,7 @@ func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.Resul
 		for index := range channels {
 			data[index] = channels[index].ChannelId
 		}
-		return &pb.ResultArr{Data: data}, nil
+		return &pb.StringArr{Data: data}, nil
 	}
 	return nil, errors.New(res.Msg)
 }

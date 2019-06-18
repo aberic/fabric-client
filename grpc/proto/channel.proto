@@ -30,10 +30,10 @@ message ChannelList {
 }
 
 service Channel {
-    rpc Create (ChannelCreate) returns (Result) {
+    rpc Create (ChannelCreate) returns (String) {
     }
-    rpc Join (ChannelJoin) returns (Result) {
+    rpc Join (ChannelJoin) returns (String) {
     }
-    rpc List (ChannelList) returns (ResultArr) {
+    rpc List (ChannelList) returns (StringArr) {
     }
 }

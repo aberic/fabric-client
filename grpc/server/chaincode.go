@@ -26,12 +26,12 @@ import (
 type ChainCodeServer struct {
 }
 
-func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Result, error) {
+func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.String, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Install(in.OrderOrgName, in.OrgUser, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.Result{Data: res.Data.(string)}, nil
+		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)
 }

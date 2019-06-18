@@ -20,78 +20,78 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Result struct {
-	Data                 string   `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+type String struct {
+	Data                 string   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Result) Reset()         { *m = Result{} }
-func (m *Result) String() string { return proto.CompactTextString(m) }
-func (*Result) ProtoMessage()    {}
-func (*Result) Descriptor() ([]byte, []int) {
+func (m *String) Reset()         { *m = String{} }
+func (m *String) String() string { return proto.CompactTextString(m) }
+func (*String) ProtoMessage()    {}
+func (*String) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd050a8ca4934905, []int{0}
 }
 
-func (m *Result) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Result.Unmarshal(m, b)
+func (m *String) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_String.Unmarshal(m, b)
 }
-func (m *Result) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Result.Marshal(b, m, deterministic)
+func (m *String) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_String.Marshal(b, m, deterministic)
 }
-func (m *Result) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Result.Merge(m, src)
+func (m *String) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_String.Merge(m, src)
 }
-func (m *Result) XXX_Size() int {
-	return xxx_messageInfo_Result.Size(m)
+func (m *String) XXX_Size() int {
+	return xxx_messageInfo_String.Size(m)
 }
-func (m *Result) XXX_DiscardUnknown() {
-	xxx_messageInfo_Result.DiscardUnknown(m)
+func (m *String) XXX_DiscardUnknown() {
+	xxx_messageInfo_String.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Result proto.InternalMessageInfo
+var xxx_messageInfo_String proto.InternalMessageInfo
 
-func (m *Result) GetData() string {
+func (m *String) GetData() string {
 	if m != nil {
 		return m.Data
 	}
 	return ""
 }
 
-type ResultArr struct {
-	Data                 []string `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`
+type StringArr struct {
+	Data                 []string `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ResultArr) Reset()         { *m = ResultArr{} }
-func (m *ResultArr) String() string { return proto.CompactTextString(m) }
-func (*ResultArr) ProtoMessage()    {}
-func (*ResultArr) Descriptor() ([]byte, []int) {
+func (m *StringArr) Reset()         { *m = StringArr{} }
+func (m *StringArr) String() string { return proto.CompactTextString(m) }
+func (*StringArr) ProtoMessage()    {}
+func (*StringArr) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd050a8ca4934905, []int{1}
 }
 
-func (m *ResultArr) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ResultArr.Unmarshal(m, b)
+func (m *StringArr) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StringArr.Unmarshal(m, b)
 }
-func (m *ResultArr) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ResultArr.Marshal(b, m, deterministic)
+func (m *StringArr) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StringArr.Marshal(b, m, deterministic)
 }
-func (m *ResultArr) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ResultArr.Merge(m, src)
+func (m *StringArr) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StringArr.Merge(m, src)
 }
-func (m *ResultArr) XXX_Size() int {
-	return xxx_messageInfo_ResultArr.Size(m)
+func (m *StringArr) XXX_Size() int {
+	return xxx_messageInfo_StringArr.Size(m)
 }
-func (m *ResultArr) XXX_DiscardUnknown() {
-	xxx_messageInfo_ResultArr.DiscardUnknown(m)
+func (m *StringArr) XXX_DiscardUnknown() {
+	xxx_messageInfo_StringArr.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ResultArr proto.InternalMessageInfo
+var xxx_messageInfo_StringArr proto.InternalMessageInfo
 
-func (m *ResultArr) GetData() []string {
+func (m *StringArr) GetData() []string {
 	if m != nil {
 		return m.Data
 	}
@@ -99,18 +99,18 @@ func (m *ResultArr) GetData() []string {
 }
 
 func init() {
-	proto.RegisterType((*Result)(nil), "proto.Result")
-	proto.RegisterType((*ResultArr)(nil), "proto.ResultArr")
+	proto.RegisterType((*String)(nil), "proto.String")
+	proto.RegisterType((*StringArr)(nil), "proto.StringArr")
 }
 
 func init() { proto.RegisterFile("grpc/proto/result.proto", fileDescriptor_dd050a8ca4934905) }
 
 var fileDescriptor_dd050a8ca4934905 = []byte{
-	// 92 bytes of a gzipped FileDescriptorProto
+	// 95 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0x2f, 0x2a, 0x48,
 	0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x2f, 0x4a, 0x2d, 0x2e, 0xcd, 0x29, 0xd1, 0x03, 0x73,
-	0x84, 0x58, 0xc1, 0x94, 0x92, 0x0c, 0x17, 0x5b, 0x10, 0x58, 0x58, 0x48, 0x88, 0x8b, 0x25, 0x25,
-	0xb1, 0x24, 0x51, 0x82, 0x59, 0x81, 0x51, 0x83, 0x33, 0x08, 0xcc, 0x56, 0x92, 0xe7, 0xe2, 0x84,
-	0xc8, 0x3a, 0x16, 0x15, 0x21, 0x29, 0x60, 0x86, 0x29, 0x48, 0x62, 0x03, 0x9b, 0x62, 0x0c, 0x08,
-	0x00, 0x00, 0xff, 0xff, 0x2d, 0xab, 0x8a, 0x5f, 0x67, 0x00, 0x00, 0x00,
+	0x84, 0x58, 0xc1, 0x94, 0x92, 0x0c, 0x17, 0x5b, 0x70, 0x49, 0x51, 0x66, 0x5e, 0xba, 0x90, 0x10,
+	0x17, 0x4b, 0x4a, 0x62, 0x49, 0xa2, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x98, 0xad, 0x24,
+	0xcf, 0xc5, 0x09, 0x91, 0x75, 0x2c, 0x2a, 0x42, 0x52, 0xc0, 0x0c, 0x53, 0x90, 0xc4, 0x06, 0x36,
+	0xc5, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x37, 0x4d, 0x84, 0x44, 0x67, 0x00, 0x00, 0x00,
 }

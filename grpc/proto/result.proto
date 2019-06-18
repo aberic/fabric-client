@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package proto;
 
-message Result {
-    string data = 3;
+message String {
+    string data = 1;
 }
 
-message ResultArr {
-    repeated string data = 3;
+message StringArr {
+    repeated string data = 1;
 }
