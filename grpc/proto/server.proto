@@ -34,8 +34,12 @@ service ChainCode {
 }
 
 service Ledger {
-    rpc QueryChannelInfo (ReqInfo) returns (ChannelInfo) {
+    rpc QueryLedgerInfo (ReqInfo) returns (ChannelInfo) {
     }
-    rpc QueryChannelBlockByHeight (ReqBlockByHeight) returns (Block) {
+    rpc QueryLedgerBlockByHeight (ReqBlockByHeight) returns (Block) {
+    }
+    rpc QueryLedgerBlockByHash (ReqBlockByHash) returns (Block) {
+    }
+    rpc QueryLedgerBlockByTxID (ReqBlockByTxID) returns (Block) {
     }
 }

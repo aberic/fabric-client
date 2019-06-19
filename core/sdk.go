@@ -16,14 +16,18 @@
 package sdk
 
 import (
+	"errors"
 	"fmt"
+	config2 "github.com/ennoo/fabric-go-client/config"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/ennoo/rivet/utils/log"
+	"github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	"strings"
 )
 
 // setupAndRun enables testing an end-to-end scenario against the supplied SDK options
@@ -416,4 +420,48 @@ func resMgmtClient(ordererOrgName, orgUser string, configBytes []byte, sdkOpts .
 		return nil, nil, fmt.Errorf("Failed to create channel management client: " + err.Error())
 	}
 	return resMgmtClient, sdk, nil
+}
+
+func get(channelID string, conf *config2.Config) (orgName, userName string, err error) {
+	var (
+		peerName string
+	)
+	channel := conf.Channels[channelID]
+
+	for name, peer := range channel.Peers {
+		if !peer.LedgerQuery {
+			continue
+		}
+		peerName = name
+		break
+	}
+	if str.IsEmpty(peerName) {
+		err = errors.New("peer is nil")
+		return
+	}
+
+	for oName, orgItf := range conf.Organizations {
+		if org, ok := orgItf.(config2.Org); ok {
+			have := false
+			for _, pName := range org.Peers {
+				if peerName == pName {
+					orgName = oName
+					have = true
+					break
+				}
+			}
+			if have {
+				str1 := strings.Split(org.CryptoPath, "@")
+				str2 := strings.Split(str1[0], "/")
+				userName = str2[len(str2)-1]
+				break
+			}
+		}
+	}
+
+	if str.IsEmpty(orgName) {
+		err = errors.New("org is nil")
+		return
+	}
+	return
 }

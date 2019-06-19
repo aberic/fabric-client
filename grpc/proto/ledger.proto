@@ -15,6 +15,18 @@ message ReqBlockByHeight {
     int64 height = 3;
 }
 
+message ReqBlockByHash {
+    string configID = 1;
+    string channelID = 2;
+    string hash = 3;
+}
+
+message ReqBlockByTxID {
+    string configID = 1;
+    string channelID = 2;
+    string txID = 3;
+}
+
 message ChannelInfo {
     string endorser = 1;
     int32 status = 2;
