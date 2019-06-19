@@ -15,6 +15,7 @@
 package sdk
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/ennoo/fabric-go-client/config"
 	"github.com/ennoo/rivet/utils/log"
@@ -67,7 +68,8 @@ func TestQueryLedgerBlockByHash(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByHash("mychannel", "Org1", "Admin", []byte{}, confData)
+	hash, _ := hex.DecodeString("19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4")
+	result := QueryLedgerBlockByHash("mychannel", "Org1", "Admin", hash, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -254,8 +256,8 @@ func TestDiscoveryClientEndorsersPeers(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",

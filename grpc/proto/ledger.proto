@@ -1,0 +1,160 @@
+syntax = "proto3";
+
+package proto;
+
+import "vendor/github.com/hyperledger/fabric/protos/ledger/rwset/kvrwset/kv_rwset.proto";
+import "vendor/github.com/hyperledger/fabric/protos/peer/chaincode.proto";
+
+message ReqInfo {
+    string configID = 1;
+    string channelID = 2;
+}
+
+message ReqBlockByHeight {
+    string configID = 1;
+    string channelID = 2;
+    int64 height = 3;
+}
+
+message ChannelInfo {
+    string endorser = 1;
+    int32 status = 2;
+    BCI bci = 3;
+}
+
+message BCI {
+    uint64 height = 1;
+    string currentBlockHash = 2;
+    string previousBlockHash = 3;
+}
+
+message Block {
+    BlockHeader header = 2;
+    BlockMetadata metadata = 4;
+    repeated Envelope envelopes = 5;
+}
+
+message BlockHeader {
+    uint64 blockNumber = 1;
+    string previousHash = 2;
+    string dataHash = 3;
+    int64 envelopeCount = 4;
+}
+
+message Envelope {
+    string channelID = 1;
+    int32 type = 2;
+    int32 version = 3;
+    Timestamp timestamp = 4;
+    string transactionID = 5;
+    uint64 epoch = 6;
+    string extension = 7;
+    string tlsCertHash = 8;
+    Transaction transactionEnvelopeInfo = 9;
+    string createID = 10;
+    string mspID = 11;
+    string nonce = 12;
+    string signature = 13;
+    ChainCodeHeaderExtension chainCode = 14;
+}
+
+message Transaction {
+    int64 txCount = 1;
+    repeated Action transactionActionInfoArray = 2;
+}
+
+message Action {
+    ChainCodeActionPayload chainCodeActionPayload = 1;
+}
+
+message ChainCodeAction {
+    ChainCodeID chainCodeID = 1;
+    TxRwSet txRwSet = 2;
+    ChainCodeEvent event = 3;
+    Response response = 4;
+}
+
+message TxRwSet {
+    repeated NsRwSets nsRwSets = 1;
+}
+
+message NsRwSets {
+    string nameSpace = 1;
+    kvrwset.KVRWSet KVRWSet = 2;
+}
+
+message ChainCodeEvent {
+    string chainCodeID = 1;
+    string transactionID = 2;
+    string eventName = 3;
+    string payload = 4;
+}
+
+message Response {
+    int32 Status = 1;
+    string Message = 2;
+    string Payload = 3;
+}
+
+message ChainCodeActionPayload {
+    protos.ChaincodeInvocationSpec chainCodeProposalPayload = 1;
+    ChainCodeEndorsedAction chainCodeEndorsedAction = 2;
+}
+
+message ChainCodeEndorsedAction {
+    ProposalResponsePayload proposalResponsePayload = 1;
+    repeated Endorsement endorsements = 2;
+}
+
+message ProposalResponsePayload {
+    string proposalHash = 1;
+    ChainCodeAction chainCodeAction = 2;
+}
+
+message Endorsement {
+    string createID = 1;
+    string mspID = 2;
+    string signature = 3;
+}
+
+message ChainCodeHeaderExtension {
+    string payloadVisibility = 1;
+    ChainCodeID chainCodeID = 2;
+}
+
+message ChainCodeID {
+    string path = 1;
+    string name = 2;
+    string version = 3;
+}
+
+message Timestamp {
+    int64 seconds = 1;
+    int32 nanos = 2;
+}
+
+message Payload {
+    ChannelHandler channelHandler = 1;
+    SignatureHeader signatureHeader = 2;
+    Transaction transaction = 3;
+}
+
+message ChannelHandler {
+    string channelID = 1;
+    int32 type = 2;
+    int32 version = 3;
+    Timestamp timestamp = 4;
+    string txID = 5;
+    uint64 epoch = 6;
+    string extension = 7;
+    string tlsCertHash = 8;
+}
+
+message SignatureHeader {
+    string creator = 1;
+    string nonce = 2;
+}
+
+message BlockMetadata {
+    repeated string metadata = 1;
+}

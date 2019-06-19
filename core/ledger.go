@@ -16,23 +16,13 @@
 package sdk
 
 import (
+	"encoding/hex"
+	pb "github.com/ennoo/fabric-go-client/grpc/proto"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 )
-
-type Info struct {
-	BCI      BCI
-	Endorser string
-	Status   int32
-}
-
-type BCI struct {
-	height            int64
-	currentBlockHash  string
-	previousBlockHash string
-}
 
 func queryLedgerInfo(channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
@@ -43,7 +33,16 @@ func queryLedgerInfo(channelProvider ctx.ChannelProvider) *response.Result {
 		if ledgerInfo, err := client.QueryInfo(); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(ledgerInfo)
+			info := &pb.ChannelInfo{
+				Endorser: ledgerInfo.Endorser,
+				Status:   ledgerInfo.Status,
+				Bci: &pb.BCI{
+					Height:            ledgerInfo.BCI.Height,
+					CurrentBlockHash:  hex.EncodeToString(ledgerInfo.BCI.CurrentBlockHash),
+					PreviousBlockHash: hex.EncodeToString(ledgerInfo.BCI.PreviousBlockHash),
+				},
+			}
+			result.Success(info)
 		}
 	}
 	return &result
@@ -55,10 +54,10 @@ func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if block, err := client.QueryBlock(height); nil != err {
+		if commonBlock, err := client.QueryBlock(height); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(block)
+			result.Success(parseBlock(commonBlock))
 		}
 	}
 	return &result
@@ -70,10 +69,10 @@ func queryLedgerBlockByHash(hash []byte, channelProvider ctx.ChannelProvider) *r
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if block, err := client.QueryBlockByHash(hash); nil != err {
+		if commonBlock, err := client.QueryBlockByHash(hash); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(block)
+			result.Success(commonBlock)
 		}
 	}
 	return &result

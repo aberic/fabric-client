@@ -5,6 +5,7 @@ package proto;
 import "grpc/proto/result.proto";
 import "grpc/proto/channel.proto";
 import "grpc/proto/chaincode.proto";
+import "grpc/proto/ledger.proto";
 
 service Channel {
     rpc Create (ChannelCreate) returns (String) {
@@ -29,5 +30,12 @@ service ChainCode {
     rpc InvokeCC (Invoke) returns (Bytes) {
     }
     rpc QueryCC (Query) returns (Bytes) {
+    }
+}
+
+service Ledger {
+    rpc QueryChannelInfo (ReqInfo) returns (ChannelInfo) {
+    }
+    rpc QueryChannelBlockByHeight (ReqBlockByHeight) returns (Block) {
     }
 }
