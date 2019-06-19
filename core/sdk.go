@@ -89,7 +89,7 @@ func QueryLedgerBlockByHeight(channelID, orgName, orgUser string, height uint64,
 	return queryLedgerBlockByHeight(height, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHash(channelID, orgName, orgUser string, hash, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHash(channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {

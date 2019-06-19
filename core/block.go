@@ -5,6 +5,7 @@ import (
 	pb "github.com/ennoo/fabric-go-client/grpc/proto"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/rwsetutil"
+	"github.com/hyperledger/fabric/core/ledger/util"
 	com "github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/protos/msp"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -15,9 +16,15 @@ import (
 
 func parseBlock(commonBlock *common.Block) *pb.Block {
 	envelopeSize := len(commonBlock.Data.Data)
-	strInt32 := strconv.Itoa(envelopeSize)
-	envelopeCount, _ := strconv.ParseInt(strInt32, 10, 64)
+	strInt := strconv.Itoa(envelopeSize)
+	envelopeCount, _ := strconv.ParseInt(strInt, 10, 64)
 	envelopes := make([]*pb.Envelope, envelopeCount)
+
+	metadata := make([]string, len(commonBlock.Metadata.Metadata))
+	for index, md := range commonBlock.Metadata.Metadata {
+		metadata[index] = string(md)
+	}
+	flags := util.TxValidationFlags(metadata[common.BlockMetadataIndex_TRANSACTIONS_FILTER])
 
 	for index, d := range commonBlock.Data.Data {
 		envelope, _ := utils.GetEnvelopeFromBlock(d)
@@ -28,16 +35,13 @@ func parseBlock(commonBlock *common.Block) *pb.Block {
 		chainCodeHeaderExtension, _ := utils.GetChaincodeHeaderExtension(payload.Header)
 		//signedData, _ := protoutil.EnvelopeAsSignedData(envelopes)
 
+		isValid := !flags.IsInvalid(index)
 		envelopeInfo := parseEnvelope(channelHeader, signatureHeader, transaction)
 		envelopeInfo.Signature = hex.EncodeToString(envelope.Signature)
 		envelopeInfo.ChainCode = parseChainCode(chainCodeHeaderExtension)
+		envelopeInfo.IsValid = isValid
 
 		envelopes[index] = envelopeInfo
-	}
-
-	metadata := make([]string, len(commonBlock.Metadata.Metadata))
-	for index, md := range commonBlock.Metadata.Metadata {
-		metadata[index] = string(md)
 	}
 
 	block := &pb.Block{
@@ -60,7 +64,7 @@ func parseEnvelope(channelHeader *com.ChannelHeader, signatureHeader *com.Signat
 	serializedIdentity, _ := serializedIdentity(signatureHeader.Creator)
 	return &pb.Envelope{
 		ChannelID: channelHeader.ChannelId,
-		Type:      channelHeader.Type,
+		Type:      headerType(channelHeader.Type),
 		Version:   channelHeader.Version,
 		Timestamp: &pb.Timestamp{
 			Seconds: channelHeader.Timestamp.Seconds,
@@ -80,6 +84,29 @@ func parseEnvelope(channelHeader *com.ChannelHeader, signatureHeader *com.Signat
 	}
 }
 
+func headerType(ht int32) string {
+	switch ht {
+	case 0: // Used for messages which are signed but opaque
+		return "MESSAGE"
+	case 1:
+		return "CONFIG" // Used for messages which express the channel config
+	case 2:
+		return "CONFIG_UPDATE" // Used for transactions which update the channel config
+	case 3:
+		return "ENDORSER_TRANSACTION" // Used by the SDK to submit endorser based transactions
+	case 4:
+		return "ORDERER_TRANSACTION" // Used internally by the orderer for management
+	case 5:
+		return "DELIVER_SEEK_INFO" // Used as the type for Envelope messages submitted to instruct the Deliver API to seek
+	case 6:
+		return "CHAINCODE_PACKAGE" // Used for packaging chaincode artifacts for install
+	case 8:
+		return "PEER_ADMIN_OPERATION" // Used for invoking an administrative operation on a peer
+	default:
+		return "TOKEN_TRANSACTION" // Used to denote transactions that invoke token management operations
+	}
+}
+
 func parseChainCode(chainCode *peer.ChaincodeHeaderExtension) *pb.ChainCodeHeaderExtension {
 	return &pb.ChainCodeHeaderExtension{
 		PayloadVisibility: string(chainCode.PayloadVisibility),
@@ -93,8 +120,8 @@ func parseChainCode(chainCode *peer.ChaincodeHeaderExtension) *pb.ChainCodeHeade
 
 func parseTransactionActionInfoArray(transaction *peer.Transaction) ([]*pb.Action, int64) {
 	actionSize := len(transaction.Actions)
-	strInt32 := strconv.Itoa(actionSize)
-	actionCount, _ := strconv.ParseInt(strInt32, 10, 64)
+	strInt := strconv.Itoa(actionSize)
+	actionCount, _ := strconv.ParseInt(strInt, 10, 64)
 
 	transactionActionInfoArray := make([]*pb.Action, actionCount)
 	for index, a := range transaction.Actions {
@@ -141,14 +168,48 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 	if err := txRWSet.FromProtoBytes(chainCode.Results); err != nil {
 		return nil, err
 	}
+	rwCount := 0
 	nsRwSets := make([]*pb.NsRwSets, len(txRWSet.NsRwSets))
 	for index, ns := range txRWSet.NsRwSets {
+		readCount := len(ns.KvRwSet.Reads)
+		writeCount := len(ns.KvRwSet.Writes)
+		rwCount += readCount
+		rwCount += writeCount
+
+		reads := make([]*pb.KVRead, readCount)
+		for i, r := range ns.KvRwSet.Reads {
+			reads[i] = &pb.KVRead{
+				Key: r.Key,
+				Version: &pb.Version{
+					BlockNum: r.Version.BlockNum,
+					TxNum:    r.Version.TxNum,
+				},
+			}
+		}
+
+		writes := make([]*pb.KVWrite, writeCount)
+		for i, w := range ns.KvRwSet.Writes {
+			writes[i] = &pb.KVWrite{
+				Key:      w.Key,
+				IsDelete: w.IsDelete,
+				Value:    string(w.Value),
+			}
+		}
+
 		nsRwSets[index] = &pb.NsRwSets{
 			NameSpace: ns.NameSpace,
-			KVRWSet:   ns.KvRwSet,
+			KVRWSet: &pb.KVRWSet{
+				Reads:            reads,
+				Writes:           writes,
+				RangeQueriesInfo: ns.KvRwSet.RangeQueriesInfo,
+				MetadataWrites:   ns.KvRwSet.MetadataWrites,
+			},
 		}
 	}
+	strInt := strconv.Itoa(rwCount)
+	rwCount64, _ := strconv.ParseInt(strInt, 10, 64)
 	pbTxRwSet := &pb.TxRwSet{
+		RwCount:  rwCount64,
 		NsRwSets: nsRwSets,
 	}
 	return &pb.ChainCodeAction{
@@ -180,7 +241,7 @@ func serializedIdentity(bytes []byte) (*msp.SerializedIdentity, error) {
 	return serializedIdentity, nil
 }
 
-func chainCodeInvocationSpec(payload *peer.ChaincodeActionPayload) (*peer.ChaincodeInvocationSpec, error) {
+func chainCodeInvocationSpec(payload *peer.ChaincodeActionPayload) (*pb.ChainCodeInvocationSpec, error) {
 	var (
 		cpp *peer.ChaincodeProposalPayload
 		err error
@@ -192,5 +253,37 @@ func chainCodeInvocationSpec(payload *peer.ChaincodeActionPayload) (*peer.Chainc
 	if err := proto.Unmarshal(cpp.Input, cis); err != nil {
 		return nil, err
 	}
-	return cis, nil
+	args := make([]string, len(cis.ChaincodeSpec.Input.Args))
+	for index, arg := range cis.ChaincodeSpec.Input.Args {
+		args[index] = string(arg)
+	}
+	return &pb.ChainCodeInvocationSpec{
+		ChainCodeSpec: &pb.ChainCodeSpec{
+			Type: ccType(cis.ChaincodeSpec.Type),
+			ChainCodeID: &pb.ChainCodeID{
+				Name:    cis.ChaincodeSpec.ChaincodeId.Name,
+				Path:    cis.ChaincodeSpec.ChaincodeId.Path,
+				Version: cis.ChaincodeSpec.ChaincodeId.Version,
+			},
+			Input: &pb.ChainCodeInput{
+				Args: args,
+			},
+			Timeout: cis.ChaincodeSpec.Timeout,
+		},
+	}, nil
+}
+
+func ccType(tp peer.ChaincodeSpec_Type) string {
+	switch tp {
+	case peer.ChaincodeSpec_GOLANG:
+		return "GOLANG"
+	case peer.ChaincodeSpec_NODE:
+		return "NODE"
+	case peer.ChaincodeSpec_CAR:
+		return "CAR"
+	case peer.ChaincodeSpec_JAVA:
+		return "JAVA"
+	default:
+		return "UNDEFINED"
+	}
 }

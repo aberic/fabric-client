@@ -63,16 +63,20 @@ func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider
 	return &result
 }
 
-func queryLedgerBlockByHash(hash []byte, channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerBlockByHash(hash string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if commonBlock, err := client.QueryBlockByHash(hash); nil != err {
+		if realHash, err := hex.DecodeString(hash); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(commonBlock)
+			if commonBlock, err := client.QueryBlockByHash(realHash); nil != err {
+				result.FailErr(err)
+			} else {
+				result.Success(parseBlock(commonBlock))
+			}
 		}
 	}
 	return &result
@@ -84,10 +88,10 @@ func queryLedgerBlockByTxID(txID string, channelProvider ctx.ChannelProvider) *r
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if block, err := client.QueryBlockByTxID(fab.TransactionID(txID)); nil != err {
+		if commonBlock, err := client.QueryBlockByTxID(fab.TransactionID(txID)); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(block)
+			result.Success(parseBlock(commonBlock))
 		}
 	}
 	return &result

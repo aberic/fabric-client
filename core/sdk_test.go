@@ -15,7 +15,6 @@
 package sdk
 
 import (
-	"encoding/hex"
 	"fmt"
 	"github.com/ennoo/fabric-go-client/config"
 	"github.com/ennoo/rivet/utils/log"
@@ -68,8 +67,7 @@ func TestQueryLedgerBlockByHash(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	hash, _ := hex.DecodeString("19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4")
-	result := QueryLedgerBlockByHash("mychannel", "Org1", "Admin", hash, confData)
+	result := QueryLedgerBlockByHash("mychannel", "Org1", "Admin", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -79,7 +77,7 @@ func TestQueryLedgerBlockByTxID(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByTxID("mychannel", "Org1", "Admin", "", confData)
+	result := QueryLedgerBlockByTxID("mychannel", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -89,7 +87,7 @@ func TestQueryLedgerTransaction(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerTransaction("mychannel", "Org1", "Admin", "", confData)
+	result := QueryLedgerTransaction("mychannel", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -256,8 +254,8 @@ func TestDiscoveryClientEndorsersPeers(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",

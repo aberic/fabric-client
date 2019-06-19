@@ -3,7 +3,6 @@ syntax = "proto3";
 package proto;
 
 import "vendor/github.com/hyperledger/fabric/protos/ledger/rwset/kvrwset/kv_rwset.proto";
-import "vendor/github.com/hyperledger/fabric/protos/peer/chaincode.proto";
 
 message ReqInfo {
     string configID = 1;
@@ -43,7 +42,7 @@ message BlockHeader {
 
 message Envelope {
     string channelID = 1;
-    int32 type = 2;
+    string type = 2;
     int32 version = 3;
     Timestamp timestamp = 4;
     string transactionID = 5;
@@ -56,6 +55,7 @@ message Envelope {
     string nonce = 12;
     string signature = 13;
     ChainCodeHeaderExtension chainCode = 14;
+    bool isValid = 15;
 }
 
 message Transaction {
@@ -75,12 +75,46 @@ message ChainCodeAction {
 }
 
 message TxRwSet {
-    repeated NsRwSets nsRwSets = 1;
+    int64 rwCount = 1;
+    repeated NsRwSets nsRwSets = 2;
 }
 
 message NsRwSets {
     string nameSpace = 1;
-    kvrwset.KVRWSet KVRWSet = 2;
+    KVRWSet KVRWSet = 2;
+}
+
+message KVRWSet {
+    repeated KVRead reads = 1;
+    repeated kvrwset.RangeQueryInfo rangeQueriesInfo = 2;
+    repeated KVWrite writes = 3;
+    repeated kvrwset.KVMetadataWrite metadataWrites = 4;
+}
+
+message KVRead {
+    string key = 1;
+    Version version = 2;
+}
+
+message Version {
+    uint64 blockNum = 1;
+    uint64 txNum = 2;
+}
+
+message KVWrite {
+    string key = 1;
+    bool isDelete = 2;
+    string value = 3;
+}
+
+message KVMetadataWrite {
+    string key = 1;
+    repeated KVMetadataEntry entries = 2;
+}
+
+message KVMetadataEntry {
+    string name = 1;
+    bytes value = 2;
 }
 
 message ChainCodeEvent {
@@ -97,8 +131,23 @@ message Response {
 }
 
 message ChainCodeActionPayload {
-    protos.ChaincodeInvocationSpec chainCodeProposalPayload = 1;
+    ChainCodeInvocationSpec chainCodeProposalPayload = 1;
     ChainCodeEndorsedAction chainCodeEndorsedAction = 2;
+}
+
+message ChainCodeInvocationSpec {
+    ChainCodeSpec chainCodeSpec = 1;
+}
+
+message ChainCodeSpec {
+    string type = 1;
+    ChainCodeID chainCodeID = 2;
+    ChainCodeInput input = 3;
+    int32 timeout = 4;
+}
+
+message ChainCodeInput {
+    repeated string args = 1;
 }
 
 message ChainCodeEndorsedAction {
