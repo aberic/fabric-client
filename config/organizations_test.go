@@ -31,19 +31,19 @@ func TestNewOrganizations(t *testing.T) {
 	fmt.Printf("--- kfk dump:\n%s\n\n", string(organizationsData))
 }
 
-func TGetOrganizations() map[string]interface{} {
-	return map[string]interface{}{
-		"ordererorg": &OrdererOrg{
+func TGetOrganizations() map[string]*Organization {
+	return map[string]*Organization{
+		"ordererorg": &Organization{
 			MspID:      "OrdererMSP",
 			CryptoPath: "/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp",
 		},
-		"Org1": &Org{
+		"Org1": &Organization{
 			MspID:                  "Org1MSP",
 			CryptoPath:             "/fabric/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp",
 			Peers:                  []string{"peer0.org1.example.com", "peer1.org1.example.com"},
 			CertificateAuthorities: []string{"ca.org1.example.com"},
 		},
-		"Org2": &Org{
+		"Org2": &Organization{
 			MspID:                  "Org1MSP",
 			CryptoPath:             "/fabric/crypto-config/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp",
 			Peers:                  []string{"peer0.org2.example.com", "peer1.org2.example.com"},

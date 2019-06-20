@@ -68,7 +68,7 @@ type ClientBCCSPSecurity struct {
 	Default       *ClientBCCSPSecurityDefault `yaml:"default"`
 	HashAlgorithm string                      `yaml:"hashAlgorithm"`
 	SoftVerify    bool                        `yaml:"softVerify"`
-	Level         int                         `yaml:"level"`
+	Level         int32                       `yaml:"level"`
 }
 
 type ClientBCCSPSecurityDefault struct {

@@ -512,9 +512,8 @@ func get(configID, channelID string) (orgName, orgUser string, err error) {
 		if oName == config2.OrderOrgKey {
 			continue
 		}
-		org := orgItf.(*config2.Org)
 		have := false
-		for _, pName := range org.Peers {
+		for _, pName := range orgItf.Peers {
 			if peerName == pName {
 				orgName = oName
 				have = true
@@ -522,7 +521,7 @@ func get(configID, channelID string) (orgName, orgUser string, err error) {
 			}
 		}
 		if have {
-			str1 := strings.Split(org.CryptoPath, "@")
+			str1 := strings.Split(orgItf.CryptoPath, "@")
 			str2 := strings.Split(str1[0], "/")
 			orgUser = str2[len(str2)-1]
 			break

@@ -33,27 +33,27 @@ type Policy struct {
 }
 
 type PolicyQueryChannelConfig struct {
-	MinResponses int                    `yaml:"minResponses"`
-	MaxTargets   int                    `yaml:"maxTargets"`
+	MinResponses int32                  `yaml:"minResponses"`
+	MaxTargets   int32                  `yaml:"maxTargets"`
 	RetryOpts    *PolicyCommonRetryOpts `yaml:"retryOpts"`
 }
 
 type PolicyCommonRetryOpts struct {
-	Attempts       int     `yaml:"attempts"`
+	Attempts       int32   `yaml:"attempts"`
 	InitialBackOff string  `yaml:"initialBackoff"`
 	MaxBackOff     string  `yaml:"maxBackoff"`
 	BackOffFactor  float32 `yaml:"backoffFactor"`
 }
 
 type PolicyDiscovery struct {
-	MaxTargets int                    `yaml:"maxTargets"`
+	MaxTargets int32                  `yaml:"maxTargets"`
 	RetryOpts  *PolicyCommonRetryOpts `yaml:"retryOpts"`
 }
 
 type PolicyEventService struct {
 	ResolverStrategy                 string `yaml:"resolverStrategy"`
 	Balancer                         string `yaml:"balancer"`
-	BlockHeightLagThreshold          int    `yaml:"blockHeightLagThreshold"`
-	ReconnectBlockHeightLagThreshold int    `yaml:"reconnectBlockHeightLagThreshold"`
+	BlockHeightLagThreshold          int64  `yaml:"blockHeightLagThreshold"`
+	ReconnectBlockHeightLagThreshold int64  `yaml:"reconnectBlockHeightLagThreshold"`
 	PeerMonitorPeriod                string `yaml:"peerMonitorPeriod"`
 }

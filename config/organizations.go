@@ -14,14 +14,9 @@
 
 package config
 
-type Org struct {
+type Organization struct {
 	MspID                  string   `yaml:"mspid"`
 	CryptoPath             string   `yaml:"cryptoPath"`
-	Peers                  []string `yaml:"peers"`
-	CertificateAuthorities []string `yaml:"certificateAuthorities"`
-}
-
-type OrdererOrg struct {
-	MspID      string `yaml:"mspID"`
-	CryptoPath string `yaml:"cryptoPath"`
+	Peers                  []string `yaml:"peers,omitempty"`
+	CertificateAuthorities []string `yaml:"certificateAuthorities,omitempty"`
 }

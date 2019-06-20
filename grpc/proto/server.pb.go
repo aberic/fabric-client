@@ -25,35 +25,50 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 func init() { proto.RegisterFile("grpc/proto/server.proto", fileDescriptor_9f9189b3c96cae45) }
 
 var fileDescriptor_9f9189b3c96cae45 = []byte{
-	// 436 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x51, 0x6e, 0xd4, 0x30,
-	0x10, 0x86, 0x03, 0x5a, 0xb6, 0xec, 0xc0, 0x96, 0x6a, 0x0a, 0xb4, 0x18, 0x9e, 0xf2, 0x84, 0xa0,
-	0xda, 0x45, 0x0b, 0x82, 0x47, 0x44, 0x8d, 0x04, 0x81, 0xbe, 0x40, 0xe1, 0x00, 0x21, 0x19, 0x92,
-	0xa8, 0x91, 0x1d, 0x1c, 0xb7, 0xa2, 0x27, 0xe1, 0x0a, 0x5c, 0x8a, 0xbb, 0x20, 0x3b, 0xde, 0x34,
-	0x89, 0x13, 0xa9, 0x4f, 0xd1, 0xfc, 0xff, 0xef, 0x6f, 0xc6, 0x13, 0xc3, 0x41, 0xa6, 0xaa, 0x64,
-	0x5d, 0x29, 0xa9, 0xe5, 0xba, 0x26, 0x75, 0x41, 0x6a, 0x65, 0x0b, 0xbc, 0x65, 0x3f, 0xac, 0xeb,
-	0x2b, 0xaa, 0xcf, 0x4b, 0xdd, 0xf8, 0xec, 0xb0, 0x63, 0x24, 0x79, 0x2c, 0x04, 0x95, 0xce, 0x61,
-	0x7d, 0xa7, 0x10, 0x89, 0x4c, 0x69, 0xe5, 0xe3, 0x4a, 0x4a, 0xb3, 0x6d, 0xbb, 0xcd, 0x9f, 0x1b,
-	0xb0, 0xc3, 0x1b, 0x0c, 0xae, 0x61, 0xce, 0x15, 0xc5, 0x9a, 0xf0, 0x7e, 0xe3, 0xae, 0x9c, 0xd3,
-	0xa8, 0x6c, 0xe9, 0xd4, 0x53, 0xad, 0x0a, 0x91, 0x85, 0x01, 0x3e, 0x87, 0xd9, 0x27, 0x59, 0x08,
-	0xc4, 0x7e, 0xdc, 0x68, 0x7e, 0x78, 0x05, 0xb3, 0x93, 0xa2, 0xd6, 0xc3, 0xb0, 0xd1, 0xd8, 0x5e,
-	0x2f, 0xfc, 0x4e, 0xa9, 0x30, 0xd8, 0xfc, 0xbb, 0x09, 0x0b, 0x6e, 0xae, 0xc1, 0x65, 0x4a, 0x78,
-	0x04, 0x8b, 0x48, 0xd4, 0x3a, 0x2e, 0x4b, 0xce, 0x71, 0xd7, 0xc5, 0x9d, 0xe2, 0xf7, 0x7a, 0x01,
-	0x77, 0x9c, 0x47, 0x29, 0xe7, 0xb8, 0xd7, 0xcf, 0x53, 0xda, 0x9e, 0xe0, 0xdc, 0xf4, 0x0f, 0x03,
-	0x7c, 0x05, 0x4b, 0xeb, 0x0a, 0x5d, 0xc4, 0x9a, 0x38, 0x6f, 0xc7, 0xec, 0xa8, 0x7e, 0x9f, 0xd7,
-	0xb0, 0xdb, 0xf1, 0x4d, 0xab, 0x7d, 0xff, 0xd8, 0x48, 0xb7, 0x23, 0x58, 0x7c, 0xaf, 0x32, 0x15,
-	0xa7, 0xd4, 0xb9, 0x8d, 0x53, 0xfc, 0x2e, 0xcf, 0xe0, 0x76, 0x24, 0x2e, 0xe4, 0x99, 0x09, 0x2f,
-	0x5b, 0xbe, 0x11, 0xfc, 0xec, 0x53, 0xd8, 0xf9, 0x72, 0x4e, 0xea, 0x92, 0x73, 0xbc, 0xeb, 0x3c,
-	0x5b, 0x7b, 0xc9, 0xcd, 0xdf, 0x19, 0xcc, 0x4f, 0xec, 0x53, 0xc0, 0x37, 0x70, 0xcf, 0x86, 0x9a,
-	0x32, 0x12, 0x3f, 0x65, 0x3b, 0xd4, 0x57, 0xfa, 0x65, 0x6a, 0x36, 0xf8, 0x6b, 0x46, 0x0b, 0x03,
-	0xe4, 0x70, 0xd8, 0x39, 0x78, 0x5c, 0xca, 0xe4, 0xec, 0xf8, 0xf2, 0x23, 0x15, 0x59, 0xae, 0xf1,
-	0xe0, 0x8a, 0xd0, 0x33, 0xd8, 0x76, 0x2e, 0xab, 0x86, 0x01, 0xbe, 0x85, 0x87, 0x23, 0x90, 0xb8,
-	0xce, 0xf1, 0x81, 0x8f, 0x88, 0xeb, 0xfc, 0x7a, 0x80, 0x6f, 0xbf, 0xa3, 0xf7, 0x23, 0x00, 0x23,
-	0x8f, 0x00, 0xf6, 0x07, 0xf7, 0x3f, 0xad, 0x28, 0x69, 0x9f, 0x80, 0xdb, 0x81, 0xd1, 0x26, 0xf6,
-	0xf0, 0x19, 0x9e, 0x4c, 0xed, 0xc1, 0x92, 0x1e, 0x4f, 0xec, 0xc2, 0x22, 0x87, 0xd3, 0x7c, 0x00,
-	0x36, 0xbe, 0x0f, 0x8b, 0x7a, 0x34, 0xba, 0x93, 0xeb, 0x83, 0xcc, 0x02, 0x26, 0x40, 0x5b, 0x6b,
-	0x08, 0xfa, 0x31, 0xb7, 0xe5, 0xcb, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x20, 0xb7, 0x58,
-	0xb5, 0x04, 0x00, 0x00,
+	// 676 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0xdf, 0x4e, 0x13, 0x41,
+	0x14, 0xc6, 0xab, 0xc1, 0x2a, 0x47, 0x4a, 0xc9, 0xa0, 0x80, 0x0b, 0xf1, 0x4f, 0xe3, 0x85, 0x11,
+	0xd2, 0x9a, 0x62, 0xf4, 0xc2, 0x0b, 0x85, 0x41, 0xb1, 0x48, 0x52, 0xa4, 0xe2, 0xfd, 0xba, 0x7b,
+	0xd8, 0x4e, 0x58, 0x67, 0xca, 0xec, 0xb4, 0xb1, 0xbe, 0x8b, 0xf7, 0x3e, 0x89, 0x2f, 0xe2, 0x8b,
+	0x98, 0x9d, 0xfd, 0xd3, 0xd9, 0x9d, 0xad, 0xe9, 0x15, 0x99, 0xef, 0xfb, 0xce, 0x6f, 0x4e, 0x0f,
+	0x67, 0x16, 0x36, 0x03, 0x39, 0xf2, 0x3a, 0x23, 0x29, 0x94, 0xe8, 0x44, 0x28, 0x27, 0x28, 0xdb,
+	0xfa, 0x40, 0x6e, 0xe9, 0x3f, 0x8e, 0xe9, 0x4b, 0x8c, 0xc6, 0xa1, 0x4a, 0x7c, 0x67, 0xcb, 0x30,
+	0xbc, 0xa1, 0xcb, 0x39, 0x86, 0xa9, 0xe3, 0x14, 0x1d, 0xc6, 0x3d, 0xe1, 0x63, 0xdb, 0xc6, 0x85,
+	0xe8, 0x07, 0xd9, 0x75, 0x05, 0xc3, 0x13, 0xfc, 0x92, 0x05, 0x89, 0xd1, 0xfd, 0x75, 0x03, 0x1a,
+	0xa7, 0x3a, 0x49, 0x93, 0x5b, 0x48, 0x07, 0xea, 0x54, 0xa2, 0xab, 0x90, 0xdc, 0x4b, 0x32, 0xed,
+	0xd4, 0x49, 0x54, 0xa7, 0x91, 0xaa, 0x03, 0x25, 0x19, 0x0f, 0x5a, 0x35, 0xb2, 0x0b, 0x4b, 0x27,
+	0x82, 0x71, 0x42, 0x8a, 0xf1, 0x58, 0xb3, 0xc3, 0x6d, 0x58, 0x3a, 0x65, 0x91, 0x2a, 0x87, 0x63,
+	0xcd, 0x59, 0x2b, 0x84, 0x0f, 0xa4, 0x6c, 0xd5, 0xba, 0x7f, 0x6f, 0x42, 0x33, 0xef, 0x8f, 0x71,
+	0x2a, 0x7c, 0x24, 0x7b, 0xb0, 0xdc, 0xe3, 0x91, 0x72, 0xc3, 0x90, 0x52, 0xb2, 0x9a, 0x16, 0xa5,
+	0x8a, 0x7d, 0xe3, 0x0b, 0xb8, 0x9b, 0x7a, 0xe8, 0x53, 0x4a, 0xd6, 0x8a, 0x79, 0xf4, 0xf3, 0x0a,
+	0x4a, 0xe3, 0x2e, 0x5a, 0x35, 0xf2, 0x12, 0x1a, 0xda, 0xe5, 0x8a, 0xb9, 0x0a, 0x29, 0xcd, 0x9b,
+	0x35, 0x54, 0xfb, 0x9e, 0x57, 0xb0, 0x6a, 0xf8, 0xf1, 0x55, 0xeb, 0x76, 0x59, 0xc5, 0x6d, 0x7b,
+	0xb0, 0x7c, 0x31, 0x0a, 0xa4, 0xeb, 0xa3, 0xf1, 0x6b, 0x52, 0xc5, 0xbe, 0xe5, 0x39, 0xdc, 0xe9,
+	0xf1, 0x89, 0xb8, 0x8a, 0xc3, 0x8d, 0x9c, 0x1f, 0x0b, 0x76, 0xf6, 0x19, 0xdc, 0xfe, 0x3c, 0x46,
+	0x39, 0xa5, 0x94, 0xac, 0xa4, 0x9e, 0x3e, 0x5b, 0xc9, 0xee, 0xef, 0x25, 0xa8, 0x27, 0x53, 0x26,
+	0xaf, 0xa1, 0xa9, 0x43, 0xc9, 0xb1, 0xc7, 0x2f, 0x45, 0xde, 0xd4, 0x39, 0x5e, 0xc7, 0x67, 0xa7,
+	0xf4, 0xbf, 0x8b, 0xb5, 0x56, 0x8d, 0x50, 0xd8, 0x32, 0x0a, 0x0f, 0x43, 0xe1, 0x5d, 0x1d, 0x4e,
+	0x3f, 0x22, 0x0b, 0x86, 0x8a, 0x6c, 0xce, 0x08, 0x05, 0xc3, 0xc9, 0xfa, 0xd2, 0x6a, 0xab, 0x46,
+	0xde, 0xc2, 0x46, 0x05, 0xc4, 0x8d, 0x86, 0xe4, 0xbe, 0x8d, 0x70, 0xa3, 0xe1, 0x62, 0x80, 0x2f,
+	0x3f, 0x7a, 0x47, 0x15, 0x80, 0x58, 0xae, 0x00, 0xac, 0x97, 0x7e, 0xff, 0x60, 0x84, 0x5e, 0xbe,
+	0x02, 0xe9, 0x0c, 0x62, 0x6d, 0xce, 0x1c, 0x3e, 0xc1, 0xce, 0xbc, 0x39, 0x68, 0xd2, 0xf6, 0x9c,
+	0x59, 0x68, 0x64, 0xb9, 0x9b, 0x63, 0x70, 0xaa, 0xe7, 0xa1, 0x51, 0x0f, 0x2a, 0x67, 0xb2, 0x38,
+	0x28, 0x1e, 0xc0, 0x1c, 0x50, 0x66, 0x95, 0x41, 0xdd, 0x3f, 0x75, 0x58, 0x49, 0x1f, 0xa4, 0xfe,
+	0x8e, 0x90, 0x5d, 0x58, 0x3e, 0x46, 0x95, 0x1e, 0x8a, 0x9b, 0x35, 0x5b, 0x76, 0xed, 0xb6, 0x6a,
+	0xa4, 0x03, 0xd0, 0xe3, 0x4c, 0xd1, 0x90, 0x21, 0x57, 0xf9, 0x5b, 0x3c, 0xc7, 0xeb, 0x44, 0xb1,
+	0x77, 0xf8, 0x0d, 0xac, 0xcd, 0x0a, 0xe8, 0x38, 0x52, 0xe2, 0x3b, 0xd9, 0x28, 0x97, 0x25, 0xba,
+	0x5d, 0xfc, 0x0e, 0x36, 0x0e, 0x7c, 0xbf, 0x2f, 0x07, 0xa8, 0xce, 0x10, 0xe5, 0x07, 0x91, 0x7f,
+	0xe4, 0x8c, 0x65, 0x48, 0xa5, 0x38, 0x60, 0x13, 0x2e, 0xe0, 0x69, 0x46, 0x48, 0x9e, 0x52, 0x1a,
+	0x16, 0x21, 0xf3, 0xa6, 0x06, 0x6f, 0xc7, 0xe6, 0xe9, 0x48, 0xf5, 0x7b, 0x23, 0x5f, 0xe1, 0x49,
+	0x86, 0x3d, 0x62, 0x91, 0x27, 0x26, 0x28, 0xa7, 0x16, 0xf3, 0xf1, 0x1c, 0x66, 0x5e, 0xf1, 0xdf,
+	0x76, 0xdf, 0x4f, 0x90, 0xab, 0x01, 0xca, 0x09, 0xf3, 0x70, 0xe1, 0x76, 0x75, 0x91, 0x8d, 0x3d,
+	0x83, 0x47, 0x19, 0xb6, 0x2f, 0x7d, 0x94, 0x7a, 0x94, 0x7d, 0x19, 0xb8, 0x9c, 0xfd, 0x74, 0x15,
+	0x13, 0x3c, 0x32, 0x89, 0x05, 0x43, 0xe7, 0x6d, 0xe2, 0x09, 0x6c, 0xcf, 0x88, 0x81, 0x45, 0x73,
+	0xe6, 0xd2, 0x02, 0x9b, 0xb5, 0x0f, 0xcd, 0x52, 0x77, 0xa4, 0x69, 0xd6, 0x57, 0x36, 0xd0, 0x81,
+	0x15, 0x73, 0x35, 0xcc, 0x6f, 0x5c, 0xf5, 0x26, 0xf4, 0x61, 0x27, 0x2b, 0xa0, 0x28, 0x15, 0xbb,
+	0x64, 0x9e, 0xab, 0xf0, 0x60, 0xac, 0x86, 0x42, 0x32, 0x35, 0x25, 0x0f, 0x8d, 0x91, 0x56, 0xf8,
+	0x16, 0xf0, 0x5b, 0x5d, 0x9f, 0xf7, 0xff, 0x05, 0x00, 0x00, 0xff, 0xff, 0xdc, 0x32, 0x0b, 0x3c,
+	0x23, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -64,140 +79,140 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// ChannelClient is the client API for Channel service.
+// LedgerChannelClient is the client API for LedgerChannel service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type ChannelClient interface {
+type LedgerChannelClient interface {
 	Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*String, error)
 	Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*String, error)
 	List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*StringArr, error)
 }
 
-type channelClient struct {
+type ledgerChannelClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewChannelClient(cc *grpc.ClientConn) ChannelClient {
-	return &channelClient{cc}
+func NewLedgerChannelClient(cc *grpc.ClientConn) LedgerChannelClient {
+	return &ledgerChannelClient{cc}
 }
 
-func (c *channelClient) Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChannelClient) Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.Channel/Create", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChannel/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *channelClient) Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChannelClient) Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.Channel/Join", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChannel/Join", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *channelClient) List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*StringArr, error) {
+func (c *ledgerChannelClient) List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*StringArr, error) {
 	out := new(StringArr)
-	err := c.cc.Invoke(ctx, "/proto.Channel/List", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChannel/List", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ChannelServer is the server API for Channel service.
-type ChannelServer interface {
+// LedgerChannelServer is the server API for LedgerChannel service.
+type LedgerChannelServer interface {
 	Create(context.Context, *ChannelCreate) (*String, error)
 	Join(context.Context, *ChannelJoin) (*String, error)
 	List(context.Context, *ChannelList) (*StringArr, error)
 }
 
-func RegisterChannelServer(s *grpc.Server, srv ChannelServer) {
-	s.RegisterService(&_Channel_serviceDesc, srv)
+func RegisterLedgerChannelServer(s *grpc.Server, srv LedgerChannelServer) {
+	s.RegisterService(&_LedgerChannel_serviceDesc, srv)
 }
 
-func _Channel_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChannel_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelCreate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChannelServer).Create(ctx, in)
+		return srv.(LedgerChannelServer).Create(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Channel/Create",
+		FullMethod: "/proto.LedgerChannel/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChannelServer).Create(ctx, req.(*ChannelCreate))
+		return srv.(LedgerChannelServer).Create(ctx, req.(*ChannelCreate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Channel_Join_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChannel_Join_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelJoin)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChannelServer).Join(ctx, in)
+		return srv.(LedgerChannelServer).Join(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Channel/Join",
+		FullMethod: "/proto.LedgerChannel/Join",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChannelServer).Join(ctx, req.(*ChannelJoin))
+		return srv.(LedgerChannelServer).Join(ctx, req.(*ChannelJoin))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Channel_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChannel_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelList)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChannelServer).List(ctx, in)
+		return srv.(LedgerChannelServer).List(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Channel/List",
+		FullMethod: "/proto.LedgerChannel/List",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChannelServer).List(ctx, req.(*ChannelList))
+		return srv.(LedgerChannelServer).List(ctx, req.(*ChannelList))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Channel_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Channel",
-	HandlerType: (*ChannelServer)(nil),
+var _LedgerChannel_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.LedgerChannel",
+	HandlerType: (*LedgerChannelServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Create",
-			Handler:    _Channel_Create_Handler,
+			Handler:    _LedgerChannel_Create_Handler,
 		},
 		{
 			MethodName: "Join",
-			Handler:    _Channel_Join_Handler,
+			Handler:    _LedgerChannel_Join_Handler,
 		},
 		{
 			MethodName: "List",
-			Handler:    _Channel_List_Handler,
+			Handler:    _LedgerChannel_List_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "grpc/proto/server.proto",
 }
 
-// ChainCodeClient is the client API for ChainCode service.
+// LedgerChainCodeClient is the client API for LedgerChainCode service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type ChainCodeClient interface {
+type LedgerChainCodeClient interface {
 	InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error)
 	InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error)
 	InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*String, error)
@@ -207,79 +222,79 @@ type ChainCodeClient interface {
 	QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error)
 }
 
-type chainCodeClient struct {
+type ledgerChainCodeClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewChainCodeClient(cc *grpc.ClientConn) ChainCodeClient {
-	return &chainCodeClient{cc}
+func NewLedgerChainCodeClient(cc *grpc.ClientConn) LedgerChainCodeClient {
+	return &ledgerChainCodeClient{cc}
 }
 
-func (c *chainCodeClient) InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChainCodeClient) InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InstallCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/InstallCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chainCodeClient) InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error) {
+func (c *ledgerChainCodeClient) InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error) {
 	out := new(CCList)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InstalledCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/InstalledCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chainCodeClient) InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChainCodeClient) InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InstantiateCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/InstantiateCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chainCodeClient) InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*CCList, error) {
+func (c *ledgerChainCodeClient) InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*CCList, error) {
 	out := new(CCList)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InstantiatedCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/InstantiatedCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chainCodeClient) UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChainCodeClient) UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/UpgradeCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/UpgradeCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/InvokeCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/InvokeCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *chainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error) {
+func (c *ledgerChainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/proto.ChainCode/QueryCC", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.LedgerChainCode/QueryCC", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ChainCodeServer is the server API for ChainCode service.
-type ChainCodeServer interface {
+// LedgerChainCodeServer is the server API for LedgerChainCode service.
+type LedgerChainCodeServer interface {
 	InstallCC(context.Context, *Install) (*String, error)
 	InstalledCC(context.Context, *Installed) (*CCList, error)
 	InstantiateCC(context.Context, *Instantiate) (*String, error)
@@ -289,167 +304,167 @@ type ChainCodeServer interface {
 	QueryCC(context.Context, *Query) (*String, error)
 }
 
-func RegisterChainCodeServer(s *grpc.Server, srv ChainCodeServer) {
-	s.RegisterService(&_ChainCode_serviceDesc, srv)
+func RegisterLedgerChainCodeServer(s *grpc.Server, srv LedgerChainCodeServer) {
+	s.RegisterService(&_LedgerChainCode_serviceDesc, srv)
 }
 
-func _ChainCode_InstallCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_InstallCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Install)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).InstallCC(ctx, in)
+		return srv.(LedgerChainCodeServer).InstallCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/InstallCC",
+		FullMethod: "/proto.LedgerChainCode/InstallCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InstallCC(ctx, req.(*Install))
+		return srv.(LedgerChainCodeServer).InstallCC(ctx, req.(*Install))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChainCode_InstalledCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_InstalledCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Installed)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).InstalledCC(ctx, in)
+		return srv.(LedgerChainCodeServer).InstalledCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/InstalledCC",
+		FullMethod: "/proto.LedgerChainCode/InstalledCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InstalledCC(ctx, req.(*Installed))
+		return srv.(LedgerChainCodeServer).InstalledCC(ctx, req.(*Installed))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChainCode_InstantiateCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_InstantiateCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Instantiate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).InstantiateCC(ctx, in)
+		return srv.(LedgerChainCodeServer).InstantiateCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/InstantiateCC",
+		FullMethod: "/proto.LedgerChainCode/InstantiateCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InstantiateCC(ctx, req.(*Instantiate))
+		return srv.(LedgerChainCodeServer).InstantiateCC(ctx, req.(*Instantiate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChainCode_InstantiatedCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_InstantiatedCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Instantiated)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).InstantiatedCC(ctx, in)
+		return srv.(LedgerChainCodeServer).InstantiatedCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/InstantiatedCC",
+		FullMethod: "/proto.LedgerChainCode/InstantiatedCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InstantiatedCC(ctx, req.(*Instantiated))
+		return srv.(LedgerChainCodeServer).InstantiatedCC(ctx, req.(*Instantiated))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChainCode_UpgradeCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_UpgradeCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Upgrade)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).UpgradeCC(ctx, in)
+		return srv.(LedgerChainCodeServer).UpgradeCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/UpgradeCC",
+		FullMethod: "/proto.LedgerChainCode/UpgradeCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).UpgradeCC(ctx, req.(*Upgrade))
+		return srv.(LedgerChainCodeServer).UpgradeCC(ctx, req.(*Upgrade))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChainCode_InvokeCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_InvokeCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Invoke)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).InvokeCC(ctx, in)
+		return srv.(LedgerChainCodeServer).InvokeCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/InvokeCC",
+		FullMethod: "/proto.LedgerChainCode/InvokeCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).InvokeCC(ctx, req.(*Invoke))
+		return srv.(LedgerChainCodeServer).InvokeCC(ctx, req.(*Invoke))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ChainCode_QueryCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LedgerChainCode_QueryCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Query)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChainCodeServer).QueryCC(ctx, in)
+		return srv.(LedgerChainCodeServer).QueryCC(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.ChainCode/QueryCC",
+		FullMethod: "/proto.LedgerChainCode/QueryCC",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChainCodeServer).QueryCC(ctx, req.(*Query))
+		return srv.(LedgerChainCodeServer).QueryCC(ctx, req.(*Query))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _ChainCode_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.ChainCode",
-	HandlerType: (*ChainCodeServer)(nil),
+var _LedgerChainCode_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.LedgerChainCode",
+	HandlerType: (*LedgerChainCodeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "InstallCC",
-			Handler:    _ChainCode_InstallCC_Handler,
+			Handler:    _LedgerChainCode_InstallCC_Handler,
 		},
 		{
 			MethodName: "InstalledCC",
-			Handler:    _ChainCode_InstalledCC_Handler,
+			Handler:    _LedgerChainCode_InstalledCC_Handler,
 		},
 		{
 			MethodName: "InstantiateCC",
-			Handler:    _ChainCode_InstantiateCC_Handler,
+			Handler:    _LedgerChainCode_InstantiateCC_Handler,
 		},
 		{
 			MethodName: "InstantiatedCC",
-			Handler:    _ChainCode_InstantiatedCC_Handler,
+			Handler:    _LedgerChainCode_InstantiatedCC_Handler,
 		},
 		{
 			MethodName: "UpgradeCC",
-			Handler:    _ChainCode_UpgradeCC_Handler,
+			Handler:    _LedgerChainCode_UpgradeCC_Handler,
 		},
 		{
 			MethodName: "InvokeCC",
-			Handler:    _ChainCode_InvokeCC_Handler,
+			Handler:    _LedgerChainCode_InvokeCC_Handler,
 		},
 		{
 			MethodName: "QueryCC",
-			Handler:    _ChainCode_QueryCC_Handler,
+			Handler:    _LedgerChainCode_QueryCC_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -745,6 +760,433 @@ var _Ledger_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryLedgerBlockByTxIDSpec",
 			Handler:    _Ledger_QueryLedgerBlockByTxIDSpec_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "grpc/proto/server.proto",
+}
+
+// LedgerConfigClient is the client API for LedgerConfig service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type LedgerConfigClient interface {
+	GetConfig(ctx context.Context, in *String, opts ...grpc.CallOption) (*Config, error)
+	InitClient(ctx context.Context, in *ReqClient, opts ...grpc.CallOption) (*String, error)
+	InitClientCustom(ctx context.Context, in *ReqClientCustom, opts ...grpc.CallOption) (*String, error)
+	AddOrSetPeerForChannel(ctx context.Context, in *ReqChannelPeer, opts ...grpc.CallOption) (*String, error)
+	AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *ReqChannelPolicyQuery, opts ...grpc.CallOption) (*String, error)
+	AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *ReqChannelPolicyDiscovery, opts ...grpc.CallOption) (*String, error)
+	AddOrSetEventServicePolicyForChannel(ctx context.Context, in *ReqChannelPolicyEvent, opts ...grpc.CallOption) (*String, error)
+	AddOrSetOrdererForOrganizations(ctx context.Context, in *ReqOrganizationsOrder, opts ...grpc.CallOption) (*String, error)
+	AddOrSetOrgForOrganizations(ctx context.Context, in *ReqOrganizationsOrg, opts ...grpc.CallOption) (*String, error)
+	AddOrSetOrderer(ctx context.Context, in *ReqOrder, opts ...grpc.CallOption) (*String, error)
+	AddOrSetPeer(ctx context.Context, in *ReqPeer, opts ...grpc.CallOption) (*String, error)
+	AddOrSetCertificateAuthority(ctx context.Context, in *ReqCertificateAuthority, opts ...grpc.CallOption) (*String, error)
+}
+
+type ledgerConfigClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewLedgerConfigClient(cc *grpc.ClientConn) LedgerConfigClient {
+	return &ledgerConfigClient{cc}
+}
+
+func (c *ledgerConfigClient) GetConfig(ctx context.Context, in *String, opts ...grpc.CallOption) (*Config, error) {
+	out := new(Config)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/GetConfig", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) InitClient(ctx context.Context, in *ReqClient, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/InitClient", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) InitClientCustom(ctx context.Context, in *ReqClientCustom, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/InitClientCustom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetPeerForChannel(ctx context.Context, in *ReqChannelPeer, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetPeerForChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *ReqChannelPolicyQuery, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetQueryChannelPolicyForChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *ReqChannelPolicyDiscovery, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetDiscoveryPolicyForChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetEventServicePolicyForChannel(ctx context.Context, in *ReqChannelPolicyEvent, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetEventServicePolicyForChannel", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetOrdererForOrganizations(ctx context.Context, in *ReqOrganizationsOrder, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetOrdererForOrganizations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetOrgForOrganizations(ctx context.Context, in *ReqOrganizationsOrg, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetOrgForOrganizations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetOrderer(ctx context.Context, in *ReqOrder, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetOrderer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetPeer(ctx context.Context, in *ReqPeer, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetPeer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerConfigClient) AddOrSetCertificateAuthority(ctx context.Context, in *ReqCertificateAuthority, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
+	err := c.cc.Invoke(ctx, "/proto.LedgerConfig/AddOrSetCertificateAuthority", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// LedgerConfigServer is the server API for LedgerConfig service.
+type LedgerConfigServer interface {
+	GetConfig(context.Context, *String) (*Config, error)
+	InitClient(context.Context, *ReqClient) (*String, error)
+	InitClientCustom(context.Context, *ReqClientCustom) (*String, error)
+	AddOrSetPeerForChannel(context.Context, *ReqChannelPeer) (*String, error)
+	AddOrSetQueryChannelPolicyForChannel(context.Context, *ReqChannelPolicyQuery) (*String, error)
+	AddOrSetDiscoveryPolicyForChannel(context.Context, *ReqChannelPolicyDiscovery) (*String, error)
+	AddOrSetEventServicePolicyForChannel(context.Context, *ReqChannelPolicyEvent) (*String, error)
+	AddOrSetOrdererForOrganizations(context.Context, *ReqOrganizationsOrder) (*String, error)
+	AddOrSetOrgForOrganizations(context.Context, *ReqOrganizationsOrg) (*String, error)
+	AddOrSetOrderer(context.Context, *ReqOrder) (*String, error)
+	AddOrSetPeer(context.Context, *ReqPeer) (*String, error)
+	AddOrSetCertificateAuthority(context.Context, *ReqCertificateAuthority) (*String, error)
+}
+
+func RegisterLedgerConfigServer(s *grpc.Server, srv LedgerConfigServer) {
+	s.RegisterService(&_LedgerConfig_serviceDesc, srv)
+}
+
+func _LedgerConfig_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(String)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).GetConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/GetConfig",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).GetConfig(ctx, req.(*String))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_InitClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqClient)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).InitClient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/InitClient",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).InitClient(ctx, req.(*ReqClient))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_InitClientCustom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqClientCustom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).InitClientCustom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/InitClientCustom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).InitClientCustom(ctx, req.(*ReqClientCustom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetPeerForChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqChannelPeer)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetPeerForChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetPeerForChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetPeerForChannel(ctx, req.(*ReqChannelPeer))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetQueryChannelPolicyForChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqChannelPolicyQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetQueryChannelPolicyForChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetQueryChannelPolicyForChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetQueryChannelPolicyForChannel(ctx, req.(*ReqChannelPolicyQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetDiscoveryPolicyForChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqChannelPolicyDiscovery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetDiscoveryPolicyForChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetDiscoveryPolicyForChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetDiscoveryPolicyForChannel(ctx, req.(*ReqChannelPolicyDiscovery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetEventServicePolicyForChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqChannelPolicyEvent)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetEventServicePolicyForChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetEventServicePolicyForChannel",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetEventServicePolicyForChannel(ctx, req.(*ReqChannelPolicyEvent))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetOrdererForOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqOrganizationsOrder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetOrdererForOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetOrdererForOrganizations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetOrdererForOrganizations(ctx, req.(*ReqOrganizationsOrder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetOrgForOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqOrganizationsOrg)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetOrgForOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetOrgForOrganizations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetOrgForOrganizations(ctx, req.(*ReqOrganizationsOrg))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetOrderer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqOrder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetOrderer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetOrderer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetOrderer(ctx, req.(*ReqOrder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetPeer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqPeer)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetPeer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetPeer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetPeer(ctx, req.(*ReqPeer))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerConfig_AddOrSetCertificateAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqCertificateAuthority)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerConfigServer).AddOrSetCertificateAuthority(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.LedgerConfig/AddOrSetCertificateAuthority",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerConfigServer).AddOrSetCertificateAuthority(ctx, req.(*ReqCertificateAuthority))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _LedgerConfig_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.LedgerConfig",
+	HandlerType: (*LedgerConfigServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetConfig",
+			Handler:    _LedgerConfig_GetConfig_Handler,
+		},
+		{
+			MethodName: "InitClient",
+			Handler:    _LedgerConfig_InitClient_Handler,
+		},
+		{
+			MethodName: "InitClientCustom",
+			Handler:    _LedgerConfig_InitClientCustom_Handler,
+		},
+		{
+			MethodName: "AddOrSetPeerForChannel",
+			Handler:    _LedgerConfig_AddOrSetPeerForChannel_Handler,
+		},
+		{
+			MethodName: "AddOrSetQueryChannelPolicyForChannel",
+			Handler:    _LedgerConfig_AddOrSetQueryChannelPolicyForChannel_Handler,
+		},
+		{
+			MethodName: "AddOrSetDiscoveryPolicyForChannel",
+			Handler:    _LedgerConfig_AddOrSetDiscoveryPolicyForChannel_Handler,
+		},
+		{
+			MethodName: "AddOrSetEventServicePolicyForChannel",
+			Handler:    _LedgerConfig_AddOrSetEventServicePolicyForChannel_Handler,
+		},
+		{
+			MethodName: "AddOrSetOrdererForOrganizations",
+			Handler:    _LedgerConfig_AddOrSetOrdererForOrganizations_Handler,
+		},
+		{
+			MethodName: "AddOrSetOrgForOrganizations",
+			Handler:    _LedgerConfig_AddOrSetOrgForOrganizations_Handler,
+		},
+		{
+			MethodName: "AddOrSetOrderer",
+			Handler:    _LedgerConfig_AddOrSetOrderer_Handler,
+		},
+		{
+			MethodName: "AddOrSetPeer",
+			Handler:    _LedgerConfig_AddOrSetPeer_Handler,
+		},
+		{
+			MethodName: "AddOrSetCertificateAuthority",
+			Handler:    _LedgerConfig_AddOrSetCertificateAuthority_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

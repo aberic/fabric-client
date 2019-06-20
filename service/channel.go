@@ -30,9 +30,9 @@ type ChannelPolicyQuery struct {
 	ChannelName    string  `json:"channelName"`
 	InitialBackOff string  `json:"initialBackOff"`
 	MaxBackOff     string  `json:"maxBackOff"`
-	MinResponses   int     `json:"minResponses"`
-	MaxTargets     int     `json:"maxTargets"`
-	Attempts       int     `json:"attempts"`
+	MinResponses   int32   `json:"minResponses"`
+	MaxTargets     int32   `json:"maxTargets"`
+	Attempts       int32   `json:"attempts"`
 	BackOffFactor  float32 `json:"backOffFactor"`
 }
 
@@ -41,8 +41,8 @@ type ChannelPolicyDiscovery struct {
 	ChannelName    string
 	InitialBackOff string
 	MaxBackOff     string
-	MaxTargets     int
-	Attempts       int
+	MaxTargets     int32
+	Attempts       int32
 	BackOffFactor  float32
 }
 
@@ -52,8 +52,8 @@ type ChannelPolicyEvent struct {
 	ResolverStrategy                 string `json:"resolverStrategy"`
 	Balance                          string `json:"balance"`
 	PeerMonitorPeriod                string `json:"peerMonitorPeriod"`
-	BlockHeightLagThreshold          int    `json:"blockHeightLagThreshold"`
-	ReconnectBlockHeightLagThreshold int    `json:"reconnectBlockHeightLagThreshold"`
+	BlockHeightLagThreshold          int64  `json:"blockHeightLagThreshold"`
+	ReconnectBlockHeightLagThreshold int64  `json:"reconnectBlockHeightLagThreshold"`
 }
 
 type ChannelCreate struct {

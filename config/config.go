@@ -14,6 +14,10 @@
 
 package config
 
+import (
+	pb "github.com/ennoo/fabric-go-client/grpc/proto"
+)
+
 const (
 	OrderOrgKey = "ordererorg"
 )
@@ -22,7 +26,7 @@ type Config struct {
 	Version                string                           `yaml:"version"`
 	Client                 *Client                          `yaml:"client"`
 	Channels               map[string]*Channel              `yaml:"channels"`
-	Organizations          map[string]interface{}           `yaml:"organizations"`
+	Organizations          map[string]*Organization         `yaml:"organizations"`
 	Orderers               map[string]*Orderer              `yaml:"orderers"`
 	Peers                  map[string]*Peer                 `yaml:"peers"`
 	CertificateAuthorities map[string]*CertificateAuthority `yaml:"certificateAuthorities"`
@@ -51,7 +55,7 @@ func (c *Config) AddOrSetPeerForChannel(channelName, peerName string, endorsingP
 }
 
 func (c *Config) AddOrSetQueryChannelPolicyForChannel(channelName, initialBackOff, maxBackOff string,
-	minResponses, maxTargets, attempts int, backOffFactor float32) {
+	minResponses, maxTargets, attempts int32, backOffFactor float32) {
 	c.initChannel(channelName)
 	c.Channels[channelName].Policies.QueryChannelConfig = &PolicyQueryChannelConfig{
 		MinResponses: minResponses,
@@ -66,7 +70,7 @@ func (c *Config) AddOrSetQueryChannelPolicyForChannel(channelName, initialBackOf
 }
 
 func (c *Config) AddOrSetDiscoveryPolicyForChannel(channelName, initialBackOff, maxBackOff string,
-	maxTargets, attempts int, backOffFactor float32) {
+	maxTargets, attempts int32, backOffFactor float32) {
 	c.initChannel(channelName)
 	c.Channels[channelName].Policies.Discovery = &PolicyDiscovery{
 		MaxTargets: maxTargets,
@@ -80,7 +84,7 @@ func (c *Config) AddOrSetDiscoveryPolicyForChannel(channelName, initialBackOff, 
 }
 
 func (c *Config) AddOrSetEventServicePolicyForChannel(channelName, resolverStrategy, balancer, peerMonitorPeriod string,
-	blockHeightLagThreshold, reconnectBlockHeightLagThreshold int) {
+	blockHeightLagThreshold, reconnectBlockHeightLagThreshold int64) {
 	c.initChannel(channelName)
 	c.Channels[channelName].Policies.EventService = &PolicyEventService{
 		ResolverStrategy:                 resolverStrategy,
@@ -93,7 +97,7 @@ func (c *Config) AddOrSetEventServicePolicyForChannel(channelName, resolverStrat
 
 func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string) {
 	c.initOrganizations()
-	c.Organizations[OrderOrgKey] = &OrdererOrg{
+	c.Organizations[OrderOrgKey] = &Organization{
 		MspID:      mspID,
 		CryptoPath: cryptoPath,
 	}
@@ -101,7 +105,7 @@ func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string) {
 
 func (c *Config) AddOrSetOrgForOrganizations(orgName, mspid, cryptoPath string, peers, certificateAuthorities []string) {
 	c.initOrganizations()
-	c.Organizations[orgName] = &Org{
+	c.Organizations[orgName] = &Organization{
 		MspID:                  mspid,
 		CryptoPath:             cryptoPath,
 		Peers:                  peers,
@@ -211,7 +215,7 @@ NewPeer:
 
 func (c *Config) initOrganizations() {
 	if nil == c.Organizations {
-		c.Organizations = map[string]interface{}{}
+		c.Organizations = map[string]*Organization{}
 	}
 }
 
@@ -268,5 +272,210 @@ NewCertificateAuthority:
 			},
 		},
 		Registrar: &CertificateAuthorityRegistrar{},
+	}
+}
+
+func (c *Config) GetPBConfig() *pb.Config {
+	return &pb.Config{
+		Version:                c.Version,
+		Client:                 c.getPBClient(),
+		Channels:               c.getPBChannels(),
+		Organizations:          c.getPBOrganizations(),
+		Orderers:               c.getPBOrders(),
+		Peers:                  c.getPBPeers(),
+		CertificateAuthorities: c.getPBCertificateAuthorities(),
+	}
+}
+
+func (c *Config) getPBCertificateAuthorities() map[string]*pb.CertificateAuthority {
+	cs := map[string]*pb.CertificateAuthority{}
+	for cName, c := range c.CertificateAuthorities {
+		cs[cName] = &pb.CertificateAuthority{
+			Url:    c.URL,
+			CaName: c.CAName,
+			TlsCACerts: &pb.CertificateAuthorityTLSCACerts{
+				Path: c.TLSCACerts.Path,
+				Client: &pb.CertificateAuthorityTLSCACertsClient{
+					Key: &pb.CertificateAuthorityTLSCACertsClientKey{
+						Path: c.TLSCACerts.Client.Key.Path,
+					},
+					Cert: &pb.CertificateAuthorityTLSCACertsClientCert{
+						Path: c.TLSCACerts.Client.Cert.Path,
+					},
+				},
+			},
+			Registrar: &pb.CertificateAuthorityRegistrar{
+				EnrollId:     c.Registrar.EnrollId,
+				EnrollSecret: c.Registrar.EnrollSecret,
+			},
+		}
+	}
+	return cs
+}
+
+func (c *Config) getPBPeers() map[string]*pb.Peer {
+	ps := map[string]*pb.Peer{}
+	for pName, p := range c.Peers {
+		ps[pName] = &pb.Peer{
+			Url:      p.URL,
+			EventUrl: p.EventURL,
+			GrpcOptions: &pb.PeerGRPCOptions{
+				SslTargetNameOverride: p.GRPCOptions.SSLTargetNameOverride,
+				KeepAliveTime:         p.GRPCOptions.KeepAliveTime,
+				KeepAliveTimeout:      p.GRPCOptions.KeepAliveTimeout,
+				KeepAlivePermit:       p.GRPCOptions.KeepAlivePermit,
+				FailFast:              p.GRPCOptions.FailFast,
+				AllowInsecure:         p.GRPCOptions.AllowInsecure,
+			},
+			TlsCACerts: &pb.PeerTLSCACerts{
+				Path: p.TLSCACerts.Path,
+			},
+		}
+	}
+	return ps
+}
+
+func (c *Config) getPBOrders() map[string]*pb.Orderer {
+	os := map[string]*pb.Orderer{}
+	for oName, o := range c.Orderers {
+		os[oName] = &pb.Orderer{
+			Url: o.URL,
+			GrpcOptions: &pb.OrdererGRPCOptions{
+				SslTargetNameOverride: o.GRPCOptions.SSLTargetNameOverride,
+				KeepAliveTime:         o.GRPCOptions.KeepAliveTime,
+				KeepAliveTimeout:      o.GRPCOptions.KeepAliveTimeout,
+				KeepAlivePermit:       o.GRPCOptions.KeepAlivePermit,
+				FailFast:              o.GRPCOptions.FailFast,
+				AllowInsecure:         o.GRPCOptions.AllowInsecure,
+			},
+			TlsCACerts: &pb.OrdererTLSCACerts{
+				Path: o.TLSCACerts.Path,
+			},
+		}
+	}
+	return os
+}
+
+func (c *Config) getPBOrganizations() map[string]*pb.Organization {
+	os := map[string]*pb.Organization{}
+	for oName, o := range c.Organizations {
+		os[oName] = &pb.Organization{
+			MspID:                  o.MspID,
+			CryptoPath:             o.CryptoPath,
+			Peers:                  o.Peers,
+			CertificateAuthorities: o.CertificateAuthorities,
+		}
+	}
+	return os
+}
+
+func (c *Config) getPBChannels() map[string]*pb.Channel {
+	chs := map[string]*pb.Channel{}
+	for chName, ch := range c.Channels {
+		peers := map[string]*pb.ChannelPeer{}
+		for pName, p := range ch.Peers {
+			peers[pName] = &pb.ChannelPeer{
+				EndorsingPeer:  p.EndorsingPeer,
+				ChaincodeQuery: p.ChaincodeQuery,
+				EventSource:    p.EventSource,
+				LedgerQuery:    p.LedgerQuery,
+			}
+		}
+		chs[chName] = &pb.Channel{
+			Peers: peers,
+			Policies: &pb.Policy{
+				QueryChannelConfig: &pb.PolicyQueryChannelConfig{
+					MinResponses: ch.Policies.QueryChannelConfig.MinResponses,
+					MaxTargets:   ch.Policies.QueryChannelConfig.MaxTargets,
+					RetryOpts: &pb.PolicyCommonRetryOpts{
+						Attempts:       ch.Policies.QueryChannelConfig.RetryOpts.Attempts,
+						InitialBackoff: ch.Policies.QueryChannelConfig.RetryOpts.InitialBackOff,
+						MaxBackoff:     ch.Policies.QueryChannelConfig.RetryOpts.MaxBackOff,
+						BackoffFactor:  ch.Policies.QueryChannelConfig.RetryOpts.BackOffFactor,
+					},
+				},
+				Discovery: &pb.PolicyDiscovery{
+					MaxTargets: ch.Policies.Discovery.MaxTargets,
+					RetryOpts: &pb.PolicyCommonRetryOpts{
+						Attempts:       ch.Policies.Discovery.RetryOpts.Attempts,
+						InitialBackoff: ch.Policies.Discovery.RetryOpts.InitialBackOff,
+						MaxBackoff:     ch.Policies.Discovery.RetryOpts.MaxBackOff,
+						BackoffFactor:  ch.Policies.Discovery.RetryOpts.BackOffFactor,
+					},
+				},
+				EventService: &pb.PolicyEventService{
+					ResolverStrategy:                 ch.Policies.EventService.ResolverStrategy,
+					Balancer:                         ch.Policies.EventService.Balancer,
+					BlockHeightLagThreshold:          ch.Policies.EventService.BlockHeightLagThreshold,
+					ReconnectBlockHeightLagThreshold: ch.Policies.EventService.ReconnectBlockHeightLagThreshold,
+					PeerMonitorPeriod:                ch.Policies.EventService.PeerMonitorPeriod,
+				},
+			},
+		}
+	}
+	return chs
+}
+
+func (c *Config) getPBClient() *pb.Client {
+	return &pb.Client{
+		Organization: c.Client.Organization,
+		Logging: &pb.ClientLogging{
+			Level: c.Client.Logging.Level,
+		},
+		Peer: &pb.ClientPeer{
+			Timeout: &pb.ClientPeerTimeout{
+				Connection: c.Client.Peer.Timeout.Connection,
+				Response:   c.Client.Peer.Timeout.Response,
+				Discovery: &pb.ClientPeerTimeoutDiscovery{
+					GreyListExpiry: c.Client.Peer.Timeout.Discovery.GreyListExpiry,
+				},
+			},
+		},
+		EventService: &pb.ClientEventService{
+			Timeout: &pb.ClientEventServiceTimeout{
+				RegistrationResponse: c.Client.EventService.Timeout.RegistrationResponse,
+			},
+		},
+		Order: &pb.ClientOrder{
+			Timeout: &pb.ClientOrderTimeout{
+				Connection: c.Client.Order.Timeout.Connection,
+				Response:   c.Client.Order.Timeout.Response,
+			},
+		},
+		Global: &pb.ClientGlobal{
+			Timeout: &pb.ClientGlobalTimeout{
+				Query:   c.Client.Global.Timeout.Query,
+				Execute: c.Client.Global.Timeout.Execute,
+				Resmgmt: c.Client.Global.Timeout.Resmgmt,
+			},
+			Cache: &pb.ClientGlobalCache{
+				ConnectionIdle:    c.Client.Global.Cache.ConnectionIdle,
+				EventServiceIdle:  c.Client.Global.Cache.EventServiceIdle,
+				ChannelMembership: c.Client.Global.Cache.ChannelMembership,
+				ChannelConfig:     c.Client.Global.Cache.ChannelConfig,
+				Discovery:         c.Client.Global.Cache.Discovery,
+				Selection:         c.Client.Global.Cache.Selection,
+			},
+		},
+		CryptoConfig: &pb.ClientCryptoConfig{
+			Path: c.Client.CryptoConfig.Path,
+		},
+		CredentialStore: &pb.ClientCredentialStore{
+			Path: c.Client.CredentialStore.Path,
+			CryptoStore: &pb.ClientCredentialStoreCryptoStore{
+				Path: c.Client.CredentialStore.CryptoStore.Path,
+			},
+		},
+		BCCSP: &pb.ClientBCCSP{
+			Security: &pb.ClientBCCSPSecurity{
+				Enabled: c.Client.BCCSP.Security.Enabled,
+				Default: &pb.ClientBCCSPSecurityDefault{
+					Provider: c.Client.BCCSP.Security.Default.Provider,
+				},
+				HashAlgorithm: c.Client.BCCSP.Security.HashAlgorithm,
+				SoftVerify:    c.Client.BCCSP.Security.SoftVerify,
+				Level:         c.Client.BCCSP.Security.Level,
+			},
+		},
 	}
 }

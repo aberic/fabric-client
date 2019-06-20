@@ -6,8 +6,9 @@ import "grpc/proto/result.proto";
 import "grpc/proto/channel.proto";
 import "grpc/proto/chaincode.proto";
 import "grpc/proto/ledger.proto";
+import "grpc/proto/config.proto";
 
-service Channel {
+service LedgerChannel {
     rpc Create (ChannelCreate) returns (String) {
     }
     rpc Join (ChannelJoin) returns (String) {
@@ -16,7 +17,7 @@ service Channel {
     }
 }
 
-service ChainCode {
+service LedgerChainCode {
     rpc InstallCC (Install) returns (String) {
     }
     rpc InstalledCC (Installed) returns (CCList) {
@@ -49,5 +50,32 @@ service Ledger {
     rpc QueryLedgerBlockByHashSpec (ReqBlockByHashSpec) returns (Block) {
     }
     rpc QueryLedgerBlockByTxIDSpec (ReqBlockByTxIDSpec) returns (Block) {
+    }
+}
+
+service LedgerConfig {
+    rpc GetConfig (String) returns (Config) {
+    }
+    rpc InitClient (ReqClient) returns (String) {
+    }
+    rpc InitClientCustom (ReqClientCustom) returns (String) {
+    }
+    rpc AddOrSetPeerForChannel (ReqChannelPeer) returns (String) {
+    }
+    rpc AddOrSetQueryChannelPolicyForChannel (ReqChannelPolicyQuery) returns (String) {
+    }
+    rpc AddOrSetDiscoveryPolicyForChannel (ReqChannelPolicyDiscovery) returns (String) {
+    }
+    rpc AddOrSetEventServicePolicyForChannel (ReqChannelPolicyEvent) returns (String) {
+    }
+    rpc AddOrSetOrdererForOrganizations (ReqOrganizationsOrder) returns (String) {
+    }
+    rpc AddOrSetOrgForOrganizations (ReqOrganizationsOrg) returns (String) {
+    }
+    rpc AddOrSetOrderer (ReqOrder) returns (String) {
+    }
+    rpc AddOrSetPeer (ReqPeer) returns (String) {
+    }
+    rpc AddOrSetCertificateAuthority (ReqCertificateAuthority) returns (String) {
     }
 }
