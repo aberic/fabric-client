@@ -57,7 +57,11 @@ func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider
 		if commonBlock, err := client.QueryBlock(height); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(parseBlock(commonBlock))
+			if block, err := parseBlock(commonBlock); nil != err {
+				result.FailErr(err)
+			} else {
+				result.Success(block)
+			}
 		}
 	}
 	return &result
@@ -75,7 +79,11 @@ func queryLedgerBlockByHash(hash string, channelProvider ctx.ChannelProvider) *r
 			if commonBlock, err := client.QueryBlockByHash(realHash); nil != err {
 				result.FailErr(err)
 			} else {
-				result.Success(parseBlock(commonBlock))
+				if block, err := parseBlock(commonBlock); nil != err {
+					result.FailErr(err)
+				} else {
+					result.Success(block)
+				}
 			}
 		}
 	}
@@ -91,7 +99,11 @@ func queryLedgerBlockByTxID(txID string, channelProvider ctx.ChannelProvider) *r
 		if commonBlock, err := client.QueryBlockByTxID(fab.TransactionID(txID)); nil != err {
 			result.FailErr(err)
 		} else {
-			result.Success(parseBlock(commonBlock))
+			if block, err := parseBlock(commonBlock); nil != err {
+				result.FailErr(err)
+			} else {
+				result.Success(block)
+			}
 		}
 	}
 	return &result

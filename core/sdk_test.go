@@ -63,7 +63,7 @@ func TestQueryLedgerBlockByHeight(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHeight("test", "mychannel", 2, confData)
+	result := QueryLedgerBlockByHeight("test", "mychannel", 1, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -325,8 +325,8 @@ func TestDiscoveryClientEndorsersPeers(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",
