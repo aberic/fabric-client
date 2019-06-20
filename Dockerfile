@@ -1,6 +1,7 @@
 FROM centos:latest
-LABEL app="fabric" by="aberic"
-COPY fabric_linux_amd64 fabric
-RUN chmod 777 fabric
+LABEL app="fabric-go-client" by="ennoo"
+COPY fgc_linux_amd64 fgc
+RUN chmod 777 fgc
 EXPOSE 19865
-CMD ./fabric
+EXPOSE 19877
+CMD ./fgc

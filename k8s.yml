@@ -1,0 +1,122 @@
+# cat ~/.docker/config.json
+# cat ~/.docker/config.json |base64 -w 0
+apiVersion: v1
+kind: Secret
+metadata:
+  name: registrykey-harbor
+  namespace: ennoo
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSJ0Y2xvdWQuaHViIjogewoJCQkiYXV0aCI6ICJZV1J0YVc0NlNHRnlZbTl5TVRJek5EVT0iCgkJfQoJfSwKCSJIdHRwSGVhZGVycyI6IHsKCQkiVXNlci1BZ2VudCI6ICJEb2NrZXItQ2xpZW50LzE3LjA5LjAtY2UgKGxpbnV4KSIKCX0KfQ==
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ennoo
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fgc
+  namespace: ennoo
+  labels:
+    ns: ennoo
+    id: fabric-client
+    use: fabric
+spec:
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /data/dev/k8s
+    server: 10.10.203.52
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fgc
+  namespace: ennoo
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 10Mi
+  selector:
+    matchLabels:
+      ns: ennoo
+      id: fabric-client
+      use: fabric
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: ennoo
+  name: fgc
+spec:
+  selector:
+    app: hyperledger
+    role: client
+    id: fabric-client
+    ns: ennoo
+  type: NodePort
+  ports:
+    - port: 19865
+      targetPort: 19865
+      name: http
+      protocol: TCP
+    - port: 19877
+      targetPort: 19877
+      nodePort: 30077
+      name: grpc
+      protocol: TCP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: ennoo
+  name: fgc
+spec:
+  selector:
+    matchLabels:
+      app: hyperledger
+      role: client
+      id: fabric-client
+      ns: ennoo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hyperledger
+        role: client
+        id: fabric-client
+        ns: ennoo
+    spec:
+      containers:
+        - name: fabric-go-client
+          image: 10.0.60.34:80/hbaas/ennoo/fabric-go-client:1.0
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 50m
+              memory: 400Mi
+            limits:
+              cpu: 100m
+              memory: 800Mi
+          volumeMounts:
+            - name: timezone
+              mountPath: /etc/localtime
+            - name: data
+              mountPath: /data/config
+      volumes:
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+        - name: data
+          persistentVolumeClaim:
+            claimName: fgc
+      imagePullSecrets:
+        - name: registrykey-harbor
+---
