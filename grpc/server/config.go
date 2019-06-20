@@ -16,10 +16,13 @@ package server
 
 import (
 	"errors"
+	"fmt"
 	configer "github.com/ennoo/fabric-go-client/config"
 	pb "github.com/ennoo/fabric-go-client/grpc/proto"
 	"github.com/ennoo/fabric-go-client/service"
+	"github.com/ennoo/rivet/utils/log"
 	"golang.org/x/net/context"
+	"gopkg.in/yaml.v3"
 )
 
 type ConfigServer struct {
@@ -30,25 +33,25 @@ func (c *ConfigServer) GetConfig(ctx context.Context, in *pb.String) (*pb.Config
 	if nil == config {
 		return nil, errors.New("config is nil")
 	} else {
+		confData, err := yaml.Marshal(&config)
+		if err != nil {
+			log.Self.Debug("client", log.Error(err))
+		}
+		fmt.Printf("--- dump:\n%s\n\n", string(confData))
 		return config.GetPBConfig(), nil
 	}
 }
 
 func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.String, error) {
-	config := service.Get(in.ConfigID)
-	if nil == config {
-		return nil, errors.New("config is nil")
-	} else {
-		return &pb.String{Data: "success"}, service.InitClient(&service.Client{
-			ConfigID:     in.ConfigID,
-			TlS:          in.Tls,
-			Organization: in.Organization,
-			Level:        in.Level,
-			CryptoConfig: in.CryptoConfig,
-			KeyPath:      in.KeyPath,
-			CertPath:     in.CertPath,
-		})
-	}
+	return &pb.String{Data: "success"}, service.InitClient(&service.Client{
+		ConfigID:     in.ConfigID,
+		TlS:          in.Tls,
+		Organization: in.Organization,
+		Level:        in.Level,
+		CryptoConfig: in.CryptoConfig,
+		KeyPath:      in.KeyPath,
+		CertPath:     in.CertPath,
+	})
 }
 
 func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCustom) (*pb.String, error) {
