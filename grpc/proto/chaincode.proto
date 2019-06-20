@@ -18,7 +18,7 @@ message CCList {
 
 message Install {
     string configID = 1;
-    string orderOrgName = 2;
+    string orgName = 2;
     string orgUser = 3;
     string name = 4;
     string source = 5;
@@ -35,7 +35,7 @@ message Installed {
 
 message Instantiate {
     string configID = 1;
-    string orderOrgName = 2;
+    string orgName = 2;
     string orgUser = 3;
     string channelID = 4;
     string name = 5;
@@ -47,19 +47,15 @@ message Instantiate {
 
 message Instantiated {
     string configID = 1;
-    string orderOrgName = 2;
+    string orgName = 2;
     string orgUser = 3;
     string channelID = 4;
-    string name = 5;
-    string path = 6;
-    string version = 7;
-    repeated string orgPolicies = 8;
-    repeated bytes args = 9;
+    string peerName = 5;
 }
 
 message Upgrade {
     string configID = 1;
-    string orderOrgName = 2;
+    string orgName = 2;
     string orgUser = 3;
     string channelID = 4;
     string name = 5;

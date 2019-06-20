@@ -12,7 +12,7 @@ message ReqInfo {
 message ReqBlockByHeight {
     string configID = 1;
     string channelID = 2;
-    int64 height = 3;
+    uint64 height = 3;
 }
 
 message ReqBlockByHash {
@@ -25,6 +25,37 @@ message ReqBlockByTxID {
     string configID = 1;
     string channelID = 2;
     string txID = 3;
+}
+
+message ReqInfoSpec {
+    string configID = 1;
+    string channelID = 2;
+    string orgName = 3;
+    string orgUser = 4;
+}
+
+message ReqBlockByHeightSpec {
+    string configID = 1;
+    string channelID = 2;
+    string orgName = 3;
+    string orgUser = 4;
+    uint64 height = 5;
+}
+
+message ReqBlockByHashSpec {
+    string configID = 1;
+    string channelID = 2;
+    string orgName = 3;
+    string orgUser = 4;
+    string hash = 5;
+}
+
+message ReqBlockByTxIDSpec {
+    string configID = 1;
+    string channelID = 2;
+    string orgName = 3;
+    string orgUser = 4;
+    string txID = 5;
 }
 
 message ChannelInfo {

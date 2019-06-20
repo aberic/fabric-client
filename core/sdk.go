@@ -19,6 +19,7 @@ import (
 	"errors"
 	"fmt"
 	config2 "github.com/ennoo/fabric-go-client/config"
+	"github.com/ennoo/fabric-go-client/service"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/ennoo/rivet/utils/string"
@@ -69,7 +70,73 @@ func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...
 	return queryChannels(orgName, orgUser, peerName, sdk)
 }
 
-func QueryLedgerInfo(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerInfo(configID, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	if orgName, orgUser, err := get(configID, channelID); nil != err {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	} else {
+		return QueryLedgerInfoSpec(channelID, orgName, orgUser, configBytes, sdkOpts...)
+	}
+}
+
+func QueryLedgerBlockByHeight(configID, channelID string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	if orgName, orgUser, err := get(configID, channelID); nil != err {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	} else {
+		return QueryLedgerBlockByHeightSpec(channelID, orgName, orgUser, height, configBytes, sdkOpts...)
+	}
+}
+
+func QueryLedgerBlockByHash(configID, channelID, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	if orgName, orgUser, err := get(configID, channelID); nil != err {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	} else {
+		return QueryLedgerBlockByHashSpec(channelID, orgName, orgUser, hash, configBytes, sdkOpts...)
+	}
+}
+
+func QueryLedgerBlockByTxID(configID, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	if orgName, orgUser, err := get(configID, channelID); nil != err {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	} else {
+		return QueryLedgerBlockByTxIDSpec(channelID, orgName, orgUser, txID, configBytes, sdkOpts...)
+	}
+}
+
+func QueryLedgerTransaction(configID, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	if orgName, orgUser, err := get(configID, channelID); nil != err {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	} else {
+		return QueryLedgerTransactionSpec(channelID, orgName, orgUser, txID, configBytes, sdkOpts...)
+	}
+}
+
+func QueryLedgerConfig(configID, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	if orgName, orgUser, err := get(configID, channelID); nil != err {
+		log.Self.Error(err.Error())
+		result.Fail(err.Error())
+		return &result
+	} else {
+		return QueryLedgerConfigSpec(channelID, orgName, orgUser, configBytes, sdkOpts...)
+	}
+}
+
+func QueryLedgerInfoSpec(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -81,7 +148,7 @@ func QueryLedgerInfo(channelID, orgName, orgUser string, configBytes []byte, sdk
 	return queryLedgerInfo(channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHeight(channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHeightSpec(channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -93,7 +160,7 @@ func QueryLedgerBlockByHeight(channelID, orgName, orgUser string, height uint64,
 	return queryLedgerBlockByHeight(height, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHash(channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHashSpec(channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -105,7 +172,7 @@ func QueryLedgerBlockByHash(channelID, orgName, orgUser, hash string, configByte
 	return queryLedgerBlockByHash(hash, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByTxID(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByTxIDSpec(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -117,7 +184,7 @@ func QueryLedgerBlockByTxID(channelID, orgName, orgUser, txID string, configByte
 	return queryLedgerBlockByTxID(txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerTransaction(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerTransactionSpec(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -129,7 +196,7 @@ func QueryLedgerTransaction(channelID, orgName, orgUser, txID string, configByte
 	return queryLedgerTransaction(txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerConfig(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerConfigSpec(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -422,10 +489,11 @@ func resMgmtClient(ordererOrgName, orgUser string, configBytes []byte, sdkOpts .
 	return resMgmtClient, sdk, nil
 }
 
-func get(channelID string, conf *config2.Config) (orgName, userName string, err error) {
+func get(configID, channelID string) (orgName, orgUser string, err error) {
 	var (
 		peerName string
 	)
+	conf := service.Configs[configID]
 	channel := conf.Channels[channelID]
 
 	for name, peer := range channel.Peers {
@@ -441,21 +509,23 @@ func get(channelID string, conf *config2.Config) (orgName, userName string, err 
 	}
 
 	for oName, orgItf := range conf.Organizations {
-		if org, ok := orgItf.(config2.Org); ok {
-			have := false
-			for _, pName := range org.Peers {
-				if peerName == pName {
-					orgName = oName
-					have = true
-					break
-				}
-			}
-			if have {
-				str1 := strings.Split(org.CryptoPath, "@")
-				str2 := strings.Split(str1[0], "/")
-				userName = str2[len(str2)-1]
+		if oName == config2.OrderOrgKey {
+			continue
+		}
+		org := orgItf.(*config2.Org)
+		have := false
+		for _, pName := range org.Peers {
+			if peerName == pName {
+				orgName = oName
+				have = true
 				break
 			}
+		}
+		if have {
+			str1 := strings.Split(org.CryptoPath, "@")
+			str2 := strings.Split(str1[0], "/")
+			orgUser = str2[len(str2)-1]
+			break
 		}
 	}
 

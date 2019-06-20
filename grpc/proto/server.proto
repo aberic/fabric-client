@@ -27,9 +27,9 @@ service ChainCode {
     }
     rpc UpgradeCC (Upgrade) returns (String) {
     }
-    rpc InvokeCC (Invoke) returns (Bytes) {
+    rpc InvokeCC (Invoke) returns (String) {
     }
-    rpc QueryCC (Query) returns (Bytes) {
+    rpc QueryCC (Query) returns (String) {
     }
 }
 
@@ -41,5 +41,13 @@ service Ledger {
     rpc QueryLedgerBlockByHash (ReqBlockByHash) returns (Block) {
     }
     rpc QueryLedgerBlockByTxID (ReqBlockByTxID) returns (Block) {
+    }
+    rpc QueryLedgerInfoSpec (ReqInfoSpec) returns (ChannelInfo) {
+    }
+    rpc QueryLedgerBlockByHeightSpec (ReqBlockByHeightSpec) returns (Block) {
+    }
+    rpc QueryLedgerBlockByHashSpec (ReqBlockByHashSpec) returns (Block) {
+    }
+    rpc QueryLedgerBlockByTxIDSpec (ReqBlockByTxIDSpec) returns (Block) {
     }
 }

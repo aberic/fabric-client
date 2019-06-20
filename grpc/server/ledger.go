@@ -26,38 +26,82 @@ import (
 type LedgerServer struct {
 }
 
-func (c *LedgerServer) QueryLedgerInfo(ctx context.Context, in *pb.ReqInfo) (*pb.ChannelInfo, error) {
+func (l *LedgerServer) QueryLedgerInfo(ctx context.Context, in *pb.ReqInfo) (*pb.ChannelInfo, error) {
 	var (
-		res      *response.Result
-		orgName  string
-		userName string
+		res *response.Result
 	)
-
-	if res = sdk.QueryLedgerInfo(in.ChannelID, orgName, userName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+	if res = sdk.QueryLedgerInfo(in.ConfigID, in.ChannelID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.ChannelInfo), nil
 	}
 	return nil, errors.New(res.Msg)
 }
 
-func (c *LedgerServer) InstalledCC(ctx context.Context, in *pb.Installed) (*pb.CCList, error) {
+func (l *LedgerServer) QueryLedgerBlockByHeight(ctx context.Context, in *pb.ReqBlockByHeight) (*pb.Block, error) {
 	var (
-		res              *response.Result
-		chainCodeInfoArr *sdk.ChainCodeInfoArr
+		res *response.Result
 	)
-	if res = sdk.Installed(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
-		chainCodes := chainCodeInfoArr.ChainCodes
-		data := make([]*pb.ChainCodeInfo, len(chainCodes))
-		for index := range chainCodes {
-			data[index].Name = chainCodes[index].Name
-			data[index].Version = chainCodes[index].Name
-			data[index].Path = chainCodes[index].Name
-			data[index].Input = chainCodes[index].Name
-			data[index].Escc = chainCodes[index].Name
-			data[index].Vscc = chainCodes[index].Name
-			data[index].Id = chainCodes[index].Id
-		}
-		return &pb.CCList{Data: data}, nil
+	if res = sdk.QueryLedgerBlockByHeight(in.ConfigID, in.ChannelID, in.Height, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.Block), nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (l *LedgerServer) QueryLedgerBlockByHash(ctx context.Context, in *pb.ReqBlockByHash) (*pb.Block, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.QueryLedgerBlockByHash(in.ConfigID, in.ChannelID, in.Hash, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.Block), nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (l *LedgerServer) QueryLedgerBlockByTxID(ctx context.Context, in *pb.ReqBlockByTxID) (*pb.Block, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.QueryLedgerBlockByTxID(in.ConfigID, in.ChannelID, in.TxID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.Block), nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (l *LedgerServer) QueryLedgerInfoSpec(ctx context.Context, in *pb.ReqInfoSpec) (*pb.ChannelInfo, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.QueryLedgerInfoSpec(in.ChannelID, in.OrgName, in.OrgUser, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.ChannelInfo), nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (l *LedgerServer) QueryLedgerBlockByHeightSpec(ctx context.Context, in *pb.ReqBlockByHeightSpec) (*pb.Block, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.QueryLedgerBlockByHeightSpec(in.ChannelID, in.OrgName, in.OrgUser, in.Height, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.Block), nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (l *LedgerServer) QueryLedgerBlockByHashSpec(ctx context.Context, in *pb.ReqBlockByHashSpec) (*pb.Block, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.QueryLedgerBlockByHashSpec(in.ChannelID, in.OrgName, in.OrgUser, in.Hash, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.Block), nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (l *LedgerServer) QueryLedgerBlockByTxIDSpec(ctx context.Context, in *pb.ReqBlockByTxIDSpec) (*pb.Block, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.QueryLedgerBlockByTxIDSpec(in.ChannelID, in.OrgName, in.OrgUser, in.TxID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return res.Data.(*pb.Block), nil
 	}
 	return nil, errors.New(res.Msg)
 }

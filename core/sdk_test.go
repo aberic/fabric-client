@@ -17,6 +17,7 @@ package sdk
 import (
 	"fmt"
 	"github.com/ennoo/fabric-go-client/config"
+	"github.com/ennoo/fabric-go-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	"gopkg.in/yaml.v2"
 	"testing"
@@ -29,6 +30,9 @@ func TestConfig(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	fmt.Printf("--- dump:\n%s\n\n", string(confData))
+
+	service.Configs["test"] = conf
+	t.Log(get("test", "mychannel"))
 }
 
 func TestJoin(t *testing.T) {
@@ -47,7 +51,8 @@ func TestQueryLedgerInfo(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerInfo("mychannel", "Org1", "Admin", confData)
+	service.Configs["test"] = conf
+	result := QueryLedgerInfo("test", "mychannel", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -57,7 +62,8 @@ func TestQueryLedgerBlockByHeight(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByHeight("mychannel", "Org1", "Admin", 2, confData)
+	service.Configs["test"] = conf
+	result := QueryLedgerBlockByHeight("test", "mychannel", 2, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -67,7 +73,8 @@ func TestQueryLedgerBlockByHash(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByHash("mychannel", "Org1", "Admin", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
+	service.Configs["test"] = conf
+	result := QueryLedgerBlockByHash("test", "mychannel", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -77,7 +84,8 @@ func TestQueryLedgerBlockByTxID(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByTxID("mychannel", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	service.Configs["test"] = conf
+	result := QueryLedgerBlockByTxID("test", "mychannel", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -87,7 +95,8 @@ func TestQueryLedgerTransaction(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerTransaction("mychannel", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	service.Configs["test"] = conf
+	result := QueryLedgerTransaction("test", "mychannel", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -97,7 +106,69 @@ func TestQueryLedgerConfig(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerConfig("mychannel", "Org1", "Admin", confData)
+	service.Configs["test"] = conf
+	result := QueryLedgerConfig("test", "mychannel", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerInfoSpec(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryLedgerInfoSpec("mychannel", "Org1", "Admin", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerBlockByHeightSpec(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	service.Configs["test"] = conf
+	result := QueryLedgerBlockByHeightSpec("mychannel", "Org1", "Admin", 2, confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerBlockByHashSpec(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryLedgerBlockByHashSpec("mychannel", "Org1", "Admin", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerBlockByTxIDSpec(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryLedgerBlockByTxIDSpec("mychannel", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerTransactionSpec(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryLedgerTransactionSpec("mychannel", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	log.Self.Debug("test query", log.Reflect("result", result))
+}
+
+func TestQueryLedgerConfigSpec(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		log.Self.Debug("client", log.Error(err))
+	}
+	result := QueryLedgerConfigSpec("mychannel", "Org1", "Admin", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -254,8 +325,8 @@ func TestDiscoveryClientEndorsersPeers(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",

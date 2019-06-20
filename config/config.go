@@ -14,6 +14,10 @@
 
 package config
 
+const (
+	OrderOrgKey = "ordererorg"
+)
+
 type Config struct {
 	Version                string                           `yaml:"version"`
 	Client                 *Client                          `yaml:"client"`
@@ -89,7 +93,7 @@ func (c *Config) AddOrSetEventServicePolicyForChannel(channelName, resolverStrat
 
 func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string) {
 	c.initOrganizations()
-	c.Organizations["ordererorg"] = &OrdererOrg{
+	c.Organizations[OrderOrgKey] = &OrdererOrg{
 		MspID:      mspID,
 		CryptoPath: cryptoPath,
 	}

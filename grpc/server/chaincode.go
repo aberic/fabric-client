@@ -30,7 +30,7 @@ func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.St
 	var (
 		res *response.Result
 	)
-	if res = sdk.Install(in.OrderOrgName, in.OrgUser, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.Install(in.OrgName, in.OrgUser, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)
@@ -55,6 +55,73 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 			data[index].Id = chainCodes[index].Id
 		}
 		return &pb.CCList{Data: data}, nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate) (*pb.String, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
+		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return &pb.String{Data: res.Data.(string)}, nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiated) (*pb.CCList, error) {
+	var (
+		res              *response.Result
+		chainCodeInfoArr *sdk.ChainCodeInfoArr
+	)
+	if res = sdk.Instantiated(in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
+		chainCodes := chainCodeInfoArr.ChainCodes
+		data := make([]*pb.ChainCodeInfo, len(chainCodes))
+		for index := range chainCodes {
+			data[index].Name = chainCodes[index].Name
+			data[index].Version = chainCodes[index].Name
+			data[index].Path = chainCodes[index].Name
+			data[index].Input = chainCodes[index].Name
+			data[index].Escc = chainCodes[index].Name
+			data[index].Vscc = chainCodes[index].Name
+			data[index].Id = chainCodes[index].Id
+		}
+		return &pb.CCList{Data: data}, nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.String, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
+		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return &pb.String{Data: res.Data.(string)}, nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.String, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args,
+		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return &pb.String{Data: res.Data.(string)}, nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
+func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.String, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.Query(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
+		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)
 }

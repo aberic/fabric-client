@@ -17,7 +17,7 @@ package main
 
 import (
 	pb "github.com/ennoo/fabric-go-client/grpc/proto"
-	server2 "github.com/ennoo/fabric-go-client/grpc/server"
+	"github.com/ennoo/fabric-go-client/grpc/server"
 	"github.com/ennoo/fabric-go-client/route"
 	"github.com/ennoo/fabric-go-client/service"
 	"github.com/ennoo/rivet"
@@ -55,14 +55,15 @@ func grpcListener() {
 		panic(err)
 	}
 	//  创建grpc的server
-	server := grpc.NewServer()
+	rpcServer := grpc.NewServer()
 
 	//  注册我们自定义的helloworld服务
-	pb.RegisterChannelServer(server, &server2.ChannelServer{})
-	pb.RegisterChainCodeServer(server, &server2.ChainCodeServer{})
+	pb.RegisterChannelServer(rpcServer, &server.ChannelServer{})
+	pb.RegisterChainCodeServer(rpcServer, &server.ChainCodeServer{})
+	pb.RegisterLedgerServer(rpcServer, &server.LedgerServer{})
 
 	//  启动grpc服务
-	if err = server.Serve(listener); nil != err {
+	if err = rpcServer.Serve(listener); nil != err {
 		panic(err)
 	}
 }

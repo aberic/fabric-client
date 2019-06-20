@@ -4,9 +4,9 @@
 package proto
 
 import (
-	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 	math "math"
 )
@@ -20,37 +20,40 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 func init() { proto.RegisterFile("grpc/proto/server.proto", fileDescriptor_9f9189b3c96cae45) }
 
 var fileDescriptor_9f9189b3c96cae45 = []byte{
-	// 392 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xcd, 0x6e, 0xda, 0x40,
-	0x14, 0x85, 0x5d, 0x44, 0xa1, 0xdc, 0x16, 0x84, 0x6e, 0x5b, 0xd1, 0x7a, 0xe9, 0x4d, 0x55, 0x15,
-	0x99, 0x8a, 0x56, 0x55, 0x97, 0x2d, 0xc3, 0x22, 0x8e, 0xd8, 0xe4, 0xef, 0x01, 0x1c, 0xfb, 0xc6,
-	0xb6, 0xb0, 0x66, 0xc8, 0x78, 0x40, 0xe1, 0x1d, 0xb2, 0xcf, 0xc3, 0xe5, 0x65, 0xa2, 0xb1, 0x07,
-	0xe3, 0x1f, 0x16, 0x59, 0x59, 0xf7, 0x7c, 0xe7, 0x9e, 0x33, 0xa3, 0x31, 0x4c, 0x22, 0xb9, 0x09,
-	0x66, 0x1b, 0x29, 0x94, 0x98, 0x65, 0x24, 0x77, 0x24, 0xdd, 0x7c, 0xc0, 0xb7, 0xf9, 0xc7, 0xae,
-	0x72, 0x49, 0xd9, 0x36, 0x55, 0x05, 0xb7, 0xbf, 0x54, 0x40, 0x10, 0xfb, 0x9c, 0x53, 0x6a, 0x88,
-	0x5d, 0x27, 0x09, 0x0f, 0x44, 0x48, 0x6e, 0x3b, 0x2e, 0xa5, 0x30, 0x3a, 0xd4, 0xcd, 0x9f, 0xde,
-	0x40, 0x9f, 0x15, 0x31, 0x38, 0x83, 0x1e, 0x93, 0xe4, 0x2b, 0xc2, 0x4f, 0x05, 0x75, 0x0d, 0x29,
-	0x54, 0x7b, 0x68, 0xd4, 0x2b, 0x25, 0x13, 0x1e, 0x39, 0x16, 0xfe, 0x80, 0xee, 0xb9, 0x48, 0x38,
-	0x62, 0xdd, 0xae, 0xb5, 0xb6, 0xd9, 0x85, 0xee, 0x2a, 0xc9, 0x54, 0xd3, 0xac, 0x35, 0x7b, 0x5c,
-	0x33, 0xff, 0x97, 0xd2, 0xb1, 0xe6, 0xcf, 0x1d, 0x18, 0x30, 0x7d, 0x0d, 0x26, 0x42, 0xc2, 0x29,
-	0x0c, 0x3c, 0x9e, 0x29, 0x3f, 0x4d, 0x19, 0xc3, 0x91, 0xb1, 0x1b, 0xa5, 0xdd, 0xf5, 0x13, 0xde,
-	0x1b, 0x46, 0x21, 0x63, 0x38, 0xae, 0xfb, 0x29, 0x2c, 0x37, 0x18, 0xd3, 0xfd, 0x8e, 0x85, 0xbf,
-	0x61, 0x98, 0x53, 0xae, 0x12, 0x5f, 0x11, 0x63, 0xe5, 0x31, 0x2b, 0x6a, 0xbb, 0xe7, 0x0f, 0x8c,
-	0x2a, 0x5c, 0x57, 0x7d, 0x6c, 0xaf, 0x9d, 0x68, 0x9b, 0xc2, 0xe0, 0x66, 0x13, 0x49, 0x3f, 0xa4,
-	0xca, 0x6d, 0x8c, 0xd2, 0x6e, 0xf9, 0x0e, 0xef, 0x3c, 0xbe, 0x13, 0x6b, 0x6d, 0x1e, 0x96, 0xf9,
-	0x5a, 0xb0, 0x3f, 0x98, 0x71, 0xb1, 0x57, 0x94, 0x39, 0x16, 0x7e, 0x83, 0xfe, 0xc5, 0x96, 0xe4,
-	0x9e, 0x31, 0x3c, 0xa0, 0x7c, 0x6e, 0x1a, 0xe7, 0x8f, 0x1d, 0xe8, 0xad, 0xf2, 0x1f, 0x01, 0xff,
-	0xc2, 0xb8, 0xd8, 0x29, 0x1e, 0xc4, 0xe3, 0x77, 0xa2, 0x3c, 0xd3, 0x25, 0xdd, 0xeb, 0xd9, 0x6e,
-	0x3c, 0x9a, 0xd6, 0x1c, 0x0b, 0x97, 0xf0, 0xb5, 0xba, 0xb9, 0x48, 0x45, 0xb0, 0x5e, 0xec, 0xcf,
-	0x28, 0x89, 0x62, 0x85, 0x93, 0x63, 0x44, 0x0d, 0x1c, 0x8f, 0xa2, 0x55, 0xc7, 0xc2, 0x7f, 0x30,
-	0x39, 0x95, 0xe2, 0x67, 0x31, 0x7e, 0x6e, 0x67, 0xf8, 0x59, 0xfc, 0xca, 0x84, 0xeb, 0x07, 0x6f,
-	0x79, 0x22, 0x41, 0xcb, 0xcd, 0x84, 0xdb, 0x5e, 0x3e, 0xfe, 0x7a, 0x09, 0x00, 0x00, 0xff, 0xff,
-	0x54, 0x84, 0x5e, 0x36, 0x97, 0x03, 0x00, 0x00,
+	// 436 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x51, 0x6e, 0xd4, 0x30,
+	0x10, 0x86, 0x03, 0x5a, 0xb6, 0xec, 0xc0, 0x96, 0x6a, 0x0a, 0xb4, 0x18, 0x9e, 0xf2, 0x84, 0xa0,
+	0xda, 0x45, 0x0b, 0x82, 0x47, 0x44, 0x8d, 0x04, 0x81, 0xbe, 0x40, 0xe1, 0x00, 0x21, 0x19, 0x92,
+	0xa8, 0x91, 0x1d, 0x1c, 0xb7, 0xa2, 0x27, 0xe1, 0x0a, 0x5c, 0x8a, 0xbb, 0x20, 0x3b, 0xde, 0x34,
+	0x89, 0x13, 0xa9, 0x4f, 0xd1, 0xfc, 0xff, 0xef, 0x6f, 0xc6, 0x13, 0xc3, 0x41, 0xa6, 0xaa, 0x64,
+	0x5d, 0x29, 0xa9, 0xe5, 0xba, 0x26, 0x75, 0x41, 0x6a, 0x65, 0x0b, 0xbc, 0x65, 0x3f, 0xac, 0xeb,
+	0x2b, 0xaa, 0xcf, 0x4b, 0xdd, 0xf8, 0xec, 0xb0, 0x63, 0x24, 0x79, 0x2c, 0x04, 0x95, 0xce, 0x61,
+	0x7d, 0xa7, 0x10, 0x89, 0x4c, 0x69, 0xe5, 0xe3, 0x4a, 0x4a, 0xb3, 0x6d, 0xbb, 0xcd, 0x9f, 0x1b,
+	0xb0, 0xc3, 0x1b, 0x0c, 0xae, 0x61, 0xce, 0x15, 0xc5, 0x9a, 0xf0, 0x7e, 0xe3, 0xae, 0x9c, 0xd3,
+	0xa8, 0x6c, 0xe9, 0xd4, 0x53, 0xad, 0x0a, 0x91, 0x85, 0x01, 0x3e, 0x87, 0xd9, 0x27, 0x59, 0x08,
+	0xc4, 0x7e, 0xdc, 0x68, 0x7e, 0x78, 0x05, 0xb3, 0x93, 0xa2, 0xd6, 0xc3, 0xb0, 0xd1, 0xd8, 0x5e,
+	0x2f, 0xfc, 0x4e, 0xa9, 0x30, 0xd8, 0xfc, 0xbb, 0x09, 0x0b, 0x6e, 0xae, 0xc1, 0x65, 0x4a, 0x78,
+	0x04, 0x8b, 0x48, 0xd4, 0x3a, 0x2e, 0x4b, 0xce, 0x71, 0xd7, 0xc5, 0x9d, 0xe2, 0xf7, 0x7a, 0x01,
+	0x77, 0x9c, 0x47, 0x29, 0xe7, 0xb8, 0xd7, 0xcf, 0x53, 0xda, 0x9e, 0xe0, 0xdc, 0xf4, 0x0f, 0x03,
+	0x7c, 0x05, 0x4b, 0xeb, 0x0a, 0x5d, 0xc4, 0x9a, 0x38, 0x6f, 0xc7, 0xec, 0xa8, 0x7e, 0x9f, 0xd7,
+	0xb0, 0xdb, 0xf1, 0x4d, 0xab, 0x7d, 0xff, 0xd8, 0x48, 0xb7, 0x23, 0x58, 0x7c, 0xaf, 0x32, 0x15,
+	0xa7, 0xd4, 0xb9, 0x8d, 0x53, 0xfc, 0x2e, 0xcf, 0xe0, 0x76, 0x24, 0x2e, 0xe4, 0x99, 0x09, 0x2f,
+	0x5b, 0xbe, 0x11, 0xfc, 0xec, 0x53, 0xd8, 0xf9, 0x72, 0x4e, 0xea, 0x92, 0x73, 0xbc, 0xeb, 0x3c,
+	0x5b, 0x7b, 0xc9, 0xcd, 0xdf, 0x19, 0xcc, 0x4f, 0xec, 0x53, 0xc0, 0x37, 0x70, 0xcf, 0x86, 0x9a,
+	0x32, 0x12, 0x3f, 0x65, 0x3b, 0xd4, 0x57, 0xfa, 0x65, 0x6a, 0x36, 0xf8, 0x6b, 0x46, 0x0b, 0x03,
+	0xe4, 0x70, 0xd8, 0x39, 0x78, 0x5c, 0xca, 0xe4, 0xec, 0xf8, 0xf2, 0x23, 0x15, 0x59, 0xae, 0xf1,
+	0xe0, 0x8a, 0xd0, 0x33, 0xd8, 0x76, 0x2e, 0xab, 0x86, 0x01, 0xbe, 0x85, 0x87, 0x23, 0x90, 0xb8,
+	0xce, 0xf1, 0x81, 0x8f, 0x88, 0xeb, 0xfc, 0x7a, 0x80, 0x6f, 0xbf, 0xa3, 0xf7, 0x23, 0x00, 0x23,
+	0x8f, 0x00, 0xf6, 0x07, 0xf7, 0x3f, 0xad, 0x28, 0x69, 0x9f, 0x80, 0xdb, 0x81, 0xd1, 0x26, 0xf6,
+	0xf0, 0x19, 0x9e, 0x4c, 0xed, 0xc1, 0x92, 0x1e, 0x4f, 0xec, 0xc2, 0x22, 0x87, 0xd3, 0x7c, 0x00,
+	0x36, 0xbe, 0x0f, 0x8b, 0x7a, 0x34, 0xba, 0x93, 0xeb, 0x83, 0xcc, 0x02, 0x26, 0x40, 0x5b, 0x6b,
+	0x08, 0xfa, 0x31, 0xb7, 0xe5, 0xcb, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x20, 0xb7, 0x58,
+	0xb5, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -200,8 +203,8 @@ type ChainCodeClient interface {
 	InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*String, error)
 	InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*CCList, error)
 	UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*String, error)
-	InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*Bytes, error)
-	QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Bytes, error)
+	InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*String, error)
+	QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error)
 }
 
 type chainCodeClient struct {
@@ -257,8 +260,8 @@ func (c *chainCodeClient) UpgradeCC(ctx context.Context, in *Upgrade, opts ...gr
 	return out, nil
 }
 
-func (c *chainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*Bytes, error) {
-	out := new(Bytes)
+func (c *chainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
 	err := c.cc.Invoke(ctx, "/proto.ChainCode/InvokeCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -266,8 +269,8 @@ func (c *chainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc
 	return out, nil
 }
 
-func (c *chainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Bytes, error) {
-	out := new(Bytes)
+func (c *chainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error) {
+	out := new(String)
 	err := c.cc.Invoke(ctx, "/proto.ChainCode/QueryCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -282,8 +285,8 @@ type ChainCodeServer interface {
 	InstantiateCC(context.Context, *Instantiate) (*String, error)
 	InstantiatedCC(context.Context, *Instantiated) (*CCList, error)
 	UpgradeCC(context.Context, *Upgrade) (*String, error)
-	InvokeCC(context.Context, *Invoke) (*Bytes, error)
-	QueryCC(context.Context, *Query) (*Bytes, error)
+	InvokeCC(context.Context, *Invoke) (*String, error)
+	QueryCC(context.Context, *Query) (*String, error)
 }
 
 func RegisterChainCodeServer(s *grpc.Server, srv ChainCodeServer) {
@@ -457,10 +460,14 @@ var _ChainCode_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LedgerClient interface {
-	QueryChannelInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ChannelInfo, error)
-	QueryChannelBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*Block, error)
-	QueryChannelBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*Block, error)
-	QueryChannelBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ChannelInfo, error)
+	QueryLedgerBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec, opts ...grpc.CallOption) (*ChannelInfo, error)
+	QueryLedgerBlockByHeightSpec(ctx context.Context, in *ReqBlockByHeightSpec, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBlockByHashSpec, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBlockByTxIDSpec, opts ...grpc.CallOption) (*Block, error)
 }
 
 type ledgerClient struct {
@@ -471,36 +478,72 @@ func NewLedgerClient(cc *grpc.ClientConn) LedgerClient {
 	return &ledgerClient{cc}
 }
 
-func (c *ledgerClient) QueryChannelInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ChannelInfo, error) {
+func (c *ledgerClient) QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ChannelInfo, error) {
 	out := new(ChannelInfo)
-	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryChannelInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ledgerClient) QueryChannelBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*Block, error) {
+func (c *ledgerClient) QueryLedgerBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*Block, error) {
 	out := new(Block)
-	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryChannelBlockByHeight", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerBlockByHeight", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ledgerClient) QueryChannelBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*Block, error) {
+func (c *ledgerClient) QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*Block, error) {
 	out := new(Block)
-	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryChannelBlockByHash", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerBlockByHash", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ledgerClient) QueryChannelBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*Block, error) {
+func (c *ledgerClient) QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*Block, error) {
 	out := new(Block)
-	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryChannelBlockByTxID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerBlockByTxID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerClient) QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec, opts ...grpc.CallOption) (*ChannelInfo, error) {
+	out := new(ChannelInfo)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerInfoSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerClient) QueryLedgerBlockByHeightSpec(ctx context.Context, in *ReqBlockByHeightSpec, opts ...grpc.CallOption) (*Block, error) {
+	out := new(Block)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerBlockByHeightSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerClient) QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBlockByHashSpec, opts ...grpc.CallOption) (*Block, error) {
+	out := new(Block)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerBlockByHashSpec", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerClient) QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBlockByTxIDSpec, opts ...grpc.CallOption) (*Block, error) {
+	out := new(Block)
+	err := c.cc.Invoke(ctx, "/proto.Ledger/QueryLedgerBlockByTxIDSpec", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -509,84 +552,160 @@ func (c *ledgerClient) QueryChannelBlockByTxID(ctx context.Context, in *ReqBlock
 
 // LedgerServer is the server API for Ledger service.
 type LedgerServer interface {
-	QueryChannelInfo(context.Context, *ReqInfo) (*ChannelInfo, error)
-	QueryChannelBlockByHeight(context.Context, *ReqBlockByHeight) (*Block, error)
-	QueryChannelBlockByHash(context.Context, *ReqBlockByHash) (*Block, error)
-	QueryChannelBlockByTxID(context.Context, *ReqBlockByTxID) (*Block, error)
+	QueryLedgerInfo(context.Context, *ReqInfo) (*ChannelInfo, error)
+	QueryLedgerBlockByHeight(context.Context, *ReqBlockByHeight) (*Block, error)
+	QueryLedgerBlockByHash(context.Context, *ReqBlockByHash) (*Block, error)
+	QueryLedgerBlockByTxID(context.Context, *ReqBlockByTxID) (*Block, error)
+	QueryLedgerInfoSpec(context.Context, *ReqInfoSpec) (*ChannelInfo, error)
+	QueryLedgerBlockByHeightSpec(context.Context, *ReqBlockByHeightSpec) (*Block, error)
+	QueryLedgerBlockByHashSpec(context.Context, *ReqBlockByHashSpec) (*Block, error)
+	QueryLedgerBlockByTxIDSpec(context.Context, *ReqBlockByTxIDSpec) (*Block, error)
 }
 
 func RegisterLedgerServer(s *grpc.Server, srv LedgerServer) {
 	s.RegisterService(&_Ledger_serviceDesc, srv)
 }
 
-func _Ledger_QueryChannelInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Ledger_QueryLedgerInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReqInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LedgerServer).QueryChannelInfo(ctx, in)
+		return srv.(LedgerServer).QueryLedgerInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Ledger/QueryChannelInfo",
+		FullMethod: "/proto.Ledger/QueryLedgerInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LedgerServer).QueryChannelInfo(ctx, req.(*ReqInfo))
+		return srv.(LedgerServer).QueryLedgerInfo(ctx, req.(*ReqInfo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Ledger_QueryChannelBlockByHeight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Ledger_QueryLedgerBlockByHeight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReqBlockByHeight)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LedgerServer).QueryChannelBlockByHeight(ctx, in)
+		return srv.(LedgerServer).QueryLedgerBlockByHeight(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Ledger/QueryChannelBlockByHeight",
+		FullMethod: "/proto.Ledger/QueryLedgerBlockByHeight",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LedgerServer).QueryChannelBlockByHeight(ctx, req.(*ReqBlockByHeight))
+		return srv.(LedgerServer).QueryLedgerBlockByHeight(ctx, req.(*ReqBlockByHeight))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Ledger_QueryChannelBlockByHash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Ledger_QueryLedgerBlockByHash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReqBlockByHash)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LedgerServer).QueryChannelBlockByHash(ctx, in)
+		return srv.(LedgerServer).QueryLedgerBlockByHash(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Ledger/QueryChannelBlockByHash",
+		FullMethod: "/proto.Ledger/QueryLedgerBlockByHash",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LedgerServer).QueryChannelBlockByHash(ctx, req.(*ReqBlockByHash))
+		return srv.(LedgerServer).QueryLedgerBlockByHash(ctx, req.(*ReqBlockByHash))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Ledger_QueryChannelBlockByTxID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Ledger_QueryLedgerBlockByTxID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReqBlockByTxID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LedgerServer).QueryChannelBlockByTxID(ctx, in)
+		return srv.(LedgerServer).QueryLedgerBlockByTxID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Ledger/QueryChannelBlockByTxID",
+		FullMethod: "/proto.Ledger/QueryLedgerBlockByTxID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LedgerServer).QueryChannelBlockByTxID(ctx, req.(*ReqBlockByTxID))
+		return srv.(LedgerServer).QueryLedgerBlockByTxID(ctx, req.(*ReqBlockByTxID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ledger_QueryLedgerInfoSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqInfoSpec)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerServer).QueryLedgerInfoSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Ledger/QueryLedgerInfoSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerServer).QueryLedgerInfoSpec(ctx, req.(*ReqInfoSpec))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ledger_QueryLedgerBlockByHeightSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqBlockByHeightSpec)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerServer).QueryLedgerBlockByHeightSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Ledger/QueryLedgerBlockByHeightSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerServer).QueryLedgerBlockByHeightSpec(ctx, req.(*ReqBlockByHeightSpec))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ledger_QueryLedgerBlockByHashSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqBlockByHashSpec)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerServer).QueryLedgerBlockByHashSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Ledger/QueryLedgerBlockByHashSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerServer).QueryLedgerBlockByHashSpec(ctx, req.(*ReqBlockByHashSpec))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Ledger_QueryLedgerBlockByTxIDSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqBlockByTxIDSpec)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerServer).QueryLedgerBlockByTxIDSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Ledger/QueryLedgerBlockByTxIDSpec",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerServer).QueryLedgerBlockByTxIDSpec(ctx, req.(*ReqBlockByTxIDSpec))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -596,20 +715,36 @@ var _Ledger_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*LedgerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "QueryChannelInfo",
-			Handler:    _Ledger_QueryChannelInfo_Handler,
+			MethodName: "QueryLedgerInfo",
+			Handler:    _Ledger_QueryLedgerInfo_Handler,
 		},
 		{
-			MethodName: "QueryChannelBlockByHeight",
-			Handler:    _Ledger_QueryChannelBlockByHeight_Handler,
+			MethodName: "QueryLedgerBlockByHeight",
+			Handler:    _Ledger_QueryLedgerBlockByHeight_Handler,
 		},
 		{
-			MethodName: "QueryChannelBlockByHash",
-			Handler:    _Ledger_QueryChannelBlockByHash_Handler,
+			MethodName: "QueryLedgerBlockByHash",
+			Handler:    _Ledger_QueryLedgerBlockByHash_Handler,
 		},
 		{
-			MethodName: "QueryChannelBlockByTxID",
-			Handler:    _Ledger_QueryChannelBlockByTxID_Handler,
+			MethodName: "QueryLedgerBlockByTxID",
+			Handler:    _Ledger_QueryLedgerBlockByTxID_Handler,
+		},
+		{
+			MethodName: "QueryLedgerInfoSpec",
+			Handler:    _Ledger_QueryLedgerInfoSpec_Handler,
+		},
+		{
+			MethodName: "QueryLedgerBlockByHeightSpec",
+			Handler:    _Ledger_QueryLedgerBlockByHeightSpec_Handler,
+		},
+		{
+			MethodName: "QueryLedgerBlockByHashSpec",
+			Handler:    _Ledger_QueryLedgerBlockByHashSpec_Handler,
+		},
+		{
+			MethodName: "QueryLedgerBlockByTxIDSpec",
+			Handler:    _Ledger_QueryLedgerBlockByTxIDSpec_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
