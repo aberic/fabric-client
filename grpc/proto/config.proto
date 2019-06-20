@@ -1,0 +1,364 @@
+syntax = "proto3";
+
+package proto;
+
+message Config {
+    string version = 1;
+    Client client = 2;
+    map<string, Channel> channels = 3;
+    map<string, Organization> organizations = 4;
+    map<string, Orderer> orderers = 5;
+    map<string, Peer> peers = 6;
+    map<string, CertificateAuthority> certificateAuthorities = 7;
+}
+
+message Client {
+    string organization = 1;
+    ClientLogging logging = 2;
+    ClientPeer peer = 3;
+    ClientEventService eventService = 4;
+    ClientOrder order = 5;
+    ClientGlobal global = 6;
+    ClientCryptoConfig cryptoConfig = 7;
+    ClientCredentialStore credentialStore = 8;
+    ClientBCCSP BCCSP = 9;
+    ClientTLSCerts tlsCerts = 10;
+}
+
+message ClientLogging {
+    string level = 1;
+}
+
+message ClientPeer {
+    ClientPeerTimeout timeout = 1;
+}
+
+message ClientPeerTimeout {
+    string connection = 1;
+    string response = 2;
+    ClientPeerTimeoutDiscovery discovery = 3;
+}
+
+message ClientPeerTimeoutDiscovery {
+    string greyListExpiry = 1;
+}
+
+message ClientEventService {
+    ClientEventServiceTimeout timeout = 1;
+}
+
+message ClientEventServiceTimeout {
+    string registrationResponse = 1;
+}
+
+message ClientOrder {
+    ClientOrderTimeout timeout = 1;
+}
+
+message ClientOrderTimeout {
+    string connection = 1;
+    string response = 2;
+}
+
+message ClientGlobal {
+    ClientGlobalTimeout timeout = 1;
+    ClientGlobalCache cache = 2;
+}
+
+message ClientGlobalTimeout {
+    string query = 1;
+    string execute = 2;
+    string resmgmt = 3;
+}
+
+message ClientGlobalCache {
+    string connectionIdle = 1;
+    string eventServiceIdle = 2;
+    string channelConfig = 3;
+    string channelMembership = 4;
+    string discovery = 5;
+    string selection = 6;
+}
+
+message ClientCryptoConfig {
+    string path = 1;
+}
+
+message ClientCredentialStore {
+    string path = 1;
+    ClientCredentialStoreCryptoStore cryptoStore = 2;
+}
+
+message ClientCredentialStoreCryptoStore {
+    string path = 1;
+}
+
+message ClientBCCSP {
+    ClientBCCSPSecurity security = 1;
+}
+
+message ClientBCCSPSecurity {
+    bool enabled = 1;
+    ClientBCCSPSecurityDefault default = 2;
+    string hashAlgorithm = 3;
+    bool softVerify = 4;
+    int32 level = 5;
+}
+
+message ClientBCCSPSecurityDefault {
+    string provider = 1;
+}
+
+message ClientTLSCerts {
+    bool systemCertPool = 1;
+    ClientTLSCertsClient client = 2;
+}
+
+message ClientTLSCertsClient {
+    ClientTLSCertsClientKey key = 1;
+    ClientTLSCertsClientCert cert = 2;
+}
+
+message ClientTLSCertsClientKey {
+    string path = 1;
+}
+
+message ClientTLSCertsClientCert {
+    string path = 1;
+}
+
+message Channel {
+    map<string, ChannelPeer> peers = 1;
+    Policy Policies = 2;
+}
+
+message ChannelPeer {
+    bool endorsingPeer = 1;
+    bool chaincodeQuery = 2;
+    bool ledgerQuery = 3;
+    bool eventSource = 4;
+}
+
+message Policy {
+    PolicyQueryChannelConfig queryChannelConfig = 1;
+    PolicyDiscovery discovery = 2;
+    PolicyEventService eventService = 3;
+}
+
+message PolicyQueryChannelConfig {
+    int32 minResponses = 1;
+    int32 maxTargets = 2;
+    PolicyCommonRetryOpts retryOpts = 3;
+}
+
+message PolicyCommonRetryOpts {
+    int32 attempts = 1;
+    string initialBackoff = 2;
+    string maxBackoff = 3;
+    float backoffFactor = 4;
+}
+
+message PolicyDiscovery {
+    int32 maxTargets = 1;
+    PolicyCommonRetryOpts retryOpts = 2;
+}
+
+message PolicyEventService {
+    string resolverStrategy = 1;
+    string balancer = 2;
+    int64 blockHeightLagThreshold = 3;
+    int64 reconnectBlockHeightLagThreshold = 4;
+    string peerMonitorPeriod = 5;
+}
+
+message Organization {
+    string mspID = 1;
+    string cryptoPath = 2;
+    repeated string peers = 3;
+    repeated string certificateAuthorities = 4;
+}
+
+message Orderer {
+    string url = 1;
+    OrdererGRPCOptions grpcOptions = 2;
+    OrdererTLSCACerts tlsCACerts = 3;
+}
+
+message OrdererGRPCOptions {
+    string sslTargetNameOverride = 1;
+    string keepAliveTime = 2;
+    string keepAliveTimeout = 3;
+    bool keepAlivePermit = 4;
+    bool failFast = 5;
+    bool allowInsecure = 6;
+}
+
+message OrdererTLSCACerts {
+    string path = 1;
+}
+
+message Peer {
+    string url = 1;
+    string eventUrl = 2;
+    PeerGRPCOptions grpcOptions = 3;
+    PeerTLSCACerts tlsCACerts = 4;
+}
+
+message PeerGRPCOptions {
+    string sslTargetNameOverride = 1;
+    string keepAliveTime = 2;
+    string keepAliveTimeout = 3;
+    bool keepAlivePermit = 4;
+    bool failFast = 5;
+    bool allowInsecure = 6;
+}
+
+message PeerTLSCACerts {
+    string path = 1;
+}
+
+message CertificateAuthority {
+    string url = 1;
+    string caName = 2;
+    CertificateAuthorityTLSCACerts tlsCACerts = 3;
+    CertificateAuthorityRegistrar registrar = 4;
+}
+
+message CertificateAuthorityTLSCACerts {
+    string path = 1;
+    CertificateAuthorityTLSCACertsClient client = 2;
+}
+
+message CertificateAuthorityTLSCACertsClient {
+    CertificateAuthorityTLSCACertsClientKey key = 1;
+    CertificateAuthorityTLSCACertsClientCert cert = 2;
+}
+
+message CertificateAuthorityTLSCACertsClientKey {
+    string path = 1;
+}
+
+message CertificateAuthorityTLSCACertsClientCert {
+    string path = 1;
+}
+
+message CertificateAuthorityRegistrar {
+    string enrollId = 1;
+    string enrollSecret = 2;
+}
+
+
+message ReqClient {
+    string configID = 1;
+    bool tls = 2;
+    string organization = 3;
+    string level = 4;
+    string cryptoConfig = 5;
+    string keyPath = 6;
+    string certPath = 7;
+}
+
+message ReqClientCustom {
+    string configID = 1;
+    ReqClient client = 2;
+    ClientPeer peer = 3;
+    ClientEventService eventService = 4;
+    ClientOrder order = 5;
+    ClientGlobal global = 6;
+    ClientBCCSP BCCSP = 7;
+}
+
+message ReqChannelPeer {
+    string configID = 1;
+    string channelName = 2;
+    string peerName = 3;
+    bool endorsingPeer = 4;
+    bool chainCodeQuery = 5;
+    bool ledgerQuery = 6;
+    bool eventSource = 7;
+}
+
+message ReqChannelPolicyQuery {
+    string configID = 1;
+    string channelName = 2;
+    string initialBackOff = 3;
+    string maxBackOff = 4;
+    int32 minResponses = 5;
+    int32 maxTargets = 6;
+    int32 attempts = 7;
+    float backOffFactor = 8;
+}
+
+message ReqChannelPolicyDiscovery {
+    string configID = 1;
+    string channelName = 2;
+    string initialBackOff = 3;
+    string maxBackOff = 4;
+    int32 maxTargets = 5;
+    int32 attempts = 6;
+    float backOffFactor = 7;
+}
+
+message ReqChannelPolicyEvent {
+    string configID = 1;
+    string channelName = 2;
+    string resolverStrategy = 3;
+    string balance = 4;
+    string peerMonitorPeriod = 5;
+    int64 blockHeightLagThreshold = 6;
+    int64 reconnectBlockHeightLagThreshold = 7;
+}
+
+message ReqOrganizationsOrder {
+    string configID = 1;
+    string mspID = 2;
+    string cryptoPath = 3;
+}
+
+message ReqOrganizationsOrg {
+    string configID = 1;
+    string orgName = 2;
+    string mspID = 3;
+    string cryptoPath = 4;
+    repeated string peers = 5;
+    repeated string certificateAuthorities = 6;
+}
+
+message ReqOrder {
+    string configID = 1;
+    string orderName = 2;
+    string url = 3;
+    string sslTargetNameOverride = 4;
+    string keepAliveTime = 5;
+    string keepAliveTimeout = 6;
+    string tlsCACerts = 7;
+    bool keepAlivePermit = 8;
+    bool failFast = 9;
+    bool allowInsecure = 10;
+}
+
+message ReqPeer{
+    string configID = 1;
+    string peerName = 2;
+    string url = 3;
+    string eventUrl = 4;
+    string sslTargetNameOverride = 5;
+    string keepAliveTime = 6;
+    string keepAliveTimeout = 7;
+    string tlsCACerts = 8;
+    bool keepAlivePermit = 9;
+    bool failFast = 10;
+    bool allowInsecure = 11;
+}
+
+message ReqCertificateAuthority {
+    string configID = 1;
+    string certName = 2;
+    string url = 3;
+    string tlsCACertPath = 4;
+    string tlsCACertClientKeyPath = 5;
+    string tlsCACertClientCertPath = 6;
+    string caName = 7;
+    string enrollId = 8;
+    string enrollSecret = 9;
+}
