@@ -19,64 +19,63 @@ import (
 
 func parseBlock(commonBlock *common.Block) (*pb.Block, error) {
 	var (
-		envelopeCount int64
+		envelopeCount int32
+		txAllCount    int32
 		err           error
 	)
-	envelopeSize := len(commonBlock.Data.Data)
-	strInt := strconv.Itoa(envelopeSize)
-	if envelopeCount, err = strconv.ParseInt(strInt, 10, 64); nil != err {
-		goto ERR
-	} else {
-		envelopes := make([]*pb.Envelope, envelopeCount)
+	envelopeCount = int32(len(commonBlock.Data.Data))
+	envelopes := make([]*pb.Envelope, envelopeCount)
 
-		metadata := make([]string, len(commonBlock.Metadata.Metadata))
-		for index, md := range commonBlock.Metadata.Metadata {
-			metadata[index] = string(md)
+	metadata := make([]string, len(commonBlock.Metadata.Metadata))
+	for index, md := range commonBlock.Metadata.Metadata {
+		metadata[index] = string(md)
+	}
+	flags := util.TxValidationFlags(metadata[common.BlockMetadataIndex_TRANSACTIONS_FILTER])
+
+	for index, d := range commonBlock.Data.Data {
+		var (
+			envelope                 *com.Envelope
+			payload                  *com.Payload
+			channelHeader            *com.ChannelHeader
+			signatureHeader          *com.SignatureHeader
+			transaction              *peer.Transaction
+			chainCodeHeaderExtension *peer.ChaincodeHeaderExtension
+			envelopeInfo             *pb.Envelope
+			txCount                  int32
+			rwCount                  int32
+		)
+		if envelope, err = utils.GetEnvelopeFromBlock(d); nil != err {
+			goto ERR
 		}
-		flags := util.TxValidationFlags(metadata[common.BlockMetadataIndex_TRANSACTIONS_FILTER])
-
-		for index, d := range commonBlock.Data.Data {
-			var (
-				envelope                 *com.Envelope
-				payload                  *com.Payload
-				channelHeader            *com.ChannelHeader
-				signatureHeader          *com.SignatureHeader
-				transaction              *peer.Transaction
-				chainCodeHeaderExtension *peer.ChaincodeHeaderExtension
-				envelopeInfo             *pb.Envelope
-			)
-			if envelope, err = utils.GetEnvelopeFromBlock(d); nil != err {
-				goto ERR
-			}
-			if payload, err = utils.GetPayload(envelope); nil != err {
-				goto ERR
-			}
-			if channelHeader, err = utils.UnmarshalChannelHeader(payload.Header.ChannelHeader); nil != err {
-				goto ERR
-			}
-			if signatureHeader, err = utils.GetSignatureHeader(payload.Header.SignatureHeader); nil != err {
-				goto ERR
-			}
-			if transaction, err = utils.GetTransaction(payload.Data); nil != err {
-				goto ERR
-			}
-			if chainCodeHeaderExtension, err = utils.GetChaincodeHeaderExtension(payload.Header); nil != err {
-				goto ERR
-			}
-			//signedData, _ := protoutil.EnvelopeAsSignedData(envelopes)
-
-			isValid := !flags.IsInvalid(index)
-			if envelopeInfo, err = parseEnvelope(channelHeader, signatureHeader, transaction); nil != err {
-				goto ERR
-			}
-			envelopeInfo.Signature = hex.EncodeToString(envelope.Signature)
-			if nil != chainCodeHeaderExtension.ChaincodeId && nil != chainCodeHeaderExtension.PayloadVisibility {
-				envelopeInfo.ChainCode = parseChainCode(chainCodeHeaderExtension)
-			}
-			envelopeInfo.IsValid = isValid
-
-			envelopes[index] = envelopeInfo
+		if payload, err = utils.GetPayload(envelope); nil != err {
+			goto ERR
 		}
+		if channelHeader, err = utils.UnmarshalChannelHeader(payload.Header.ChannelHeader); nil != err {
+			goto ERR
+		}
+		if signatureHeader, err = utils.GetSignatureHeader(payload.Header.SignatureHeader); nil != err {
+			goto ERR
+		}
+		if transaction, err = utils.GetTransaction(payload.Data); nil != err {
+			goto ERR
+		}
+		if chainCodeHeaderExtension, err = utils.GetChaincodeHeaderExtension(payload.Header); nil != err {
+			goto ERR
+		}
+		//signedData, _ := protoutil.EnvelopeAsSignedData(envelopes)
+
+		isValid := !flags.IsInvalid(index)
+		if envelopeInfo, txCount, rwCount, err = parseEnvelope(channelHeader, signatureHeader, transaction); nil != err {
+			goto ERR
+		}
+		txAllCount += txCount
+		envelopeInfo.Signature = hex.EncodeToString(envelope.Signature)
+		if nil != chainCodeHeaderExtension.ChaincodeId && nil != chainCodeHeaderExtension.PayloadVisibility {
+			envelopeInfo.ChainCode = parseChainCode(chainCodeHeaderExtension)
+		}
+		envelopeInfo.IsValid = isValid
+
+		envelopes[index] = envelopeInfo
 
 		block := &pb.Block{
 			Header: &pb.BlockHeader{
@@ -84,6 +83,8 @@ func parseBlock(commonBlock *common.Block) (*pb.Block, error) {
 				DataHash:      hex.EncodeToString(commonBlock.Header.DataHash),
 				PreviousHash:  hex.EncodeToString(commonBlock.Header.PreviousHash),
 				EnvelopeCount: envelopeCount,
+				TxCount:       txAllCount,
+				RwCount:       rwCount,
 			},
 			Envelopes: envelopes,
 			//Metadata: &pb.BlockMetadata{
@@ -97,20 +98,18 @@ ERR:
 }
 
 func parseEnvelope(channelHeader *com.ChannelHeader, signatureHeader *com.SignatureHeader,
-	transaction *peer.Transaction) (*pb.Envelope, error) {
+	transaction *peer.Transaction) (envelope *pb.Envelope, actionCount int32, rwCount int32, err error) {
 	var (
 		transactionActionInfoArray []*pb.Action
-		actionCount                int64
 		identity                   *msp.SerializedIdentity
-		err                        error
 	)
-	if transactionActionInfoArray, actionCount, err = parseTransactionActionInfoArray(transaction); nil != err {
-		return nil, err
+	if transactionActionInfoArray, actionCount, rwCount, err = parseTransactionActionInfoArray(transaction); nil != err {
+		return
 	}
 	if identity, err = serializedIdentity(signatureHeader.Creator); nil != err {
-		return nil, err
+		return
 	}
-	envelope := &pb.Envelope{
+	envelope = &pb.Envelope{
 		ChannelID: channelHeader.ChannelId,
 		Type:      headerType(channelHeader.Type),
 		Version:   channelHeader.Version,
@@ -132,7 +131,7 @@ func parseEnvelope(channelHeader *com.ChannelHeader, signatureHeader *com.Signat
 	if nil != transactionActionInfoArray {
 		envelope.TransactionEnvelopeInfo.TransactionActionInfoArray = transactionActionInfoArray
 	}
-	return envelope, nil
+	return
 }
 
 func headerType(ht int32) string {
@@ -169,50 +168,43 @@ func parseChainCode(chainCode *peer.ChaincodeHeaderExtension) *pb.ChainCodeHeade
 	}
 }
 
-func parseTransactionActionInfoArray(transaction *peer.Transaction) ([]*pb.Action, int64, error) {
-	var (
-		actionCount int64
-		err         error
-	)
-	actionSize := len(transaction.Actions)
-	strInt := strconv.Itoa(actionSize)
-	if actionCount, err = strconv.ParseInt(strInt, 10, 64); nil != err {
-		goto ERR
-	} else {
-		transactionActionInfoArray := make([]*pb.Action, actionCount)
-		for index, a := range transaction.Actions {
-			var (
-				chainCodeActionPayload   *peer.ChaincodeActionPayload
-				proposalResponsePayload  *peer.ProposalResponsePayload
-				pbChainCodeActionPayload *pb.ChainCodeActionPayload
-			)
-			if chainCodeActionPayload, err = utils.GetChaincodeActionPayload(a.Payload); nil != err {
+func parseTransactionActionInfoArray(transaction *peer.Transaction) (transactionActionInfoArray []*pb.Action, actionCount int32, rwCount int32, err error) {
+	actionCount = int32(len(transaction.Actions))
+	transactionActionInfoArray = make([]*pb.Action, actionCount)
+	for index, a := range transaction.Actions {
+		var (
+			chainCodeActionPayload   *peer.ChaincodeActionPayload
+			proposalResponsePayload  *peer.ProposalResponsePayload
+			pbChainCodeActionPayload *pb.ChainCodeActionPayload
+			rwc                      int32
+		)
+		if chainCodeActionPayload, err = utils.GetChaincodeActionPayload(a.Payload); nil != err {
+			goto ERR
+		}
+		if proposalResponsePayload, err =
+			utils.GetProposalResponsePayload(chainCodeActionPayload.Action.ProposalResponsePayload); nil == err {
+			if pbChainCodeActionPayload, rwc, err = parseChainCodeActionPayload(chainCodeActionPayload, proposalResponsePayload); nil != err {
 				goto ERR
 			}
-			if proposalResponsePayload, err =
-				utils.GetProposalResponsePayload(chainCodeActionPayload.Action.ProposalResponsePayload); nil == err {
-				if pbChainCodeActionPayload, err = parseChainCodeActionPayload(chainCodeActionPayload, proposalResponsePayload); nil != err {
-					goto ERR
-				}
-				action := &pb.Action{
-					ChainCodeActionPayload: pbChainCodeActionPayload,
-				}
-				transactionActionInfoArray[index] = action
-			} else {
-				if actionCount == 1 {
-					transactionActionInfoArray = nil
-					break
-				}
+			rwCount += rwc
+			action := &pb.Action{
+				ChainCodeActionPayload: pbChainCodeActionPayload,
+			}
+			transactionActionInfoArray[index] = action
+		} else {
+			if actionCount == 1 {
+				transactionActionInfoArray = nil
+				break
 			}
 		}
-		return transactionActionInfoArray, actionCount, nil
+		return
 	}
 ERR:
-	return nil, 0, err
+	return
 }
 
 func parseChainCodeActionPayload(payload *peer.ChaincodeActionPayload,
-	prPayload *peer.ProposalResponsePayload) (*pb.ChainCodeActionPayload, error) {
+	prPayload *peer.ProposalResponsePayload) (*pb.ChainCodeActionPayload, int32, error) {
 	es := payload.Action.Endorsements
 	endorsements := make([]*pb.Endorsement, len(es))
 	var (
@@ -220,11 +212,12 @@ func parseChainCodeActionPayload(payload *peer.ChaincodeActionPayload,
 		chainCodeProposalPayload *pb.ChainCodeInvocationSpec
 		chainCodeAction          *peer.ChaincodeAction
 		pbChainCodeAction        *pb.ChainCodeAction
+		rwCount                  int32
 		err                      error
 	)
 	for index, e := range es {
 		if identity, err = serializedIdentity(e.Endorser); nil != err {
-			return nil, err
+			return nil, 0, err
 		}
 		endorsements[index] = &pb.Endorsement{
 			Signature: hex.EncodeToString(e.Signature),
@@ -233,13 +226,13 @@ func parseChainCodeActionPayload(payload *peer.ChaincodeActionPayload,
 		}
 	}
 	if chainCodeProposalPayload, err = chainCodeInvocationSpec(payload); nil != err {
-		return nil, err
+		return nil, 0, err
 	}
 	if chainCodeAction, err = utils.GetChaincodeAction(prPayload.Extension); nil != err {
-		return nil, err
+		return nil, 0, err
 	}
-	if pbChainCodeAction, err = parseChainCodeAction(chainCodeAction); nil != err {
-		return nil, err
+	if pbChainCodeAction, rwCount, err = parseChainCodeAction(chainCodeAction); nil != err {
+		return nil, 0, err
 	}
 	return &pb.ChainCodeActionPayload{
 		ChainCodeProposalPayload: chainCodeProposalPayload,
@@ -250,23 +243,22 @@ func parseChainCodeActionPayload(payload *peer.ChaincodeActionPayload,
 			},
 			Endorsements: endorsements,
 		},
-	}, nil
+	}, rwCount, nil
 }
 
-func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction, error) {
+func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction, int32, error) {
 	var (
-		event     *peer.ChaincodeEvent
-		rwCount64 int64
-		err       error
+		event   *peer.ChaincodeEvent
+		rwCount int
+		err     error
 	)
 	if event, err = utils.GetChaincodeEvents(chainCode.Events); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	txRWSet := &rwsetutil.TxRwSet{}
 	if err := txRWSet.FromProtoBytes(chainCode.Results); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	rwCount := 0
 	nsRwSets := make([]*pb.NsRwSets, len(txRWSet.NsRwSets))
 	for index, ns := range txRWSet.NsRwSets {
 		readCount := len(ns.KvRwSet.Reads)
@@ -316,12 +308,8 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 			},
 		}
 	}
-	strInt := strconv.Itoa(rwCount)
-	if rwCount64, err = strconv.ParseInt(strInt, 10, 64); err != nil {
-		return nil, err
-	}
 	pbTxRwSet := &pb.TxRwSet{
-		RwCount:  rwCount64,
+		RwCount:  int32(rwCount),
 		NsRwSets: nsRwSets,
 	}
 
@@ -351,7 +339,7 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 	} else {
 		chainCodeAction.Response.Data = &pb.Response_Value{Value: string(chainCode.Response.Payload)}
 	}
-	return chainCodeAction, nil
+	return chainCodeAction, int32(rwCount), nil
 }
 
 func payloadAnalysis(buf []byte) (ccv *pb.ChainCodeValue, err error) {

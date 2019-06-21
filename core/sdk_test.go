@@ -63,7 +63,7 @@ func TestQueryLedgerBlockByHeight(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHeight("test", "mychannel", 0, confData)
+	result := QueryLedgerBlockByHeight("test", "mychannel", 4, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -74,7 +74,7 @@ func TestQueryLedgerBlockByHash(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHash("test", "mychannel", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
+	result := QueryLedgerBlockByHash("test", "mychannel", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 

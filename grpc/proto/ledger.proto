@@ -80,7 +80,9 @@ message BlockHeader {
     uint64 blockNumber = 1;
     string previousHash = 2;
     string dataHash = 3;
-    int64 envelopeCount = 4;
+    int32 envelopeCount = 4;
+    int32 txCount = 5;
+    int32 rwCount = 6;
 }
 
 message Envelope {
@@ -102,7 +104,7 @@ message Envelope {
 }
 
 message Transaction {
-    int64 txCount = 1;
+    int32 txCount = 1;
     repeated Action transactionActionInfoArray = 2;
 }
 
@@ -118,7 +120,7 @@ message ChainCodeAction {
 }
 
 message TxRwSet {
-    int64 rwCount = 1;
+    int32 rwCount = 1;
     repeated NsRwSets nsRwSets = 2;
 }
 
