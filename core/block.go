@@ -3,7 +3,9 @@ package sdk
 import (
 	"encoding/hex"
 	pb "github.com/ennoo/fabric-go-client/grpc/proto"
+	str "github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
+	"github.com/hyperledger/fabric/core/common/ccprovider"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/rwsetutil"
 	"github.com/hyperledger/fabric/core/ledger/util"
 	com "github.com/hyperledger/fabric/protos/common"
@@ -12,6 +14,7 @@ import (
 	"github.com/hyperledger/fabric/protos/utils"
 	"golang.org/x/protobuf/proto"
 	"strconv"
+	"strings"
 )
 
 func parseBlock(commonBlock *common.Block) (*pb.Block, error) {
@@ -107,7 +110,7 @@ func parseEnvelope(channelHeader *com.ChannelHeader, signatureHeader *com.Signat
 	if identity, err = serializedIdentity(signatureHeader.Creator); nil != err {
 		return nil, err
 	}
-	return &pb.Envelope{
+	envelope := &pb.Envelope{
 		ChannelID: channelHeader.ChannelId,
 		Type:      headerType(channelHeader.Type),
 		Version:   channelHeader.Version,
@@ -123,10 +126,13 @@ func parseEnvelope(channelHeader *com.ChannelHeader, signatureHeader *com.Signat
 		MspID:         identity.Mspid,
 		Nonce:         hex.EncodeToString(signatureHeader.Nonce),
 		TransactionEnvelopeInfo: &pb.Transaction{
-			TxCount:                    actionCount,
-			TransactionActionInfoArray: transactionActionInfoArray,
+			TxCount: actionCount,
 		},
-	}, nil
+	}
+	if nil != transactionActionInfoArray {
+		envelope.TransactionEnvelopeInfo.TransactionActionInfoArray = transactionActionInfoArray
+	}
+	return envelope, nil
 }
 
 func headerType(ht int32) string {
@@ -192,6 +198,11 @@ func parseTransactionActionInfoArray(transaction *peer.Transaction) ([]*pb.Actio
 					ChainCodeActionPayload: pbChainCodeActionPayload,
 				}
 				transactionActionInfoArray[index] = action
+			} else {
+				if actionCount == 1 {
+					transactionActionInfoArray = nil
+					break
+				}
 			}
 		}
 		return transactionActionInfoArray, actionCount, nil
@@ -283,7 +294,15 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 			writes[i] = &pb.KVWrite{
 				Key:      w.Key,
 				IsDelete: w.IsDelete,
-				Value:    string(w.Value),
+			}
+			if nil != w.Value {
+				if ccv, err := payloadAnalysis(w.Value); nil == err {
+					writes[i].Data = &pb.KVWrite_CCValue{
+						CCValue: ccv,
+					}
+				} else {
+					writes[i].Data = &pb.KVWrite_Value{Value: string(w.Value)}
+				}
 			}
 		}
 
@@ -305,7 +324,8 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 		RwCount:  rwCount64,
 		NsRwSets: nsRwSets,
 	}
-	return &pb.ChainCodeAction{
+
+	chainCodeAction := &pb.ChainCodeAction{
 		ChainCodeID: &pb.ChainCodeID{
 			Path:    chainCode.ChaincodeId.Path,
 			Name:    chainCode.ChaincodeId.Name,
@@ -321,9 +341,51 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 		Response: &pb.Response{
 			Status:  chainCode.Response.Status,
 			Message: chainCode.Response.Message,
-			Payload: string(chainCode.Response.Payload),
 		},
-	}, nil
+	}
+
+	if ccv, err := payloadAnalysis(chainCode.Response.Payload); nil == err {
+		chainCodeAction.Response.Data = &pb.Response_CCValue{
+			CCValue: ccv,
+		}
+	} else {
+		chainCodeAction.Response.Data = &pb.Response_Value{Value: string(chainCode.Response.Payload)}
+	}
+	return chainCodeAction, nil
+}
+
+func payloadAnalysis(buf []byte) (ccv *pb.ChainCodeValue, err error) {
+	instantiationPolicy := strings.Split(str.SingleSpace(string(buf)), "\n")
+	for index := range instantiationPolicy {
+		instantiationPolicy[index] = strconv.QuoteToASCII(instantiationPolicy[index])
+	}
+	cdRWSet := &ccprovider.ChaincodeData{}
+	if err = proto.Unmarshal(buf, cdRWSet); nil == err {
+		otherData := &ccprovider.CDSData{}
+		err := proto.Unmarshal(cdRWSet.Data, otherData)
+		var (
+			codeHash     = ""
+			metaDataHash = ""
+		)
+		if err == nil {
+			codeHash = hex.EncodeToString(otherData.CodeHash)
+			metaDataHash = hex.EncodeToString(otherData.MetaDataHash)
+		}
+		ccv = &pb.ChainCodeValue{
+			Name:    cdRWSet.Name,
+			Version: cdRWSet.Version,
+			Escc:    cdRWSet.Escc,
+			Vscc:    cdRWSet.Vscc,
+			Policy:  string(cdRWSet.Policy),
+			Data: &pb.ChainCodeValueDate{
+				CodeHash:     codeHash,
+				MetaDataHash: metaDataHash,
+			},
+			Id:                  hex.EncodeToString(cdRWSet.Id),
+			InstantiationPolicy: instantiationPolicy,
+		}
+	}
+	return
 }
 
 func serializedIdentity(bytes []byte) (*msp.SerializedIdentity, error) {

@@ -147,7 +147,26 @@ message Version {
 message KVWrite {
     string key = 1;
     bool isDelete = 2;
-    string value = 3;
+    oneof data {
+        string value = 3;
+        ChainCodeValue CCValue = 4;
+    }
+}
+
+message ChainCodeValue {
+    string name = 1;
+    string version = 2;
+    string escc = 3;
+    string vscc = 4;
+    string policy = 5;
+    ChainCodeValueDate data = 6;
+    string id = 7;
+    repeated string instantiationPolicy = 8;
+}
+
+message ChainCodeValueDate {
+    string codeHash = 1;
+    string metaDataHash = 2;
 }
 
 message KVMetadataWrite {
@@ -170,7 +189,10 @@ message ChainCodeEvent {
 message Response {
     int32 Status = 1;
     string Message = 2;
-    string Payload = 3;
+    oneof data {
+        string value = 3;
+        ChainCodeValue CCValue = 4;
+    }
 }
 
 message ChainCodeActionPayload {
