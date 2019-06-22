@@ -492,9 +492,17 @@ func resMgmtClient(ordererOrgName, orgUser string, configBytes []byte, sdkOpts .
 func get(configID, channelID string) (orgName, orgUser string, err error) {
 	var (
 		peerName string
+		conf     *config2.Config
+		channel  *config2.Channel
 	)
-	conf := service.Configs[configID]
-	channel := conf.Channels[channelID]
+	if conf = service.Configs[configID]; nil == conf {
+		err = errors.New("config must init first")
+		return
+	}
+	if channel = conf.Channels[channelID]; nil == channel {
+		err = errors.New("channel must init first")
+		return
+	}
 
 	for name, peer := range channel.Peers {
 		if !peer.LedgerQuery {

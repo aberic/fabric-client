@@ -193,6 +193,7 @@ func parseTransactionActionInfoArray(transaction *peer.Transaction) (transaction
 			transactionActionInfoArray[index] = action
 		} else {
 			if actionCount == 1 {
+				err = nil
 				transactionActionInfoArray = nil
 				break
 			}
