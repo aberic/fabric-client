@@ -15,7 +15,7 @@
 package config
 
 import (
-	pb "github.com/ennoo/fabric-client/grpc/proto"
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 )
 
 const (

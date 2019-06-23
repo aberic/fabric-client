@@ -52,12 +52,12 @@ type Peer struct {
 
 // Template 模板属性配置
 type Template struct {
-	Count int `yaml:"Count" json:"count"`
+	Count int32 `yaml:"Count" json:"count"`
 }
 
 // Users 用户属性配置
 type Users struct {
-	Count int `yaml:"Count" json:"count"`
+	Count int32 `yaml:"Count" json:"count"`
 }
 
 // CA 证书配置
@@ -67,7 +67,7 @@ type CA struct {
 	Locality string `yaml:"Locality" json:"locality"`
 }
 
-func generateCryptoGenYml(leagueComment string, orderCount, peerCount, templateCount, userCount int) ([]byte, error) {
+func generateCryptoGenYml(leagueComment string, orderCount, peerCount, templateCount, userCount int32) ([]byte, error) {
 	var (
 		cryptoGen *CryptoGen
 		err       error
@@ -98,7 +98,7 @@ func generateCryptoGenCustomYml(ordererOrgs []*Order, peerOrgs []*Peer) ([]byte,
 }
 
 // generateCryptoGen 生成联盟证书文件对象
-func generateCryptoGen(leagueComment string, orderCount, peerCount, templateCount, userCount int) (*CryptoGen, error) {
+func generateCryptoGen(leagueComment string, orderCount, peerCount, templateCount, userCount int32) (*CryptoGen, error) {
 	if str.IsEmpty(leagueComment) || orderCount <= 0 || peerCount <= 0 {
 		return nil, errors.New("crypto params exception")
 	}

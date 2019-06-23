@@ -17,7 +17,7 @@ package sdk
 
 import (
 	"encoding/hex"
-	pb "github.com/ennoo/fabric-client/grpc/proto"
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"

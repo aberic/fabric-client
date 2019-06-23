@@ -145,7 +145,7 @@ type BatchSize struct {
 	// AbsoluteMaxBytes 绝对最大字节数:批处理中允许序列化消息的绝对最大字节数。
 	AbsoluteMaxBytes string `yaml:"AbsoluteMaxBytes" json:"absoluteMaxBytes"`
 	// MaxMessageCount 最大消息数:批处理中允许的最大消息数
-	MaxMessageCount int `yaml:"MaxMessageCount" json:"maxMessageCount"`
+	MaxMessageCount int32 `yaml:"MaxMessageCount" json:"maxMessageCount"`
 	// PreferredMaxBytes 首选最大字节数:批处理中序列化消息所允许的首选最大字节数。大于首选最大字节的消息将导致批处理大于首选最大字节。
 	PreferredMaxBytes string `yaml:"PreferredMaxBytes" json:"preferredMaxBytes"`
 }
@@ -194,7 +194,7 @@ type HBaaSConsortium struct {
 }
 
 // generateConfigTXYml 生成模板配置Yml文件
-func generateConfigTXYml(leagueComment string, orderCount, peerCount, batchTimeout, maxMessageCount int) ([]byte, error) {
+func generateConfigTXYml(leagueComment string, orderCount, peerCount, batchTimeout, maxMessageCount int32) ([]byte, error) {
 	var (
 		configTx *ConfigTX
 		err      error
@@ -237,7 +237,7 @@ func generateConfigTXCustom(organizations []Organization, application *Applicati
 }
 
 // generateConfigTX 生成模板配置对象
-func generateConfigTX(leagueComment string, orderCount, peerCount, batchTimeout, maxMessageCount int) (*ConfigTX, error) {
+func generateConfigTX(leagueComment string, orderCount, peerCount, batchTimeout, maxMessageCount int32) (*ConfigTX, error) {
 	if str.IsEmpty(leagueComment) || orderCount <= 0 || peerCount <= 0 || batchTimeout <= 0 || maxMessageCount <= 0 {
 		return nil, errors.New("config params exception")
 	}
@@ -251,7 +251,7 @@ func generateConfigTX(leagueComment string, orderCount, peerCount, batchTimeout,
 	return generateConfigTXCustom(organizations, application, capabilities, channel, orderer, profiles), nil
 }
 
-func getOrganizations(leagueComment, cryptoGenFilesPath string, peerCount int) []Organization {
+func getOrganizations(leagueComment, cryptoGenFilesPath string, peerCount int32) []Organization {
 	organizations := make([]Organization, peerCount+1)
 	for index := range organizations {
 		if index == 0 {
@@ -371,7 +371,7 @@ func getChannel() *Channel {
 	}
 }
 
-func getOrderer(organizations []Organization, leagueComment string, orderCount, batchTimeout, maxMessageCount int) *Orderer {
+func getOrderer(organizations []Organization, leagueComment string, orderCount, batchTimeout, maxMessageCount int32) *Orderer {
 	addresses := make([]string, orderCount)
 	for index := range addresses {
 		addresses[index] = strings.Join([]string{OrderPrefix, strconv.Itoa(index), ".", leagueComment, ":7050"}, "")
@@ -383,7 +383,7 @@ func getOrderer(organizations []Organization, leagueComment string, orderCount, 
 			MaxMessageCount:   maxMessageCount,
 			PreferredMaxBytes: "512 KB",
 		},
-		BatchTimeout: strings.Join([]string{strconv.Itoa(batchTimeout), "s"}, ""),
+		BatchTimeout: strings.Join([]string{strconv.Itoa(int(batchTimeout)), "s"}, ""),
 		Capabilities: getV11(),
 		Kafka: &Kafka{
 			Brokers: getKafkaBrokers(leagueComment),

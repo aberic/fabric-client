@@ -16,7 +16,7 @@
 package main
 
 import (
-	pb "github.com/ennoo/fabric-client/grpc/proto"
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/fabric-client/grpc/server"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"

@@ -16,6 +16,7 @@ package geneses
 
 import (
 	"errors"
+	pb "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/rivet/utils/cmd"
 	"github.com/ennoo/rivet/utils/file"
 	"github.com/ennoo/rivet/utils/log"
@@ -30,7 +31,7 @@ const (
 )
 
 // GenerateYml 生成区块链配置YML文件
-func GenerateYml(generate *Generate) error {
+func GenerateYml(generate *pb.Generate) error {
 	var (
 		err              error
 		cryptoGenData    []byte
@@ -38,16 +39,16 @@ func GenerateYml(generate *Generate) error {
 		cryptoGenYmlPath string
 		configTxYmlPath  string
 	)
-	if cryptoGenData, err = generateCryptoGenYml(generate.LeagueComment, generate.OrderCount, generate.PeerCount,
+	if cryptoGenData, err = generateCryptoGenYml(generate.LedgerName, generate.OrderCount, generate.PeerCount,
 		generate.TemplateCount, generate.UserCount); nil != err {
 		goto ERR
 	}
-	if configTxData, err = generateConfigTXYml(generate.LeagueComment, generate.OrderCount, generate.PeerCount, generate.BatchTimeout,
+	if configTxData, err = generateConfigTXYml(generate.LedgerName, generate.OrderCount, generate.PeerCount, generate.BatchTimeout,
 		generate.MaxMessageCount); nil != err {
 		goto ERR
 	}
-	cryptoGenYmlPath = CryptoGenYmlPath(generate.LeagueComment)
-	configTxYmlPath = ConfigTxYmlPath(generate.LeagueComment)
+	cryptoGenYmlPath = CryptoGenYmlPath(generate.LedgerName)
+	configTxYmlPath = ConfigTxYmlPath(generate.LedgerName)
 	if err = file.CreateAndWrite(cryptoGenYmlPath, cryptoGenData, generate.Force); nil != err {
 		goto ERR
 	}
@@ -80,8 +81,8 @@ func GenerateCustomYml(generateCustom *GenerateCustom, ordererOrgs []*Order, pee
 		profiles); nil != err {
 		goto ERR
 	}
-	cryptoGenYmlPath = CryptoGenYmlPath(generateCustom.LeagueComment)
-	configTxYmlPath = ConfigTxYmlPath(generateCustom.LeagueComment)
+	cryptoGenYmlPath = CryptoGenYmlPath(generateCustom.LedgerName)
+	configTxYmlPath = ConfigTxYmlPath(generateCustom.LedgerName)
 	if err = file.CreateAndWrite(cryptoGenYmlPath, cryptoGenData, generateCustom.Force); nil != err {
 		goto ERR
 	}
@@ -97,16 +98,16 @@ ERR:
 }
 
 // GenerateCryptoFiles 生成区块链配置文件集合
-func GenerateCryptoFiles(crypto *Crypto) (int, []string, error) {
+func GenerateCryptoFiles(crypto *pb.Crypto) (int, []string, error) {
 	var (
 		exist bool
 		err   error
 	)
-	if str.IsEmpty(crypto.LeagueComment) {
-		return 0, nil, errors.New("league comment can not be nil")
+	if str.IsEmpty(crypto.LedgerName) {
+		return 0, nil, errors.New("league name can not be nil")
 	}
-	cryptoGenYmlPath := CryptoGenYmlPath(crypto.LeagueComment)
-	cryptoConfigPath := CryptoConfigPath(crypto.LeagueComment)
+	cryptoGenYmlPath := CryptoGenYmlPath(crypto.LedgerName)
+	cryptoConfigPath := CryptoConfigPath(crypto.LedgerName)
 	if exist, _ = file.PathExists(cryptoGenYmlPath); !exist {
 		return 0, nil, errors.New("cryptogen.yaml have not bean created")
 	}
@@ -125,19 +126,19 @@ func GenerateCryptoFiles(crypto *Crypto) (int, []string, error) {
 }
 
 // GenerateGenesisBlock 生成区块链创世区块
-func GenerateGenesisBlock(crypto *Crypto) (int, []string, error) {
-	if str.IsEmpty(crypto.LeagueComment) {
+func GenerateGenesisBlock(crypto *pb.Crypto) (int, []string, error) {
+	if str.IsEmpty(crypto.LedgerName) {
 		return 0, nil, errors.New("league comment can not be nil")
 	}
 	var (
 		exist bool
 		err   error
 	)
-	cryptoConfigPath := CryptoConfigPath(crypto.LeagueComment)
-	confPath := ConfPath(crypto.LeagueComment)
-	configTxYmlPath := ConfigTxYmlPath(crypto.LeagueComment)
-	channelArtifactsPath := ChannelArtifactsPath(crypto.LeagueComment)
-	genesisBlockFilePath := GenesisBlockFilePath(crypto.LeagueComment)
+	cryptoConfigPath := CryptoConfigPath(crypto.LedgerName)
+	confPath := ConfPath(crypto.LedgerName)
+	configTxYmlPath := ConfigTxYmlPath(crypto.LedgerName)
+	channelArtifactsPath := ChannelArtifactsPath(crypto.LedgerName)
+	genesisBlockFilePath := GenesisBlockFilePath(crypto.LedgerName)
 	if exist, _ = file.PathExists(cryptoConfigPath); !exist {
 		return 0, nil, errors.New("crypto-config dir should be created first")
 	}
@@ -157,19 +158,19 @@ func GenerateGenesisBlock(crypto *Crypto) (int, []string, error) {
 }
 
 // GenerateChannelTX 生成区块链创世区块
-func GenerateChannelTX(channelTX *ChannelTX) (int, []string, error) {
-	if str.IsEmpty(channelTX.LeagueComment) {
+func GenerateChannelTX(channelTX *pb.ChannelTX) (int, []string, error) {
+	if str.IsEmpty(channelTX.LedgerName) {
 		return 0, nil, errors.New("league comment can not be nil")
 	}
 	var (
 		exist bool
 		err   error
 	)
-	cryptoConfigPath := CryptoConfigPath(channelTX.LeagueComment)
-	confPath := ConfPath(channelTX.LeagueComment)
-	configTxYmlPath := ConfigTxYmlPath(channelTX.LeagueComment)
-	genesisBlockFilePath := GenesisBlockFilePath(channelTX.LeagueComment)
-	channelTXFilePath := ChannelTXFilePath(channelTX.LeagueComment, channelTX.ChannelName)
+	cryptoConfigPath := CryptoConfigPath(channelTX.LedgerName)
+	confPath := ConfPath(channelTX.LedgerName)
+	configTxYmlPath := ConfigTxYmlPath(channelTX.LedgerName)
+	genesisBlockFilePath := GenesisBlockFilePath(channelTX.LedgerName)
+	channelTXFilePath := ChannelTXFilePath(channelTX.LedgerName, channelTX.ChannelName)
 	if exist, _ = file.PathExists(cryptoConfigPath); !exist {
 		return 0, nil, errors.New("crypto-config dir should be created first")
 	}

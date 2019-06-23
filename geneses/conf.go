@@ -16,7 +16,7 @@ package geneses
 
 // Generate 请求生成区块链配置对象
 type Generate struct {
-	LeagueComment   string `json:"leagueComment"`
+	LedgerName      string `json:"ledgerName"`
 	OrderCount      int    `json:"orderCount"`
 	PeerCount       int    `json:"peerCount"`
 	TemplateCount   int    `json:"templateCount"`
@@ -28,19 +28,19 @@ type Generate struct {
 
 // GenerateCustom 请求生成区块链自定义配置对象
 type GenerateCustom struct {
-	LeagueComment string `json:"leagueComment"`
-	Force         bool   `json:"force"`
+	LedgerName string `json:"ledgerName"`
+	Force      bool   `json:"force"`
 }
 
-// GenerateCrypto 请求生成区块链配置文件集合对象
+// Crypto 请求生成区块链配置文件集合对象
 type Crypto struct {
-	LeagueComment string `json:"leagueComment"`
-	Force         bool   `json:"force"`
+	LedgerName string `json:"ledgerName"`
+	Force      bool   `json:"force"`
 }
 
-// GenerateChannelTX 请求生成区块链配置文件集合对象
+// ChannelTX 请求生成区块链配置文件集合对象
 type ChannelTX struct {
-	LeagueComment string `json:"leagueComment"`
-	ChannelName   string `json:"channelName"`
-	Force         bool   `json:"force"`
+	LedgerName  string `json:"ledgerName"`
+	ChannelName string `json:"channelName"`
+	Force       bool   `json:"force"`
 }

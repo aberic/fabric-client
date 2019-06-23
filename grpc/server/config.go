@@ -18,7 +18,7 @@ import (
 	"errors"
 	"fmt"
 	configer "github.com/ennoo/fabric-client/config"
-	pb "github.com/ennoo/fabric-client/grpc/proto"
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	"golang.org/x/net/context"

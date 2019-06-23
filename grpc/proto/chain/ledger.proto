@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+package chain;
 
 import "vendor/github.com/hyperledger/fabric/protos/ledger/rwset/kvrwset/kv_rwset.proto";
 

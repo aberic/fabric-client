@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package geneses;
+
+message String {
+    string data = 1;
+}
+
+message CMDOut {
+    int32 line = 1;
+    repeated string prints = 2;
+}

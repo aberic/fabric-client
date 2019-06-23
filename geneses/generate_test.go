@@ -15,13 +15,14 @@
 package geneses
 
 import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"os"
 	"testing"
 )
 
 func TestGenerateYmlTrue(t *testing.T) {
-	if err := GenerateYml(&Generate{
-		LeagueComment:   "league",
+	if err := GenerateYml(&pb.Generate{
+		LedgerName:      "league",
 		OrderCount:      10,
 		PeerCount:       10,
 		TemplateCount:   10,
@@ -37,8 +38,8 @@ func TestGenerateYmlTrue(t *testing.T) {
 }
 
 func TestGenerateYmlFalse(t *testing.T) {
-	if err := GenerateYml(&Generate{
-		LeagueComment:   "league",
+	if err := GenerateYml(&pb.Generate{
+		LedgerName:      "league",
 		OrderCount:      10,
 		PeerCount:       10,
 		TemplateCount:   10,
@@ -54,7 +55,7 @@ func TestGenerateYmlFalse(t *testing.T) {
 }
 
 func TestGenerateYmlErrParamsExceptionCrypto(t *testing.T) {
-	if err := GenerateYml(&Generate{}); nil != err {
+	if err := GenerateYml(&pb.Generate{}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("success")
@@ -62,8 +63,8 @@ func TestGenerateYmlErrParamsExceptionCrypto(t *testing.T) {
 }
 
 func TestGenerateYmlErrParamsExceptionConfig(t *testing.T) {
-	if err := GenerateYml(&Generate{
-		LeagueComment: "league",
+	if err := GenerateYml(&pb.Generate{
+		LedgerName:    "league",
 		OrderCount:    10,
 		PeerCount:     10,
 		TemplateCount: 10,
@@ -77,7 +78,7 @@ func TestGenerateYmlErrParamsExceptionConfig(t *testing.T) {
 }
 
 func TestGenerateCryptoFilesTrue(t *testing.T) {
-	if line, strs, err := GenerateCryptoFiles(&Crypto{LeagueComment: "league", Force: true}); nil != err {
+	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: "league", Force: true}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -85,7 +86,7 @@ func TestGenerateCryptoFilesTrue(t *testing.T) {
 }
 
 func TestGenerateCryptoFilesFalse(t *testing.T) {
-	if line, strs, err := GenerateCryptoFiles(&Crypto{LeagueComment: "league", Force: false}); nil != err {
+	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: "league", Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -93,7 +94,7 @@ func TestGenerateCryptoFilesFalse(t *testing.T) {
 }
 
 func TestGenerateCryptoFilesErrLeagueCommentNil(t *testing.T) {
-	if line, strs, err := GenerateCryptoFiles(&Crypto{Force: false}); nil != err {
+	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -101,7 +102,7 @@ func TestGenerateCryptoFilesErrLeagueCommentNil(t *testing.T) {
 }
 
 func TestGenerateGenesisBlockTrue(t *testing.T) {
-	if line, strs, err := GenerateGenesisBlock(&Crypto{LeagueComment: "league", Force: true}); nil != err {
+	if line, strs, err := GenerateGenesisBlock(&pb.Crypto{LedgerName: "league", Force: true}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -109,7 +110,7 @@ func TestGenerateGenesisBlockTrue(t *testing.T) {
 }
 
 func TestGenerateGenesisBlockFalse(t *testing.T) {
-	if line, strs, err := GenerateGenesisBlock(&Crypto{LeagueComment: "league", Force: false}); nil != err {
+	if line, strs, err := GenerateGenesisBlock(&pb.Crypto{LedgerName: "league", Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -117,7 +118,7 @@ func TestGenerateGenesisBlockFalse(t *testing.T) {
 }
 
 func TestGenerateGenesisBlockErrLeagueCommentNil(t *testing.T) {
-	if line, strs, err := GenerateGenesisBlock(&Crypto{Force: false}); nil != err {
+	if line, strs, err := GenerateGenesisBlock(&pb.Crypto{Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -126,10 +127,10 @@ func TestGenerateGenesisBlockErrLeagueCommentNil(t *testing.T) {
 
 func TestGenerateChannelTXTrue(t *testing.T) {
 	if line, strs, err := GenerateChannelTX(
-		&ChannelTX{
-			LeagueComment: "league",
-			ChannelName:   "mychannel",
-			Force:         true,
+		&pb.ChannelTX{
+			LedgerName:  "league",
+			ChannelName: "mychannel",
+			Force:       true,
 		}); nil != err {
 		t.Skip(err)
 	} else {
@@ -139,10 +140,10 @@ func TestGenerateChannelTXTrue(t *testing.T) {
 
 func TestGenerateChannelTXFalse(t *testing.T) {
 	if line, strs, err := GenerateChannelTX(
-		&ChannelTX{
-			LeagueComment: "league",
-			ChannelName:   "mychannel",
-			Force:         false,
+		&pb.ChannelTX{
+			LedgerName:  "league",
+			ChannelName: "mychannel",
+			Force:       false,
 		}); nil != err {
 		t.Skip(err)
 	} else {
@@ -152,7 +153,7 @@ func TestGenerateChannelTXFalse(t *testing.T) {
 
 func TestGenerateChannelTXErrLeagueCommentNil(t *testing.T) {
 	if line, strs, err := GenerateChannelTX(
-		&ChannelTX{}); nil != err {
+		&pb.ChannelTX{}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -164,10 +165,10 @@ func TestGenerateChannelTXErrGenesisBlockNil(t *testing.T) {
 	genesisBlockFilePath := GenesisBlockFilePath(leagueComment)
 	_ = os.Remove(genesisBlockFilePath)
 	if line, strs, err := GenerateChannelTX(
-		&ChannelTX{
-			LeagueComment: leagueComment,
-			ChannelName:   "mychannel",
-			Force:         false,
+		&pb.ChannelTX{
+			LedgerName:  leagueComment,
+			ChannelName: "mychannel",
+			Force:       false,
 		}); nil != err {
 		t.Skip(err)
 	} else {
@@ -180,10 +181,10 @@ func TestGenerateChannelTXErrConfigTxYmlNil(t *testing.T) {
 	configTxYmlPath := ConfigTxYmlPath(leagueComment)
 	_ = os.RemoveAll(configTxYmlPath)
 	if line, strs, err := GenerateChannelTX(
-		&ChannelTX{
-			LeagueComment: leagueComment,
-			ChannelName:   "mychannel",
-			Force:         false,
+		&pb.ChannelTX{
+			LedgerName:  leagueComment,
+			ChannelName: "mychannel",
+			Force:       false,
 		}); nil != err {
 		t.Skip(err)
 	} else {
@@ -192,7 +193,7 @@ func TestGenerateChannelTXErrConfigTxYmlNil(t *testing.T) {
 }
 
 func TestGenerateGenesisBlockErrConfigTxYmlNil(t *testing.T) {
-	if line, strs, err := GenerateGenesisBlock(&Crypto{LeagueComment: "league", Force: false}); nil != err {
+	if line, strs, err := GenerateGenesisBlock(&pb.Crypto{LedgerName: "league", Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -204,10 +205,10 @@ func TestGenerateChannelTXErrCryptoConfigNil(t *testing.T) {
 	cryptoConfigPath := CryptoConfigPath(leagueComment)
 	_ = os.RemoveAll(cryptoConfigPath)
 	if line, strs, err := GenerateChannelTX(
-		&ChannelTX{
-			LeagueComment: leagueComment,
-			ChannelName:   "mychannel",
-			Force:         false,
+		&pb.ChannelTX{
+			LedgerName:  leagueComment,
+			ChannelName: "mychannel",
+			Force:       false,
 		}); nil != err {
 		t.Skip(err)
 	} else {
@@ -216,7 +217,7 @@ func TestGenerateChannelTXErrCryptoConfigNil(t *testing.T) {
 }
 
 func TestGenerateGenesisBlockErrCryptoConfigNil(t *testing.T) {
-	if line, strs, err := GenerateGenesisBlock(&Crypto{LeagueComment: "league", Force: false}); nil != err {
+	if line, strs, err := GenerateGenesisBlock(&pb.Crypto{LedgerName: "league", Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -227,7 +228,7 @@ func TestGenerateCryptoFilesErrCryptoGenYmlNil(t *testing.T) {
 	leagueComment := "league"
 	cryptoGenYmlPath := CryptoGenYmlPath(leagueComment)
 	_ = os.Remove(cryptoGenYmlPath)
-	if line, strs, err := GenerateCryptoFiles(&Crypto{LeagueComment: leagueComment, Force: false}); nil != err {
+	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: leagueComment, Force: false}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
@@ -236,8 +237,8 @@ func TestGenerateCryptoFilesErrCryptoGenYmlNil(t *testing.T) {
 
 func TestGenerateCustomYmlTrue(t *testing.T) {
 	if err := GenerateCustomYml(&GenerateCustom{
-		LeagueComment: "league",
-		Force:         true,
+		LedgerName: "league",
+		Force:      true,
 	}, nil, nil, nil, nil, nil, nil, nil, nil); nil != err {
 		t.Skip(err)
 	} else {
@@ -247,8 +248,8 @@ func TestGenerateCustomYmlTrue(t *testing.T) {
 
 func TestGenerateCustomYmlFalse(t *testing.T) {
 	if err := GenerateCustomYml(&GenerateCustom{
-		LeagueComment: "league",
-		Force:         false,
+		LedgerName: "league",
+		Force:      false,
 	}, nil, nil, nil, nil, nil, nil, nil, nil); nil != err {
 		t.Skip(err)
 	} else {

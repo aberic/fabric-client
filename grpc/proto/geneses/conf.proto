@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package geneses;
+
+// Generate 请求生成区块链配置对象
+message Generate {
+    string ledgerName = 1;
+    int32 orderCount = 2;
+    int32 peerCount = 3;
+    int32 templateCount = 4;
+    int32 userCount = 5;
+    int32 batchTimeout = 6;
+    int32 maxMessageCount = 7;
+    bool force = 8;
+}
+
+// Crypto 请求生成区块链配置文件集合对象
+message Crypto {
+    string ledgerName = 1;
+    bool force = 2;
+}
+
+// ChannelTX 请求生成区块链配置文件集合对象
+message ChannelTX {
+    string ledgerName = 1;
+    string channelName = 2;
+    bool force = 3;
+}

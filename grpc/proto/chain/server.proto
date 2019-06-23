@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package proto;
+package chain;
 
-import "grpc/proto/result.proto";
-import "grpc/proto/channel.proto";
-import "grpc/proto/chaincode.proto";
-import "grpc/proto/ledger.proto";
-import "grpc/proto/config.proto";
+import "grpc/proto/chain/result.proto";
+import "grpc/proto/chain/channel.proto";
+import "grpc/proto/chain/chaincode.proto";
+import "grpc/proto/chain/ledger.proto";
+import "grpc/proto/chain/config.proto";
 
 service LedgerChannel {
     rpc Create (ChannelCreate) returns (String) {

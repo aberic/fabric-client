@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+package chain;
 
 message Config {
     string version = 1;
