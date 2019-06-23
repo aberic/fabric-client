@@ -15,7 +15,7 @@
 package route
 
 import (
-	"github.com/ennoo/fabric-go-client/service"
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/trans/response"
 	"strings"

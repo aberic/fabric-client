@@ -4,7 +4,7 @@ client:
   logging:
     level: debug
   cryptoconfig:
-    path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config
+    path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config
   credentialStore:
     path: /tmp/Org1/state-store
     cryptoStore:
@@ -21,9 +21,9 @@ client:
     systemCertPool: false
     client:
       key:
-        path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key
+        path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key
       cert:
-        path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt
+        path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt
 channels:
   mychannel:
     peers:
@@ -57,14 +57,14 @@ channels:
 organizations:
   Org1:
     mspid: Org1MSP
-    cryptoPath: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/msp
+    cryptoPath: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/msp
     peers:
       - peer0.league01-org1-vh-cn
     certificateAuthorities:
       - ca0.league01-org1-vh-cn
   ordererorg:
     mspID: OrdererMSP
-    cryptoPath: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/ordererOrganizations/league01-vh-cn/users/Admin@league01-vh-cn/msp
+    cryptoPath: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/ordererOrganizations/league01-vh-cn/users/Admin@league01-vh-cn/msp
 orderers:
   order0.league01-vh-cn:7050:
     url: grpc://10.10.203.51:30054
@@ -76,7 +76,7 @@ orderers:
       fail-fast: false
       allow-insecure: false
     tlsCACerts:
-      path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/ordererOrganizations/league01-vh-cn/tlsca/tlsca.league01-vh-cn-cert.pem
+      path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/ordererOrganizations/league01-vh-cn/tlsca/tlsca.league01-vh-cn-cert.pem
 peers:
   peer0.league01-org1-vh-cn:
     url: grpc://10.10.203.51:30056
@@ -89,18 +89,18 @@ peers:
       fail-fast: false
       allow-insecure: false
     tlsCACerts:
-      path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem
+      path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem
 certificateAuthorities:
   ca.league01-vh-cn:
     url: https://10.10.203.51:30059
     caName: admin
     tlsCACerts:
-      path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem
+      path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/tlsca/tlsca.league01-org1-vh-cn-cert.pem
       client:
         key:
-          path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key
+          path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.key
         cert:
-          path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt
+          path: /Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config/peerOrganizations/league01-org1-vh-cn/users/Admin@league01-org1-vh-cn/tls/client.crt
     registrar:
       enrollId: adminpw
       enrollSecret: ca.league01-vh-cn

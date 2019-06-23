@@ -50,7 +50,7 @@ func TestNewConfig2(t *testing.T) {
 func TGetConfig() *Config {
 	config := Config{}
 	_ = config.InitClient(true, "Org1", "debug",
-		"Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config",
+		"Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config",
 		"/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key",
 		"/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt")
 	config.AddOrSetPeerForChannel("mychannel1", "peer0.org1.example.com",

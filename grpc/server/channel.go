@@ -16,9 +16,9 @@ package server
 
 import (
 	"errors"
-	"github.com/ennoo/fabric-go-client/core"
-	pb "github.com/ennoo/fabric-go-client/grpc/proto"
-	"github.com/ennoo/fabric-go-client/service"
+	"github.com/ennoo/fabric-client/core"
+	pb "github.com/ennoo/fabric-client/grpc/proto"
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/trans/response"
 	"golang.org/x/net/context"
 )

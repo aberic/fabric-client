@@ -5,7 +5,7 @@ client:
   logging:
     level: debug
   cryptoconfig:
-    path: Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/fabric/example/config/crypto-config
+    path: Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config
   credentialStore:
     path: /tmp/Org1/state-store
     cryptoStore:

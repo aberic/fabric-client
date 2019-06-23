@@ -16,7 +16,7 @@
 package service
 
 import (
-	"github.com/ennoo/fabric-go-client/config"
+	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"

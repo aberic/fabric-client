@@ -15,7 +15,7 @@
 
 package service
 
-import "github.com/ennoo/fabric-go-client/config"
+import "github.com/ennoo/fabric-client/config"
 
 type Client struct {
 	ConfigID     string `json:"configID"`     // ConfigID 配置唯一ID

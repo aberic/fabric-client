@@ -17,9 +17,9 @@ package server
 import (
 	"errors"
 	"fmt"
-	configer "github.com/ennoo/fabric-go-client/config"
-	pb "github.com/ennoo/fabric-go-client/grpc/proto"
-	"github.com/ennoo/fabric-go-client/service"
+	configer "github.com/ennoo/fabric-client/config"
+	pb "github.com/ennoo/fabric-client/grpc/proto"
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	"golang.org/x/net/context"
 	"gopkg.in/yaml.v3"

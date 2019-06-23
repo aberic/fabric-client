@@ -16,8 +16,8 @@ package sdk
 
 import (
 	"fmt"
-	"github.com/ennoo/fabric-go-client/config"
-	"github.com/ennoo/fabric-go-client/service"
+	"github.com/ennoo/fabric-client/config"
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	"gopkg.in/yaml.v2"
 	"testing"
@@ -325,8 +325,8 @@ func TestDiscoveryClientEndorsersPeers(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-go-client/example"
-	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-go-client/example"
+	//rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/example"
+	rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-client/example"
 	conf := config.Config{}
 	_ = conf.InitClient(false, "Org1", "debug",
 		rootPath+"/config/crypto-config",

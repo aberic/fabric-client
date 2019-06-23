@@ -95,8 +95,8 @@ spec:
         ns: ennoo
     spec:
       containers:
-        - name: fabric-go-client
-          image: 10.0.60.34:80/hbaas/ennoo/fabric-go-client:1.0
+        - name: fabric-client
+          image: 10.0.60.34:80/hbaas/ennoo/fabric-client:1.0
           imagePullPolicy: IfNotPresent
           resources:
             requests:

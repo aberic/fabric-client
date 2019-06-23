@@ -16,9 +16,9 @@
 package main
 
 import (
-	pb "github.com/ennoo/fabric-go-client/grpc/proto"
-	"github.com/ennoo/fabric-go-client/grpc/server"
-	"github.com/ennoo/fabric-go-client/route"
+	pb "github.com/ennoo/fabric-client/grpc/proto"
+	"github.com/ennoo/fabric-client/grpc/server"
+	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"google.golang.org/grpc"
 	"net"

@@ -18,8 +18,8 @@ package sdk
 import (
 	"errors"
 	"fmt"
-	config2 "github.com/ennoo/fabric-go-client/config"
-	"github.com/ennoo/fabric-go-client/service"
+	config2 "github.com/ennoo/fabric-client/config"
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/ennoo/rivet/utils/string"
