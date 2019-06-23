@@ -69,7 +69,7 @@ staticcheck:
 
 cyclo:
 	@echo "gocyclo"
-	gocyclo -over 10 $(GO_FILES)
+	gocyclo -over 18 $(GO_FILES)
 #	gocyclo -top 10 $(GO_FILES)
 
 const:
@@ -83,73 +83,3 @@ veralls:
 test:
 	@echo "test"
 	go test -v -cover $(PKGS_WITH_OUT_EXAMPLES)
-
-build_all: build_bow_all build_shunt_all
-
-build_bow_all: build_bow_amd64_all build_bow_386_all
-
-build_bow_amd64_all: build_bow_darwin_amd64 build_bow_linux_amd64 build_bow_windows_amd64 build_bow_freebsd_amd64
-
-build_bow_386_all: build_bow_darwin_386 build_bow_linux_386 build_bow_windows_386 build_bow_freebsd_386
-
-build_shunt_all: build_shunt_amd64_all build_shunt_386_all
-
-build_shunt_amd64_all: build_shunt_darwin_amd64 build_shunt_linux_amd64 build_shunt_windows_amd64 build_shunt_freebsd_amd64
-
-build_shunt_386_all: build_shunt_darwin_386 build_shunt_linux_386 build_shunt_windows_386 build_shunt_freebsd_386
-
-
-build_bow_darwin_amd64_docker:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o ./rivet/bow/runner/bow_darwin_amd64 ./rivet/bow/runner
-
-build_bow_darwin_amd64:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_darwin_amd64 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-build_bow_linux_amd64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_linux_amd64 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-build_bow_windows_amd64:
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_windows_amd64 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-build_bow_freebsd_amd64:
-	CGO_ENABLED=0 GOOS=freebsd GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_freebsd_amd64 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-
-build_bow_darwin_386:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_darwin_386 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-build_bow_linux_386:
-	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_linux_386 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-build_bow_windows_386:
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_windows_386 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-build_bow_freebsd_386:
-	CGO_ENABLED=0 GOOS=freebsd GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/bow/runner/bow_freebsd_386 $(GOPATH)/src/github.com/ennoo/rivet/bow/runner
-
-
-
-build_shunt_darwin_amd64:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_darwin_amd64 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-build_shunt_linux_amd64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_linux_amd64 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-build_shunt_windows_amd64:
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_windows_amd64 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-build_shunt_freebsd_amd64:
-	CGO_ENABLED=0 GOOS=freebsd GOARCH=amd64 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_freebsd_amd64 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-
-build_shunt_darwin_386:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_darwin_386 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-build_shunt_linux_386:
-	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_linux_386 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-build_shunt_windows_386:
-	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_windows_386 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner
-
-build_shunt_freebsd_386:
-	CGO_ENABLED=0 GOOS=freebsd GOARCH=386 go build -o $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner/shunt_freebsd_386 $(GOPATH)/src/github.com/ennoo/rivet/shunt/runner

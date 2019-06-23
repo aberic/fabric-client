@@ -18,9 +18,12 @@ package file
 
 import (
 	"bufio"
+	"errors"
+	"github.com/ennoo/rivet/utils/log"
 	"github.com/ennoo/rivet/utils/string"
 	"io"
 	"os"
+	"strings"
 )
 
 // PathExists 判断路径是否存在
@@ -67,4 +70,30 @@ func ReadFileByLine(filePath string) ([]string, error) {
 	}
 	//fmt.Println("fileList",fileList)
 	return fileList, nil
+}
+
+// CreateAndWrite 创建并写入内容到文件中
+func CreateAndWrite(filePath string, data []byte, force bool) error {
+	if exist, _ := PathExists(filePath); exist && !force {
+		return errors.New("file exist")
+	}
+	lastIndex := strings.LastIndex(filePath, "/")
+	parentPath := filePath[0:lastIndex]
+	if err := os.MkdirAll(parentPath, os.ModePerm); nil != err {
+		return err
+	}
+	// 创建文件，如果文件已存在，会将文件清空
+	if file, err := os.Create(filePath); err != nil {
+		return err
+	} else {
+		defer file.Close()
+		// 将数据写入文件中
+		//file.WriteString(string(data)) //写入字符串
+		if n, err := file.Write(data); nil != err { // 写入byte的slice数据
+			return err
+		} else {
+			log.Rivet.Debug("write", log.Int("byte count", n))
+			return nil
+		}
+	}
 }

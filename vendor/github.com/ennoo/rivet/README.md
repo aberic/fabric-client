@@ -6,7 +6,9 @@
 [![CircleCI (all branches)](https://img.shields.io/circleci/project/github/ennoo/rivet.svg?label=circle-ci%20build)](https://circleci.com/gh/ennoo/rivet)
 [![Coveralls github](https://img.shields.io/coveralls/github/ennoo/rivet.svg)](https://coveralls.io/github/ennoo/rivet?branch=master)
 
-用于go开发的微服务解决方案
+rivet提供一套用于go开发的微服务解决方案，包括网关、负载均衡、熔断降级、请求转发等功能，目前支持consul作为第三方服务发现组件。除此外也基于第三方开源框架做了简单的封装，如Http/Https、MySQL数据库以及一些常用的工具方法。
+在examples中有上述相关组件和实现的Demo。
+<br><br>
 
 组件信息
 ------------

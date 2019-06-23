@@ -102,6 +102,11 @@ func (result *Result) SayFail(context *gin.Context, msg string) {
 	context.JSON(http.StatusOK, &result)
 }
 
+// Write response 字节
+func (result *Result) Write(context *gin.Context, byte []byte) (int, error) {
+	return context.Writer.Write(byte)
+}
+
 // catchErr 捕获所有异常信息并放入json到context，便于controller直接调用
 func catchErr(context *gin.Context, res *Result) {
 	if r := recover(); r != nil {

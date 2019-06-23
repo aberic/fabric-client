@@ -18,6 +18,7 @@ package response
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"sync"
 )
 
@@ -52,4 +53,22 @@ func SyncPoolGetResponse() *Response {
 func (response *Response) Do(context *gin.Context, objBlock func(result *Result)) {
 	defer catchErr(context, &response.result)
 	objBlock(&response.result)
+}
+
+// DoSelf 处理 request 请求
+//
+// context：请求上下文
+//
+// obj：请求中 body 中内容期望转换的对象并做空实例化，如 new(Type)
+//
+// objBlock：obj 对象的回调方法，最终调用 Do 函数的方法会接收到返回值
+//
+// objBlock interface{}：obj 对象的回调方法所返回的最终交由 response 输出的对象
+//
+// objBlock error：obj 对象的回调方法所返回的错误对象
+//
+// 如未出现err，且无可描述返回内容，则返回值可为 (nil, nil)
+func (response *Response) DoSelf(context *gin.Context, self func(writer http.ResponseWriter, request *http.Request)) {
+	defer catchErr(context, &response.result)
+	self(context.Writer, context.Request)
 }

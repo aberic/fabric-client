@@ -26,3 +26,4 @@ gen### Go template
 logs
 /.maintainer.yml
 /bin/
+/geneses/example/
