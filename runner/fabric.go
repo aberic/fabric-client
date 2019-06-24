@@ -22,24 +22,34 @@ import (
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
+	"github.com/ennoo/rivet/utils/env"
 	"google.golang.org/grpc"
 	"net"
 )
 
 func main() {
-	go httpListener()
-	grpcListener()
+	switch env.GetEnv("PROTOCOL") {
+	case "HTTP":
+		httpListener()
+	case "GRPC":
+		grpcListener()
+	case "BOTH":
+		go httpListener()
+		grpcListener()
+	default:
+		httpListener()
+	}
 }
 
 func httpListener() {
 	rivet.Initialize(false, false, false)
-	// rivet.UseDiscovery(discovery.ComponentConsul, "127.0.0.1:8500", "test", "127.0.0.1", 8081)
 	rivet.ListenAndServe(&rivet.ListenServe{
 		Engine: rivet.SetupRouter(
 			route.Config,
 			route.Channel,
 			route.Order,
 			route.ChainCode,
+			route.Ledger,
 		),
 		DefaultPort: "19865",
 	})
