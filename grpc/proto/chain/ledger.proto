@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+option java_package = "io.ennoo.fabric-client.grpc.proto.chain";
+option java_outer_classname = "LedgerProto";
+option go_package = "grpc/proto/chain";
+
 package chain;
 
 import "vendor/github.com/hyperledger/fabric/protos/ledger/rwset/kvrwset/kv_rwset.proto";

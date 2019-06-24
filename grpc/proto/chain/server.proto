@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+option java_package = "io.ennoo.fabric-client.grpc.proto.chain";
+option java_outer_classname = "ServerProto";
+option go_package = "grpc/proto/chain";
+
 package chain;
 
 import "grpc/proto/chain/result.proto";

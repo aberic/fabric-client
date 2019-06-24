@@ -1,5 +1,9 @@
 syntax = "proto3";
 
+option java_package = "io.ennoo.fabric-client.grpc.proto.geneses";
+option java_outer_classname = "ConfProto";
+option go_package = "grpc/proto/geneses";
+
 package geneses;
 
 // Generate 请求生成区块链配置对象
