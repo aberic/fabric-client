@@ -4,9 +4,9 @@
 package geneses
 
 import (
-	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 	math "math"
 )
@@ -20,25 +20,25 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 func init() { proto.RegisterFile("grpc/proto/geneses/server.proto", fileDescriptor_4a48986c5031badb) }
 
 var fileDescriptor_4a48986c5031badb = []byte{
-	// 196 bytes of a gzipped FileDescriptorProto
+	// 194 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4f, 0x2f, 0x2a, 0x48,
 	0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0x4e, 0x2d, 0xd6, 0x2f,
 	0x4e, 0x2d, 0x2a, 0x4b, 0x2d, 0xd2, 0x03, 0x0b, 0x0a, 0xb1, 0x43, 0x45, 0xa5, 0x64, 0xb1, 0xa8,
 	0x4c, 0xce, 0xcf, 0x4b, 0x83, 0xa8, 0x93, 0xc2, 0x66, 0x50, 0x51, 0x6a, 0x71, 0x69, 0x4e, 0x09,
-	0x44, 0x81, 0xd1, 0x17, 0x46, 0x2e, 0x76, 0x77, 0x88, 0x84, 0x90, 0x31, 0x17, 0x37, 0x88, 0x59,
-	0x94, 0x58, 0x92, 0x1a, 0x99, 0x9b, 0x23, 0x24, 0xa8, 0x07, 0xd5, 0xa1, 0x07, 0x13, 0x95, 0xe2,
-	0x87, 0x0b, 0x05, 0x97, 0x14, 0x65, 0xe6, 0xa5, 0x2b, 0x31, 0x08, 0x59, 0x72, 0x09, 0xc3, 0xa4,
-	0x9d, 0x8b, 0x2a, 0x0b, 0x4a, 0xf2, 0xdd, 0x32, 0x73, 0x52, 0x8b, 0x85, 0x10, 0x2a, 0x21, 0xa2,
-	0x48, 0x5a, 0x9d, 0x7d, 0x5d, 0xfc, 0x4b, 0x4b, 0x94, 0x18, 0x84, 0x6c, 0xb9, 0x44, 0x60, 0x5a,
-	0xc1, 0x4e, 0xc8, 0x2c, 0x76, 0xca, 0xc9, 0x4f, 0xce, 0x16, 0x12, 0x42, 0x28, 0xcd, 0x48, 0xcc,
-	0xcb, 0x4b, 0xcd, 0x09, 0x89, 0xc0, 0xa6, 0xdd, 0x8a, 0x4b, 0x10, 0x6e, 0x33, 0x4c, 0x1d, 0x91,
-	0x7a, 0x93, 0xd8, 0xc0, 0xbe, 0x37, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x9c, 0x96, 0x02, 0x85,
-	0x69, 0x01, 0x00, 0x00,
+	0x44, 0x81, 0xd1, 0x47, 0x46, 0x2e, 0x76, 0x77, 0x90, 0x44, 0x66, 0xb1, 0x90, 0x31, 0x17, 0x37,
+	0x88, 0x59, 0x94, 0x58, 0x92, 0x1a, 0x99, 0x9b, 0x23, 0x24, 0xa8, 0x07, 0xd5, 0xa1, 0x07, 0x13,
+	0x95, 0xe2, 0x87, 0x0b, 0x05, 0x97, 0x14, 0x65, 0xe6, 0xa5, 0x2b, 0x31, 0x08, 0x59, 0x72, 0x09,
+	0xc3, 0xa4, 0x9d, 0x8b, 0x2a, 0x0b, 0x4a, 0xf2, 0xdd, 0x32, 0x73, 0x52, 0x8b, 0x85, 0x10, 0x2a,
+	0x21, 0xa2, 0x48, 0x5a, 0x9d, 0x7d, 0x5d, 0xfc, 0x4b, 0x4b, 0x94, 0x18, 0x84, 0xac, 0xb8, 0x44,
+	0x60, 0x5a, 0xa1, 0x4e, 0x70, 0xca, 0xc9, 0x4f, 0xce, 0x26, 0x52, 0xaf, 0x20, 0xdc, 0xda, 0x8c,
+	0xc4, 0xbc, 0xbc, 0xd4, 0x9c, 0x90, 0x08, 0x21, 0x21, 0x84, 0x3a, 0x98, 0x18, 0x16, 0xbd, 0x49,
+	0x6c, 0x60, 0xaf, 0x1b, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x37, 0xb3, 0x65, 0x70, 0x66, 0x01,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -49,171 +49,171 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// GenesesClient is the client API for Geneses service.
+// GenesisClient is the client API for Genesis service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type GenesesClient interface {
+type GenesisClient interface {
 	// GenerateYml 生成区块链配置YML文件
 	GenerateYml(ctx context.Context, in *Generate, opts ...grpc.CallOption) (*String, error)
 	// GenerateCryptoFiles 生成区块链配置文件集合
 	GenerateCryptoFiles(ctx context.Context, in *Crypto, opts ...grpc.CallOption) (*CMDOut, error)
 	// GenerateGenesisBlock 生成区块链创世区块
-	GenerateGenesisBlock(ctx context.Context, in *ChannelTX, opts ...grpc.CallOption) (*CMDOut, error)
+	GenerateGenesisBlock(ctx context.Context, in *Crypto, opts ...grpc.CallOption) (*CMDOut, error)
 	// GenerateChannelTX 生成区块链创世区块
 	GenerateChannelTX(ctx context.Context, in *ChannelTX, opts ...grpc.CallOption) (*CMDOut, error)
 }
 
-type genesesClient struct {
+type genesisClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewGenesesClient(cc *grpc.ClientConn) GenesesClient {
-	return &genesesClient{cc}
+func NewGenesisClient(cc *grpc.ClientConn) GenesisClient {
+	return &genesisClient{cc}
 }
 
-func (c *genesesClient) GenerateYml(ctx context.Context, in *Generate, opts ...grpc.CallOption) (*String, error) {
+func (c *genesisClient) GenerateYml(ctx context.Context, in *Generate, opts ...grpc.CallOption) (*String, error) {
 	out := new(String)
-	err := c.cc.Invoke(ctx, "/geneses.Geneses/GenerateYml", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/geneses.Genesis/GenerateYml", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *genesesClient) GenerateCryptoFiles(ctx context.Context, in *Crypto, opts ...grpc.CallOption) (*CMDOut, error) {
+func (c *genesisClient) GenerateCryptoFiles(ctx context.Context, in *Crypto, opts ...grpc.CallOption) (*CMDOut, error) {
 	out := new(CMDOut)
-	err := c.cc.Invoke(ctx, "/geneses.Geneses/GenerateCryptoFiles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/geneses.Genesis/GenerateCryptoFiles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *genesesClient) GenerateGenesisBlock(ctx context.Context, in *ChannelTX, opts ...grpc.CallOption) (*CMDOut, error) {
+func (c *genesisClient) GenerateGenesisBlock(ctx context.Context, in *Crypto, opts ...grpc.CallOption) (*CMDOut, error) {
 	out := new(CMDOut)
-	err := c.cc.Invoke(ctx, "/geneses.Geneses/GenerateGenesisBlock", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/geneses.Genesis/GenerateGenesisBlock", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *genesesClient) GenerateChannelTX(ctx context.Context, in *ChannelTX, opts ...grpc.CallOption) (*CMDOut, error) {
+func (c *genesisClient) GenerateChannelTX(ctx context.Context, in *ChannelTX, opts ...grpc.CallOption) (*CMDOut, error) {
 	out := new(CMDOut)
-	err := c.cc.Invoke(ctx, "/geneses.Geneses/GenerateChannelTX", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/geneses.Genesis/GenerateChannelTX", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GenesesServer is the server API for Geneses service.
-type GenesesServer interface {
+// GenesisServer is the server API for Genesis service.
+type GenesisServer interface {
 	// GenerateYml 生成区块链配置YML文件
 	GenerateYml(context.Context, *Generate) (*String, error)
 	// GenerateCryptoFiles 生成区块链配置文件集合
 	GenerateCryptoFiles(context.Context, *Crypto) (*CMDOut, error)
 	// GenerateGenesisBlock 生成区块链创世区块
-	GenerateGenesisBlock(context.Context, *ChannelTX) (*CMDOut, error)
+	GenerateGenesisBlock(context.Context, *Crypto) (*CMDOut, error)
 	// GenerateChannelTX 生成区块链创世区块
 	GenerateChannelTX(context.Context, *ChannelTX) (*CMDOut, error)
 }
 
-func RegisterGenesesServer(s *grpc.Server, srv GenesesServer) {
-	s.RegisterService(&_Geneses_serviceDesc, srv)
+func RegisterGenesisServer(s *grpc.Server, srv GenesisServer) {
+	s.RegisterService(&_Genesis_serviceDesc, srv)
 }
 
-func _Geneses_GenerateYml_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Genesis_GenerateYml_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Generate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenesesServer).GenerateYml(ctx, in)
+		return srv.(GenesisServer).GenerateYml(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/geneses.Geneses/GenerateYml",
+		FullMethod: "/geneses.Genesis/GenerateYml",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenesesServer).GenerateYml(ctx, req.(*Generate))
+		return srv.(GenesisServer).GenerateYml(ctx, req.(*Generate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Geneses_GenerateCryptoFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Genesis_GenerateCryptoFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Crypto)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenesesServer).GenerateCryptoFiles(ctx, in)
+		return srv.(GenesisServer).GenerateCryptoFiles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/geneses.Geneses/GenerateCryptoFiles",
+		FullMethod: "/geneses.Genesis/GenerateCryptoFiles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenesesServer).GenerateCryptoFiles(ctx, req.(*Crypto))
+		return srv.(GenesisServer).GenerateCryptoFiles(ctx, req.(*Crypto))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Geneses_GenerateGenesisBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Genesis_GenerateGenesisBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Crypto)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GenesisServer).GenerateGenesisBlock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/geneses.Genesis/GenerateGenesisBlock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GenesisServer).GenerateGenesisBlock(ctx, req.(*Crypto))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Genesis_GenerateChannelTX_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChannelTX)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GenesesServer).GenerateGenesisBlock(ctx, in)
+		return srv.(GenesisServer).GenerateChannelTX(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/geneses.Geneses/GenerateGenesisBlock",
+		FullMethod: "/geneses.Genesis/GenerateChannelTX",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenesesServer).GenerateGenesisBlock(ctx, req.(*ChannelTX))
+		return srv.(GenesisServer).GenerateChannelTX(ctx, req.(*ChannelTX))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Geneses_GenerateChannelTX_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChannelTX)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GenesesServer).GenerateChannelTX(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/geneses.Geneses/GenerateChannelTX",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GenesesServer).GenerateChannelTX(ctx, req.(*ChannelTX))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _Geneses_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "geneses.Geneses",
-	HandlerType: (*GenesesServer)(nil),
+var _Genesis_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "geneses.Genesis",
+	HandlerType: (*GenesisServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GenerateYml",
-			Handler:    _Geneses_GenerateYml_Handler,
+			Handler:    _Genesis_GenerateYml_Handler,
 		},
 		{
 			MethodName: "GenerateCryptoFiles",
-			Handler:    _Geneses_GenerateCryptoFiles_Handler,
+			Handler:    _Genesis_GenerateCryptoFiles_Handler,
 		},
 		{
 			MethodName: "GenerateGenesisBlock",
-			Handler:    _Geneses_GenerateGenesisBlock_Handler,
+			Handler:    _Genesis_GenerateGenesisBlock_Handler,
 		},
 		{
 			MethodName: "GenerateChannelTX",
-			Handler:    _Geneses_GenerateChannelTX_Handler,
+			Handler:    _Genesis_GenerateChannelTX_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

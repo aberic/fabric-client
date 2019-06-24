@@ -17,7 +17,9 @@ package main
 
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	"github.com/ennoo/fabric-client/grpc/server"
+	pbGeneses "github.com/ennoo/fabric-client/grpc/proto/geneses"
+	"github.com/ennoo/fabric-client/grpc/server/chains"
+	"github.com/ennoo/fabric-client/grpc/server/geneses"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"google.golang.org/grpc"
@@ -56,10 +58,11 @@ func grpcListener() {
 	rpcServer := grpc.NewServer()
 
 	//  注册我们自定义的helloworld服务
-	pb.RegisterLedgerConfigServer(rpcServer, &server.ConfigServer{})
-	pb.RegisterLedgerChannelServer(rpcServer, &server.ChannelServer{})
-	pb.RegisterLedgerChainCodeServer(rpcServer, &server.ChainCodeServer{})
-	pb.RegisterLedgerServer(rpcServer, &server.LedgerServer{})
+	pb.RegisterLedgerConfigServer(rpcServer, &chains.ConfigServer{})
+	pb.RegisterLedgerChannelServer(rpcServer, &chains.ChannelServer{})
+	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
+	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
+	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
 
 	//  启动grpc服务
 	if err = rpcServer.Serve(listener); nil != err {
