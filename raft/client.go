@@ -7,9 +7,54 @@ import (
 	"google.golang.org/grpc"
 )
 
-// HeartBeat 发送心跳
-func HeartBeat(url string, req *pb.Beat) (interface{}, error) {
-	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+type HB struct {
+	URL string
+	Req *pb.Beat
+}
+
+type RV struct {
+	URL string
+	Req *pb.ReqElection
+}
+
+type FM struct {
+	URL string
+	Req *pb.ReqFollow
+}
+
+type LM struct {
+	URL string
+	Req *pb.ReqLeader
+}
+
+type SN struct {
+	URL string
+	Req *pb.NodeMap
+}
+
+func hb(hb *HB) {
+
+}
+
+func rv(rv *RV) {
+
+}
+
+func fm(fm *FM) {
+
+}
+
+func lm(lm *LM) {
+
+}
+
+func sn(sn *SN) {
+
+}
+
+// heartBeat 发送心跳
+func heartBeat(hb *HB) (interface{}, error) {
+	return utils.RPC(hb.URL, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
 			result *pb.Beat
 			err    error
@@ -17,16 +62,16 @@ func HeartBeat(url string, req *pb.Beat) (interface{}, error) {
 		// 创建grpc客户端
 		c := pb.NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if result, err = c.HeartBeat(context.Background(), req); nil != err {
+		if result, err = c.HeartBeat(context.Background(), hb.Req); nil != err {
 			return nil, err
 		}
 		return result, nil
 	})
 }
 
-// RequestVote 发起选举，索要选票
-func RequestVote(url string, req *pb.ReqElection) (interface{}, error) {
-	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+// requestVote 发起选举，索要选票
+func requestVote(rv *RV) (interface{}, error) {
+	return utils.RPC(rv.URL, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
 			result *pb.Resp
 			err    error
@@ -34,16 +79,16 @@ func RequestVote(url string, req *pb.ReqElection) (interface{}, error) {
 		// 创建grpc客户端
 		c := pb.NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if result, err = c.RequestVote(context.Background(), req); nil != err {
+		if result, err = c.RequestVote(context.Background(), rv.Req); nil != err {
 			return nil, err
 		}
 		return result, nil
 	})
 }
 
-// FollowMe 成为Leader并要求被跟随
-func FollowMe(url string, req *pb.ReqFollow) (interface{}, error) {
-	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+// followMe 成为Leader并要求被跟随
+func followMe(fm *FM) (interface{}, error) {
+	return utils.RPC(fm.URL, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
 			result *pb.Resp
 			err    error
@@ -51,16 +96,16 @@ func FollowMe(url string, req *pb.ReqFollow) (interface{}, error) {
 		// 创建grpc客户端
 		c := pb.NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if result, err = c.FollowMe(context.Background(), req); nil != err {
+		if result, err = c.FollowMe(context.Background(), fm.Req); nil != err {
 			return nil, err
 		}
 		return result, nil
 	})
 }
 
-// LeaderMe 请求Leader将自身加入follows
-func LeaderMe(url string, req *pb.ReqLeader) (interface{}, error) {
-	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+// leaderMe 请求Leader将自身加入follows
+func leaderMe(lm *LM) (interface{}, error) {
+	return utils.RPC(lm.URL, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
 			result *pb.Resp
 			err    error
@@ -68,16 +113,16 @@ func LeaderMe(url string, req *pb.ReqLeader) (interface{}, error) {
 		// 创建grpc客户端
 		c := pb.NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if result, err = c.LeaderMe(context.Background(), req); nil != err {
+		if result, err = c.LeaderMe(context.Background(), lm.Req); nil != err {
 			return nil, err
 		}
 		return result, nil
 	})
 }
 
-// SyncNode 同步节点信息
-func SyncNode(url string, req *pb.NodeMap) (interface{}, error) {
-	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+// syncNode 同步节点信息
+func syncNode(sn *SN) (interface{}, error) {
+	return utils.RPC(sn.URL, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
 			result *pb.NodeMap
 			err    error
@@ -85,7 +130,7 @@ func SyncNode(url string, req *pb.NodeMap) (interface{}, error) {
 		// 创建grpc客户端
 		c := pb.NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if result, err = c.SyncNode(context.Background(), req); nil != err {
+		if result, err = c.SyncNode(context.Background(), sn.Req); nil != err {
 			return nil, err
 		}
 		return result, nil

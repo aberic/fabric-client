@@ -18,14 +18,14 @@ import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/raft"
 	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"
-	str "github.com/ennoo/rivet/utils/string"
+	"github.com/ennoo/rivet/utils/string"
 	"strings"
 	"time"
 )
 
 const (
 	brokerID = "BROKER_ID"    // BROKER_ID=1
-	NodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com:19865:19877 NODE_ADDRESS=127.0.0.1:19865:19877
+	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com:19865:19877 NODE_ADDRESS=127.0.0.1:19865:19877
 	// CLUSTER=1=127.0.0.1:19865:19877,2=127.0.0.2:19865:19877,3=127.0.0.3:19865:19877
 	cluster = "CLUSTER"
 )
@@ -35,12 +35,11 @@ var (
 	Nodes  map[string]*pb.Node
 	ID     string // ID ID 为空则表示不启用集群模式
 	Addr   string // Addr Addr 为空则表示不启用集群模式
-	Time   int64  // 最后一次心跳时间戳ms
 	Term   int32  // 当前所处区间
 )
 
 func init() {
-	if Addr = env.GetEnv(NodeAddr); str.IsEmpty(Addr) {
+	if Addr = env.GetEnv(nodeAddr); str.IsEmpty(Addr) {
 		ID = ""
 		return
 	}

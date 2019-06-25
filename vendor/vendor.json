@@ -1847,6 +1847,12 @@
 			"revisionTime": "2018-10-26T20:02:10Z"
 		},
 		{
+			"checksumSHA1": "erG60QqNXpv14wkGnW013bNank8=",
+			"path": "github.com/panjf2000/ants",
+			"revision": "05e96abd6103ae7b70436abe58dbc0ad7e740929",
+			"revisionTime": "2019-04-23T12:33:34Z"
+		},
+		{
 			"checksumSHA1": "/zLuv6DjBJgGSSLGlD3CbxwUhiQ=",
 			"path": "github.com/pelletier/go-toml",
 			"revision": "81a861c69d25a841d0c4394f0e6f84bc8c5afae0",
