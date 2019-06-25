@@ -18,8 +18,11 @@ package main
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	pbGeneses "github.com/ennoo/fabric-client/grpc/proto/geneses"
+	pbRaft "github.com/ennoo/fabric-client/grpc/proto/raft"
 	"github.com/ennoo/fabric-client/grpc/server/chains"
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
+	"github.com/ennoo/fabric-client/grpc/server/raft"
+	scheduled "github.com/ennoo/fabric-client/raft"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
@@ -28,6 +31,7 @@ import (
 )
 
 func main() {
+	scheduled.Start()
 	switch env.GetEnv("PROTOCOL") {
 	case "HTTP":
 		httpListener()
@@ -73,6 +77,7 @@ func grpcListener() {
 	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
 	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
 	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
+	pbRaft.RegisterRaftServer(rpcServer, &raft.RaftServer{})
 
 	//  启动grpc服务
 	if err = rpcServer.Serve(listener); nil != err {
