@@ -8,12 +8,8 @@ message Beat {
 
 // ReqElection 发起选举请求对象
 message ReqElection {
-    string brokerID = 1;
-    int32 term = 2; // 任期
-}
-
-message ReqLeader {
     Node node = 1;
+    int32 term = 2; // 任期
 }
 
 // ReqElection 发起选举请求对象

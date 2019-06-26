@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	timeOut = 350 // raft心跳超时ms
+	timeOut = 1000 // raft心跳超时ms
 )
 
 var (
@@ -19,12 +19,18 @@ var (
 	checkErr  chan error
 	pools     map[string]*ants.PoolWithFunc
 	Time      int64 // 最后一次心跳时间戳ms
+	hb        string
+	rv        string
+	sn        string
 )
 
 func init() {
+	hb = "hb"
+	rv = "rv"
+	sn = "sn"
 	checkCron = cron.New()
 	checkErr = make(chan error)
-	Time = time.Now().UnixNano() / 1e6
+	pools = map[string]*ants.PoolWithFunc{}
 }
 
 // ReStartCheck 重启定时检查raft计时任务可用性任务
@@ -37,25 +43,26 @@ func reStartCheck() {
 }
 
 func initPools() {
-	pools["hb"], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
-		hb(i)
+	pools[hb], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
+		heartBeat(i)
 	})
-	pools["rv"], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
-		rv(i)
+	pools[rv], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
+		RequestVote(i)
 	})
-	pools["fm"], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
-		fm(i)
-	})
-	pools["lm"], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
-		lm(i)
-	})
-	pools["sn"], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
-		sn(i)
+	pools[sn], _ = ants.NewPoolWithFunc(len(Nodes), func(i interface{}) {
+		syncNode(i)
 	})
 }
 
 // Start 启动定时检查raft计时任务可用性任务
 func Start() {
+	log.Self.Info("scheduled", log.Reflect("start", Nodes))
+	for _, node := range Nodes {
+		if node.Id == ID {
+			continue
+		}
+		leaderMe(strings.Join([]string{node.Addr, ":", node.Rpc}, ""), Nodes[ID])
+	}
 	reStartCheck()
 }
 
@@ -73,11 +80,33 @@ func check() {
 }
 
 func task() {
+	times := 0
 	checkCron.Stop()
 	err := checkCron.AddFunc(strings.Join([]string{"*/1 * * * * ?"}, ""), func() {
 		if nil == ticker {
-			log.Self.Debug("scheduled", log.String("cron", "restart ticker"))
+			log.Self.Debug("scheduled", log.Int32("Term", Term), log.String("cron", "start ticker"))
+			Time = time.Now().UnixNano() / 1e6
 			tickerStart()
+		}
+		if Nodes[ID].Status == pb.Status_LEADER && Leader.BrokerID == ID { // 如果相等，则说明自身即为 Leader 节点
+			if times >= 3 {
+				log.Self.Debug("scheduled", log.Int32("Term", Term), log.String("sync", "发起同步节点信息"))
+				// 遍历发起同步节点请求
+				for _, node := range Nodes {
+					if node.Id == ID {
+						continue
+					}
+					if err := pools[sn].Invoke(&SN{
+						URL: strings.Join([]string{node.Addr, ":", node.Rpc}, ""),
+						Req: &pb.NodeMap{Nodes: Nodes},
+					}); nil != err {
+						reStartCheck()
+					}
+				}
+				times = 0
+			} else {
+				times += 1
+			}
 		}
 	})
 	if nil != err {
@@ -88,28 +117,57 @@ func task() {
 }
 
 func tickerStart() {
-	ticker = time.NewTicker(timeOut * time.Millisecond / 3)
+	ticker = time.NewTicker(timeOut * time.Millisecond / 2)
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				if Leader.BrokerID == ID { // 如果相等，则说明自身即为 Leader 节点
-					pools["hb"].Tune(len(Nodes))
+				if Nodes[ID].Status == pb.Status_LEADER && Leader.BrokerID == ID { // 如果相等，则说明自身即为 Leader 节点
+					pools[hb].Tune(len(Nodes))
 					// 遍历发送心跳
 					for _, node := range Nodes {
-						if err := pools["hb"].Invoke(&HB{
+						if node.Id == ID {
+							continue
+						}
+						if err := pools[hb].Invoke(&HB{
 							URL: strings.Join([]string{node.Addr, ":", node.Rpc}, ""),
-							Req: &pb.Beat{Beat: []byte(ID)},
+							Req: &pb.ReqElection{Node: Nodes[ID], Term: Term},
 						}); nil != err {
 							reStartCheck()
 						}
 					}
-				} else if time.Now().UnixNano()/1e6-Time > 350 { // 如果超时没有收到 Leader 信息
-					// 切换自身为 CANDIDATE 状态
-					// 发起索要投票请求
+				} else if time.Now().UnixNano()/1e6-Time > timeOut { // 如果超时没有收到 Leader 信息
+					if Nodes[ID].Status != pb.Status_CANDIDATE {
+						// 切换自身为 CANDIDATE 状态
+						Nodes[ID].Status = pb.Status_CANDIDATE
+						//Leader = &pb.Leader{}
+						Term += 1
+					}
+					// 遍历发起索要投票请求
+					for _, node := range Nodes {
+						if node.Id == ID {
+							continue
+						}
+						if err := pools[rv].Invoke(&RV{
+							URL: strings.Join([]string{node.Addr, ":", node.Rpc}, ""),
+							Req: &pb.ReqElection{
+								Node: Nodes[ID],
+								Term: Term,
+							},
+							Target: &pb.ReqElection{
+								Node: node,
+								Term: Term,
+							},
+						}); nil != err {
+							reStartCheck()
+						}
+					}
 				}
-				log.Self.Debug("scheduled", log.Reflect("ticker", time.Now().UnixNano()/1e6))
 			}
 		}
 	}()
+}
+
+func RefreshTimeOut() {
+	Time = time.Now().UnixNano() / 1e6
 }

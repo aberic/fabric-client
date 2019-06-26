@@ -19,26 +19,32 @@ import (
 	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/ennoo/rivet/utils/string"
+	"os"
 	"strings"
-	"time"
 )
 
 const (
 	brokerID = "BROKER_ID"    // BROKER_ID=1
-	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com:19865:19877 NODE_ADDRESS=127.0.0.1:19865:19877
+	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com NODE_ADDRESS=127.0.0.1
 	// CLUSTER=1=127.0.0.1:19865:19877,2=127.0.0.2:19865:19877,3=127.0.0.3:19865:19877
 	cluster = "CLUSTER"
 )
 
 var (
-	Leader *pb.Leader
-	Nodes  map[string]*pb.Node
-	ID     string // ID ID 为空则表示不启用集群模式
-	Addr   string // Addr Addr 为空则表示不启用集群模式
-	Term   int32  // 当前所处区间
+	Leader    *pb.Leader
+	Nodes     map[string]*pb.Node
+	ID        string // ID ID 为空则表示不启用集群模式
+	Addr      string // Addr Addr 为空则表示不启用集群模式
+	Term      int32  // 当前所处区间
+	voteCount int32  // 获取到的票数
 )
 
 func init() {
+	// 仅测试用
+	_ = os.Setenv(brokerID, "2")
+	_ = os.Setenv(nodeAddr, "127.0.0.1")
+	_ = os.Setenv(cluster, "1=127.0.0.1:19865:19877,2=127.0.0.1:19866:19878,3=127.0.0.1:19867:19879")
+
 	if Addr = env.GetEnv(nodeAddr); str.IsEmpty(Addr) {
 		ID = ""
 		return
@@ -50,12 +56,16 @@ func init() {
 	} else {
 		ID = id
 	}
+	Term = 0
+	voteCount = 0
+	Leader = &pb.Leader{}
 	nodesStr := env.GetEnv(cluster)
 	if str.IsEmpty(nodesStr) {
 		Nodes = map[string]*pb.Node{}
 	} else {
 		clusterArr := strings.Split(nodesStr, ",")
 		Nodes = make(map[string]*pb.Node, len(clusterArr))
+		haveOne := false
 		for _, cluster := range clusterArr {
 			clusterSplit := strings.Split(cluster, "=")
 			id := clusterSplit[0]
@@ -72,12 +82,19 @@ func init() {
 				Rpc:  nodeArr[2],
 			}
 			if id == ID {
+				haveOne = true
+				// 默认初始将自身定义为FOLLOWER
 				Nodes[id].Status = pb.Status_FOLLOWER
 			}
 		}
+		if !haveOne {
+			Nodes[ID] = &pb.Node{
+				Id:     ID,
+				Addr:   Addr,
+				Http:   "19866",
+				Rpc:    "19878",
+				Status: pb.Status_FOLLOWER,
+			}
+		}
 	}
-}
-
-func RefreshTimeOut() {
-	Time = time.Now().UnixNano() / 1e6
 }

@@ -15,7 +15,7 @@ service Raft {
     rpc FollowMe (ReqFollow) returns (Resp) {
     }
     // LeaderMe 请求Leader将自身加入follows
-    rpc LeaderMe (ReqLeader) returns (Resp) {
+    rpc LeaderMe (Node) returns (Resp) {
     }
     // SyncNode 同步节点信息
     rpc SyncNode (NodeMap) returns (NodeMap) {

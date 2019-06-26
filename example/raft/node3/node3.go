@@ -10,7 +10,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package main
@@ -21,28 +20,18 @@ import (
 	pbRaft "github.com/ennoo/fabric-client/grpc/proto/raft"
 	"github.com/ennoo/fabric-client/grpc/server/chains"
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
-	"github.com/ennoo/fabric-client/grpc/server/raft"
+	rafts "github.com/ennoo/fabric-client/grpc/server/raft"
 	scheduled "github.com/ennoo/fabric-client/raft"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
-	"github.com/ennoo/rivet/utils/env"
 	"google.golang.org/grpc"
 	"net"
 )
 
 func main() {
+	go grpcListener()
 	scheduled.Start()
-	switch env.GetEnv("PROTOCOL") {
-	case "HTTP":
-		httpListener()
-	case "GRPC":
-		grpcListener()
-	case "BOTH":
-		go httpListener()
-		grpcListener()
-	default:
-		httpListener()
-	}
+	httpListener()
 }
 
 func httpListener() {
@@ -55,7 +44,7 @@ func httpListener() {
 			route.ChainCode,
 			route.Ledger,
 		),
-		DefaultPort: "19865",
+		DefaultPort: "19867",
 	})
 }
 
@@ -65,7 +54,7 @@ func grpcListener() {
 		err      error
 	)
 	//  创建server端监听端口
-	if listener, err = net.Listen("tcp", ":19877"); nil != err {
+	if listener, err = net.Listen("tcp", ":19879"); nil != err {
 		panic(err)
 	}
 	//  创建grpc的server
