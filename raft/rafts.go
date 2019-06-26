@@ -28,6 +28,7 @@ const (
 	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com NODE_ADDRESS=127.0.0.1
 	// CLUSTER=1=127.0.0.1:19865:19877,2=127.0.0.2:19865:19877,3=127.0.0.3:19865:19877
 	cluster = "CLUSTER"
+	timeOut = 1500 // raft心跳超时ms
 )
 
 var (
@@ -41,9 +42,10 @@ var (
 
 func init() {
 	// 仅测试用
-	_ = os.Setenv(brokerID, "2")
+	_ = os.Setenv(brokerID, "8")
 	_ = os.Setenv(nodeAddr, "127.0.0.1")
-	_ = os.Setenv(cluster, "1=127.0.0.1:19865:19877,2=127.0.0.1:19866:19878,3=127.0.0.1:19867:19879")
+	_ = os.Setenv(cluster, "1=127.0.0.1:19865:19877,2=127.0.0.1:19866:19878,3=127.0.0.1:19867:19879,"+
+		"4=127.0.0.1:19868:19880,5=127.0.0.1:19869:19881,6=127.0.0.1:19870:19882,7=127.0.0.1:19871:19883")
 
 	if Addr = env.GetEnv(nodeAddr); str.IsEmpty(Addr) {
 		ID = ""
@@ -91,8 +93,8 @@ func init() {
 			Nodes[ID] = &pb.Node{
 				Id:     ID,
 				Addr:   Addr,
-				Http:   "19866",
-				Rpc:    "19878",
+				Http:   "19872",
+				Rpc:    "19884",
 				Status: pb.Status_FOLLOWER,
 			}
 		}

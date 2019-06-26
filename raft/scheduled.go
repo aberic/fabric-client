@@ -9,10 +9,6 @@ import (
 	"time"
 )
 
-const (
-	timeOut = 1000 // raft心跳超时ms
-)
-
 var (
 	ticker    *time.Ticker
 	checkCron *cron.Cron
@@ -117,7 +113,7 @@ func task() {
 }
 
 func tickerStart() {
-	ticker = time.NewTicker(timeOut * time.Millisecond / 2)
+	ticker = time.NewTicker(timeOut * time.Millisecond / 15)
 	go func() {
 		for {
 			select {

@@ -33,7 +33,7 @@ func heartBeat(i interface{}) {
 		// 创建grpc客户端
 		c := pb.NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if _, err := c.HeartBeat(context.Background(), &pb.Beat{}); nil != err {
+		if _, err := c.HeartBeat(context.Background(), &pb.Beat{Beat: []byte(ID)}); nil != err {
 			return nil, err
 		}
 		return nil, nil
@@ -91,7 +91,7 @@ func RequestVote(i interface{}) {
 		var aliveNodeCount int32
 		aliveNodeCount = 0
 		for _, node := range Nodes {
-			if time.Now().UnixNano()/1e6-node.LastActive < 1000 {
+			if time.Now().UnixNano()/1e6-node.LastActive < timeOut {
 				aliveNodeCount++
 			}
 		}
@@ -102,7 +102,10 @@ func RequestVote(i interface{}) {
 			Nodes[ID].Status = pb.Status_LEADER
 			// 总得票数超过总节点数一半
 			for _, node := range Nodes {
-				go followMe(strings.Join([]string{node.Addr, ":", node.Rpc}, ""), &pb.ReqFollow{
+				if node.Id == ID {
+					continue
+				}
+				go FollowMe(strings.Join([]string{node.Addr, ":", node.Rpc}, ""), &pb.ReqFollow{
 					Node: Nodes[ID],
 					Term: Term,
 				})
@@ -114,8 +117,8 @@ func RequestVote(i interface{}) {
 	}
 }
 
-// followMe 成为Leader并要求被跟随
-func followMe(url string, req *pb.ReqFollow) {
+// FollowMe 成为Leader并要求被跟随
+func FollowMe(url string, req *pb.ReqFollow) {
 	log.Self.Info("raft", log.Int32("Term", Term), log.String("followMe", "成为Leader并要求被跟随"))
 	pbI, err := utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (

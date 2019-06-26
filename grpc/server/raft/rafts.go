@@ -39,6 +39,12 @@ func (r *RaftServer) HeartBeat(ctx context.Context, in *pb.Beat) (*pb.Beat, erro
 func (r *RaftServer) RequestVote(ctx context.Context, in *pb.ReqElection) (*pb.Resp, error) {
 	if in.Term <= raft.Term {
 		log.Self.Info("raft", log.Int32("Term", raft.Term), log.String("RequestVote", "拒绝投票给对方"))
+		if raft.Leader.BrokerID == raft.ID { // 如果自身为Leader，则要求对方Follow
+			raft.FollowMe(strings.Join([]string{in.Node.Addr, ":", in.Node.Rpc}, ""), &pb.ReqFollow{
+				Node: raft.Nodes[raft.ID],
+				Term: raft.Term,
+			})
+		}
 		return &pb.Resp{
 			Type: pb.Type_TERM,
 			Result: &pb.Resp_Election{
@@ -65,7 +71,7 @@ func (r *RaftServer) FollowMe(ctx context.Context, in *pb.ReqFollow) (*pb.Resp, 
 	if nil == raft.Nodes[in.Node.Id] {
 		raft.Nodes[in.Node.Id] = in.Node
 	}
-	if in.Term <= raft.Term {
+	if in.Term < raft.Term {
 		// 告知对方当前最新Term
 		return &pb.Resp{
 			Type: pb.Type_TERM,
@@ -97,7 +103,7 @@ func (r *RaftServer) LeaderMe(ctx context.Context, in *pb.Node) (*pb.Resp, error
 }
 
 func (r *RaftServer) SyncNode(ctx context.Context, in *pb.NodeMap) (*pb.NodeMap, error) {
-	log.Self.Debug("scheduled", log.Int32("Term", raft.Term), log.String("SyncNode", "接收同步节点信息"))
+	log.Self.Debug("raft", log.Int32("Term", raft.Term), log.String("SyncNode", "接收同步节点信息"))
 	for _, node := range in.Nodes {
 		haveOne := false
 		for _, localNode := range raft.Nodes {
@@ -119,10 +125,12 @@ func termLittle(req *pb.Node) (*pb.Resp, error) {
 	// 如果索要区间小于当前所处区间
 	if raft.Nodes[raft.ID].Status == pb.Status_LEADER {
 		// 如果自身为 Leader 状态，则告知跟随
+		log.Self.Debug("raft", log.Int32("Term", raft.Term), log.String("termLittle", "自身为 Leader 状态，告知跟随"))
 		return &pb.Resp{Type: pb.Type_FOLLOW_ME,
 			Result: &pb.Resp_Election{Election: &pb.ReqElection{Node: raft.Nodes[raft.ID], Term: raft.Term}}}, nil
 	} else if raft.Nodes[raft.ID].Status == pb.Status_CANDIDATE {
 		// 如果自身为 CANDIDATE 状态，则告知投票
+		log.Self.Debug("raft", log.Int32("Term", raft.Term), log.String("termLittle", "自身为 CANDIDATE 状态，告知投票"))
 		raft.RequestVote(&raft.RV{
 			URL: strings.Join([]string{req.Addr, ":", req.Rpc}, ""),
 			Req: &pb.ReqElection{
@@ -134,6 +142,7 @@ func termLittle(req *pb.Node) (*pb.Resp, error) {
 			Result: &pb.Resp_Election{Election: &pb.ReqElection{Node: raft.Nodes[raft.ID], Term: raft.Term}}}, nil
 	}
 	// 如果自身为 FOLLOW 状态，则告知当前Leader节点
+	log.Self.Debug("raft", log.Int32("Term", raft.Term), log.String("termLittle", "自身为 FOLLOW 状态，告知当前Leader节点"))
 	return &pb.Resp{Type: pb.Type_LEADER_NODE,
 		Result: &pb.Resp_Leader{Leader: &pb.LeaderNode{
 			Leader: raft.Nodes[raft.Leader.BrokerID],
