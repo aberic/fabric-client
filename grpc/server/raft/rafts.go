@@ -17,8 +17,10 @@ package rafts
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/raft"
 	"github.com/ennoo/fabric-client/raft"
+	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/log"
 	"golang.org/x/net/context"
+	"net/http"
 	"strings"
 )
 
@@ -30,6 +32,17 @@ func (r *RaftServer) HeartBeat(ctx context.Context, in *pb.Beat) (*pb.Beat, erro
 	// 如果心跳发送发为当前所处 Leader 节点，则刷新计时
 	if brokerID == raft.Leader.BrokerID {
 		raft.RefreshTimeOut()
+		if !raft.Sync {
+			leader := raft.Nodes[raft.Leader.BrokerID]
+			uri := strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, "")
+			log.Self.Debug("syncConfig", log.String("uri", uri))
+			_, err := rivet.Request().RestJSON(http.MethodGet, uri, "config/sync/ask", nil)
+			if nil != err {
+				log.Self.Debug("sync ask", log.Error(err))
+			} else {
+				raft.Sync = true
+			}
+		}
 		return &pb.Beat{}, nil
 	}
 	return nil, nil

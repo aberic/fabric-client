@@ -38,6 +38,7 @@ var (
 	Addr      string // Addr Addr 为空则表示不启用集群模式
 	Term      int32  // 当前所处区间
 	voteCount int32  // 获取到的票数
+	Sync      bool   // 是否同步过
 )
 
 func init() {
@@ -60,6 +61,7 @@ func init() {
 	}
 	Term = 0
 	voteCount = 0
+	Sync = false
 	Leader = &pb.Leader{}
 	nodesStr := env.GetEnv(cluster)
 	if str.IsEmpty(nodesStr) {

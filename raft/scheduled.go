@@ -2,9 +2,12 @@ package raft
 
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/raft"
+	"github.com/ennoo/fabric-client/service"
+	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/panjf2000/ants"
 	"github.com/robfig/cron"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -86,7 +89,8 @@ func task() {
 		}
 		if Nodes[ID].Status == pb.Status_LEADER && Leader.BrokerID == ID { // 如果相等，则说明自身即为 Leader 节点
 			if times >= 3 {
-				log.Self.Debug("scheduled", log.Int32("Term", Term), log.String("sync", "发起同步节点信息"))
+				log.Self.Debug("scheduled", log.Int32("Term", Term), log.String("sync", "发起同步信息"))
+				go SyncConfig()
 				// 遍历发起同步节点请求
 				for _, node := range Nodes {
 					if node.Id == ID {
@@ -166,4 +170,18 @@ func tickerStart() {
 
 func RefreshTimeOut() {
 	Time = time.Now().UnixNano() / 1e6
+}
+
+func SyncConfig() {
+	for _, node := range Nodes {
+		if node.Id == ID {
+			continue
+		}
+		uri := strings.Join([]string{"http://", node.Addr, ":", node.Http}, "")
+		log.Self.Debug("syncConfig", log.String("uri", uri))
+		_, err := rivet.Request().RestJSON(http.MethodPost, uri, "config/sync", service.Configs)
+		if nil != err {
+			log.Self.Debug("syncConfig", log.Error(err))
+		}
+	}
 }
