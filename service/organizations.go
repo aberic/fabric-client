@@ -21,11 +21,23 @@ type OrganizationsOrder struct {
 	CryptoPath string `json:"cryptoPath"`
 }
 
+type OrganizationsOrderSelf struct {
+	ConfigID   string `json:"configID"` // ConfigID 配置唯一ID
+	LeagueName string `json:"leagueName"`
+}
+
 type OrganizationsOrg struct {
 	ConfigID               string   `json:"configID"` // ConfigID 配置唯一ID
 	OrgName                string   `json:"orgName"`
 	MspID                  string   `json:"mspID"`
 	CryptoPath             string   `json:"cryptoPath"`
+	Peers                  []string `json:"peers"`
+	CertificateAuthorities []string `json:"certificateAuthorities"`
+}
+
+type OrganizationsOrgSelf struct {
+	ConfigID               string   `json:"configID"` // ConfigID 配置唯一ID
+	LeagueName             string   `json:"leagueName"`
 	Peers                  []string `json:"peers"`
 	CertificateAuthorities []string `json:"certificateAuthorities"`
 }

@@ -54,6 +54,17 @@ func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.St
 	})
 }
 
+func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf) (*pb.String, error) {
+	return &pb.String{Data: "success"}, service.InitClientSelf(&service.ClientSelf{
+		ConfigID:     in.ConfigID,
+		TlS:          in.Tls,
+		LeagueName:   in.LeagueName,
+		UserName:     in.UserName,
+		Organization: in.Organization,
+		Level:        in.Level,
+	})
+}
+
 func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCustom) (*pb.String, error) {
 	config := service.Get(in.ConfigID)
 	if nil == config {
@@ -202,6 +213,18 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *
 	}
 }
 
+func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrderSelf) (*pb.String, error) {
+	config := service.Get(in.ConfigID)
+	if nil == config {
+		return nil, errors.New("config is nil")
+	} else {
+		return &pb.String{Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(&service.OrganizationsOrderSelf{
+			ConfigID:   in.ConfigID,
+			LeagueName: in.LeagueName,
+		})
+	}
+}
+
 func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrg) (*pb.String, error) {
 	config := service.Get(in.ConfigID)
 	if nil == config {
@@ -212,6 +235,20 @@ func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.R
 			MspID:                  in.MspID,
 			CryptoPath:             in.CryptoPath,
 			OrgName:                in.OrgName,
+			Peers:                  in.Peers,
+			CertificateAuthorities: in.CertificateAuthorities,
+		})
+	}
+}
+
+func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrgSelf) (*pb.String, error) {
+	config := service.Get(in.ConfigID)
+	if nil == config {
+		return nil, errors.New("config is nil")
+	} else {
+		return &pb.String{Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(&service.OrganizationsOrgSelf{
+			ConfigID:               in.ConfigID,
+			LeagueName:             in.LeagueName,
 			Peers:                  in.Peers,
 			CertificateAuthorities: in.CertificateAuthorities,
 		})
@@ -238,6 +275,25 @@ func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*p
 	}
 }
 
+func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderSelf) (*pb.String, error) {
+	config := service.Get(in.ConfigID)
+	if nil == config {
+		return nil, errors.New("config is nil")
+	} else {
+		return &pb.String{Data: "success"}, service.AddOrSetOrdererSelf(&service.OrderSelf{
+			ConfigID:         in.ConfigID,
+			OrderName:        in.OrderName,
+			URL:              in.Url,
+			LeagueName:       in.LeagueName,
+			KeepAliveTime:    in.KeepAliveTime,
+			KeepAliveTimeout: in.KeepAliveTimeout,
+			KeepAlivePermit:  in.KeepAlivePermit,
+			FailFast:         in.FailFast,
+			AllowInsecure:    in.AllowInsecure,
+		})
+	}
+}
+
 func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.String, error) {
 	config := service.Get(in.ConfigID)
 	if nil == config {
@@ -259,6 +315,26 @@ func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.St
 	}
 }
 
+func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf) (*pb.String, error) {
+	config := service.Get(in.ConfigID)
+	if nil == config {
+		return nil, errors.New("config is nil")
+	} else {
+		return &pb.String{Data: "success"}, service.AddOrSetPeerSelf(&service.PeerSelf{
+			ConfigID:         in.ConfigID,
+			PeerName:         in.PeerName,
+			URL:              in.Url,
+			EventUrl:         in.EventUrl,
+			LeagueName:       in.LeagueName,
+			KeepAliveTime:    in.KeepAliveTime,
+			KeepAliveTimeout: in.KeepAliveTimeout,
+			KeepAlivePermit:  in.KeepAlivePermit,
+			FailFast:         in.FailFast,
+			AllowInsecure:    in.AllowInsecure,
+		})
+	}
+}
+
 func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.ReqCertificateAuthority) (*pb.String, error) {
 	config := service.Get(in.ConfigID)
 	if nil == config {
@@ -274,6 +350,23 @@ func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.
 			CAName:                  in.CaName,
 			EnrollId:                in.EnrollId,
 			EnrollSecret:            in.EnrollSecret,
+		})
+	}
+}
+
+func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in *pb.ReqCertificateAuthoritySelf) (*pb.String, error) {
+	config := service.Get(in.ConfigID)
+	if nil == config {
+		return nil, errors.New("config is nil")
+	} else {
+		return &pb.String{Data: "success"}, service.AddOrSetCertificateAuthoritySelf(&service.CertificateAuthoritySelf{
+			ConfigID:     in.ConfigID,
+			CertName:     in.CertName,
+			URL:          in.Url,
+			LeagueName:   in.LeagueName,
+			CAName:       in.CaName,
+			EnrollId:     in.EnrollId,
+			EnrollSecret: in.EnrollSecret,
 		})
 	}
 }

@@ -27,6 +27,15 @@ type Client struct {
 	CertPath     string `json:"certPath"`     // CertPath 客户端证书，用于TLS与节点和排序服务的握手
 }
 
+type ClientSelf struct {
+	ConfigID     string `json:"configID"` // ConfigID 配置唯一ID
+	TlS          bool   `json:"tls"`      // TlS 是否开启TLS，默认false
+	LeagueName   string `json:"leagueName"`
+	UserName     string `json:"userName"`
+	Organization string `json:"organization"` // Organization 这个应用程序实例属于哪个组织?值必须是在“组织”下定义的组织的名称，如：Org1
+	Level        string `json:"level"`        // Level 日志级别，debug、info、warn、error等
+}
+
 type ClientCustom struct {
 	ConfigID     string                     `json:"configID"` // ConfigID 配置唯一ID
 	Client       *Client                    `json:"client"`

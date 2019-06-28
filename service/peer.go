@@ -28,3 +28,16 @@ type Peer struct {
 	FailFast              bool   `json:"failFast"`
 	AllowInsecure         bool   `json:"allowInsecure"`
 }
+
+type PeerSelf struct {
+	ConfigID         string `json:"configID"` // ConfigID 配置唯一ID
+	LeagueName       string `json:"leagueName"`
+	PeerName         string `json:"peerName"`
+	URL              string `json:"url"`
+	EventUrl         string `json:"eventUrl"`
+	KeepAliveTime    string `json:"keepAliveTime"`
+	KeepAliveTimeout string `json:"keepAliveTimeout"`
+	KeepAlivePermit  bool   `json:"keepAlivePermit"`
+	FailFast         bool   `json:"failFast"`
+	AllowInsecure    bool   `json:"allowInsecure"`
+}

@@ -41,9 +41,9 @@ const (
 func init() {
 	goPath := env.GetEnv(env.GOPath)
 	WorkDir = env.GetEnvDefault(WorkPath, strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/geneses/example"}, "/"))
-	binDir := env.GetEnvDefault(BinPath, strings.Join([]string{WorkDir, "bin/1.4", systemDir()}, "/"))
-	FabricCryptoGenPathV14 = strings.Join([]string{WorkDir, binDir, "cryptogen"}, "/")
-	FabricConfigTXGenPathV14 = strings.Join([]string{WorkDir, binDir, "configtxgen"}, "/")
+	binDir := env.GetEnvDefault(BinPath, strings.Join([]string{WorkDir, "../../example/bin/1.4", systemDir()}, "/"))
+	FabricCryptoGenPathV14 = strings.Join([]string{binDir, "cryptogen"}, "/")
+	FabricConfigTXGenPathV14 = strings.Join([]string{binDir, "configtxgen"}, "/")
 }
 
 func systemDir() string {
@@ -66,17 +66,17 @@ func systemDir() string {
 
 // CryptoGenYmlPath cryptogen.yaml
 func CryptoGenYmlPath(leagueComment string) string {
-	return strings.Join([]string{WorkDir, "chain", leagueComment, "conf/yml/config/cryptogen.yaml"}, "/")
+	return strings.Join([]string{WorkDir, "chain", leagueComment, "config/cryptogen.yaml"}, "/")
 }
 
 // ConfigTxYmlPath configtx.yaml
 func ConfigTxYmlPath(leagueComment string) string {
-	return strings.Join([]string{WorkDir, "chain", leagueComment, "conf/yml/config/configtx.yaml"}, "/")
+	return strings.Join([]string{WorkDir, "chain", leagueComment, "config/configtx.yaml"}, "/")
 }
 
 // ConfPath crypto-config和channel-artifacts的上一级目录
 func ConfPath(leagueComment string) string {
-	return strings.Join([]string{WorkDir, "chain", leagueComment, "conf/yml/config"}, "/")
+	return strings.Join([]string{WorkDir, "chain", leagueComment, "config"}, "/")
 }
 
 // CryptoConfigPath crypto-config目录

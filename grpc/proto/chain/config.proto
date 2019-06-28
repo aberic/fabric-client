@@ -262,6 +262,15 @@ message ReqClient {
     string certPath = 7;
 }
 
+message ReqClientSelf {
+    string configID = 1;
+    bool tls = 2;
+    string leagueName = 3;
+    string userName = 4;
+    string organization = 5;
+    string level = 6;
+}
+
 message ReqClientCustom {
     string configID = 1;
     ReqClient client = 2;
@@ -319,6 +328,11 @@ message ReqOrganizationsOrder {
     string cryptoPath = 3;
 }
 
+message ReqOrganizationsOrderSelf {
+    string configID = 1;
+    string leagueName = 2;
+}
+
 message ReqOrganizationsOrg {
     string configID = 1;
     string orgName = 2;
@@ -326,6 +340,13 @@ message ReqOrganizationsOrg {
     string cryptoPath = 4;
     repeated string peers = 5;
     repeated string certificateAuthorities = 6;
+}
+
+message ReqOrganizationsOrgSelf {
+    string configID = 1;
+    string leagueName = 2;
+    repeated string peers = 3;
+    repeated string certificateAuthorities = 4;
 }
 
 message ReqOrder {
@@ -341,7 +362,19 @@ message ReqOrder {
     bool allowInsecure = 10;
 }
 
-message ReqPeer{
+message ReqOrderSelf {
+    string configID = 1;
+    string leagueName = 2;
+    string orderName = 3;
+    string url = 4;
+    string keepAliveTime = 5;
+    string keepAliveTimeout = 6;
+    bool keepAlivePermit = 7;
+    bool failFast = 8;
+    bool allowInsecure = 9;
+}
+
+message ReqPeer {
     string configID = 1;
     string peerName = 2;
     string url = 3;
@@ -355,6 +388,19 @@ message ReqPeer{
     bool allowInsecure = 11;
 }
 
+message ReqPeerSelf {
+    string configID = 1;
+    string leagueName = 2;
+    string peerName = 3;
+    string url = 4;
+    string eventUrl = 5;
+    string keepAliveTime = 6;
+    string keepAliveTimeout = 7;
+    bool keepAlivePermit = 8;
+    bool failFast = 9;
+    bool allowInsecure = 10;
+}
+
 message ReqCertificateAuthority {
     string configID = 1;
     string certName = 2;
@@ -365,4 +411,14 @@ message ReqCertificateAuthority {
     string caName = 7;
     string enrollId = 8;
     string enrollSecret = 9;
+}
+
+message ReqCertificateAuthoritySelf {
+    string configID = 1;
+    string leagueName = 2;
+    string certName = 3;
+    string url = 4;
+    string caName = 5;
+    string enrollId = 6;
+    string enrollSecret = 7;
 }

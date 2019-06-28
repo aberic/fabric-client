@@ -15,7 +15,9 @@
 package config
 
 import (
+	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+	"strings"
 )
 
 const (
@@ -32,15 +34,20 @@ type Config struct {
 	CertificateAuthorities map[string]*CertificateAuthority `yaml:"certificateAuthorities"`
 }
 
-func (c *Config) InitClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string) error {
+func (c *Config) InitClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string) error {
 	c.initClient()
-	return c.Client.initClient(tls, organization, level, cryptoConfig, keyPath, certPath)
+	return c.Client.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
 }
 
-func (c *Config) InitCustomClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string,
+func (c *Config) InitSelfClient(tls bool, leagueName, orgName, userName, level string) error {
+	c.initClient()
+	return c.Client.initSelfClient(tls, leagueName, orgName, userName, level)
+}
+
+func (c *Config) InitCustomClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string,
 	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) error {
 	c.initClient()
-	return c.Client.initCustomClient(tls, organization, level, cryptoConfig, keyPath, certPath, peer, eventService,
+	return c.Client.initCustomClient(tls, orgName, level, cryptoConfig, keyPath, certPath, peer, eventService,
 		order, global, bccsp)
 }
 
@@ -103,8 +110,37 @@ func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string) {
 	}
 }
 
+func (c *Config) AddOrSetSelfOrdererForOrganizations(leagueName string) {
+	c.initOrganizations()
+	cryptoPath := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName), "/ordererOrganizations/", leagueName, "/users/Admin@", leagueName, "/msp"},
+		"")
+	c.Organizations[OrderOrgKey] = &Organization{
+		MspID:      "OrdererMSP",
+		CryptoPath: cryptoPath,
+	}
+}
+
 func (c *Config) AddOrSetOrgForOrganizations(orgName, mspid, cryptoPath string, peers, certificateAuthorities []string) {
 	c.initOrganizations()
+	c.Organizations[orgName] = &Organization{
+		MspID:                  mspid,
+		CryptoPath:             cryptoPath,
+		Peers:                  peers,
+		CertificateAuthorities: certificateAuthorities,
+	}
+}
+
+// AddOrSetSelfOrgForOrganizations
+//
+// peers peer0 peer1
+func (c *Config) AddOrSetSelfOrgForOrganizations(leagueName string, peers, certificateAuthorities []string) {
+	c.initOrganizations()
+	orgName, userName := c.getOrgAndUserName()
+	mspid := strings.Join([]string{"Org", strings.Split(orgName, "-org")[1]}, "")
+	cryptoPath := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName),
+		"/peerOrganizations/", orgName, "/users/", userName, "@", leagueName, "/msp"}, "")
 	c.Organizations[orgName] = &Organization{
 		MspID:                  mspid,
 		CryptoPath:             cryptoPath,
@@ -120,6 +156,35 @@ func (c *Config) AddOrSetOrderer(ordererName, url, sslTargetNameOverride, keepAl
 		URL: url,
 		GRPCOptions: &OrdererGRPCOptions{
 			SSLTargetNameOverride: sslTargetNameOverride,
+			KeepAliveTime:         keepAliveTime,
+			KeepAliveTimeout:      keepAliveTimeout,
+			KeepAlivePermit:       keepAlivePermit,
+			FailFast:              failFast,
+			AllowInsecure:         allowInsecure,
+		},
+		TLSCACerts: &OrdererTLSCACerts{
+			Path: tlsCACerts,
+		},
+	}
+}
+
+// AddOrSetSelfOrderer
+//
+// ordererName order0
+//
+// url grpc://10.10.203.51:30054
+func (c *Config) AddOrSetSelfOrderer(leagueName, ordererName, url, keepAliveTime, keepAliveTimeout string,
+	keepAlivePermit, failFast, allowInsecure bool) {
+	c.initOrderers(ordererName)
+	orderTargetName := strings.Join([]string{ordererName, leagueName}, ".")
+	orderName := strings.Join([]string{orderTargetName, "7050"}, ":")
+	tlsCACerts := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName),
+		"/ordererOrganizations/", leagueName, "/tlsca/tlsca.", leagueName, "-cert.pem"}, "")
+	c.Orderers[orderName] = &Orderer{
+		URL: url,
+		GRPCOptions: &OrdererGRPCOptions{
+			SSLTargetNameOverride: orderTargetName,
 			KeepAliveTime:         keepAliveTime,
 			KeepAliveTimeout:      keepAliveTimeout,
 			KeepAlivePermit:       keepAlivePermit,
@@ -152,6 +217,37 @@ func (c *Config) AddOrSetPeer(peerName, url, eventUrl, sslTargetNameOverride, ke
 	}
 }
 
+// AddOrSetSelfPeer
+//
+// peerName peer0
+//
+// Url:                   "grpc://10.10.203.51:30056",
+//
+// EventUrl:              "grpc://10.10.203.51:30058",
+func (c *Config) AddOrSetSelfPeer(leagueName, peerName, url, eventUrl, keepAliveTime, keepAliveTimeout string,
+	keepAlivePermit, failFast, allowInsecure bool) {
+	orgName, _ := c.getOrgAndUserName()
+	tlsCACerts := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName),
+		"/peerOrganizations/", orgName, "/tlsca/tlsca.", orgName, "-cert.pem"}, "")
+	c.initPeers(peerName)
+	c.Peers[peerName] = &Peer{
+		URL:      url,
+		EventURL: eventUrl,
+		GRPCOptions: &PeerGRPCOptions{
+			SSLTargetNameOverride: peerName,
+			KeepAliveTime:         keepAliveTime,
+			KeepAliveTimeout:      keepAliveTimeout,
+			KeepAlivePermit:       keepAlivePermit,
+			FailFast:              failFast,
+			AllowInsecure:         allowInsecure,
+		},
+		TLSCACerts: &PeerTLSCACerts{
+			Path: tlsCACerts,
+		},
+	}
+}
+
 func (c *Config) AddOrSetCertificateAuthority(certName, url, tlsCACertPath, tlsCACertClientKeyPath,
 	tlsCACertClientCertPath, caName, enrollId, enrollSecret string) {
 	c.initCertificateAuthorities(certName)
@@ -165,6 +261,42 @@ func (c *Config) AddOrSetCertificateAuthority(certName, url, tlsCACertPath, tlsC
 				},
 				Cert: &CertificateAuthorityTLSCACertsClientCert{
 					Path: tlsCACertClientCertPath,
+				},
+			},
+		},
+		Registrar: &CertificateAuthorityRegistrar{
+			EnrollId:     enrollId,
+			EnrollSecret: enrollSecret,
+		},
+		CAName: caName,
+	}
+}
+
+// AddOrSetSelfCertificateAuthority
+//
+// url https://10.10.203.51:30059
+func (c *Config) AddOrSetSelfCertificateAuthority(leagueName, certName, url, caName, enrollId, enrollSecret string) {
+	orgName, _ := c.getOrgAndUserName()
+	tlsCACerts := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName),
+		"/peerOrganizations/", orgName, "/tlsca/tlsca.", orgName, "-cert.pem"}, "")
+	tlsCACertClientKey := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName),
+		"/peerOrganizations/", orgName, "/users/Admin@", orgName, "/tls/client.key"}, "")
+	tlsCACertClientCert := strings.Join([]string{
+		geneses.CryptoConfigPath(leagueName),
+		"/peerOrganizations/", orgName, "/users/Admin@", orgName, "/tls/client.crt"}, "")
+	c.initCertificateAuthorities(certName)
+	c.CertificateAuthorities[certName] = &CertificateAuthority{
+		URL: url,
+		TLSCACerts: &CertificateAuthorityTLSCACerts{
+			Path: tlsCACerts,
+			Client: &CertificateAuthorityTLSCACertsClient{
+				Key: &CertificateAuthorityTLSCACertsClientKey{
+					Path: tlsCACertClientKey,
+				},
+				Cert: &CertificateAuthorityTLSCACertsClientCert{
+					Path: tlsCACertClientCert,
 				},
 			},
 		},
@@ -478,4 +610,11 @@ func (c *Config) getPBClient() *pb.Client {
 			},
 		},
 	}
+}
+
+func (c *Config) getOrgAndUserName() (orgName, userName string) {
+	client := c.Client
+	orgName = client.Organization
+	userName = strings.Split(strings.Split(client.TLSCerts.Client.Cert.Path, "@")[0], "/users/")[1]
+	return
 }

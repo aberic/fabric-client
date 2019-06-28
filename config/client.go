@@ -15,12 +15,13 @@
 package config
 
 import (
+	"github.com/ennoo/fabric-client/geneses"
 	"strings"
 )
 
 // Client go sdk 使用的客户端
 type Client struct {
-	// Organization 这个应用程序实例属于哪个组织?值必须是在“组织”下定义的组织的名称，如：Org1
+	// Organization 这个应用程序实例属于哪个组织?值必须是在“组织”下定义的组织的名称，如：Org1或league-org1
 	Organization string `yaml:"organization"`
 	// Logging 日志级别，debug、info、warn、error等
 	Logging *ClientLogging `yaml:"logging"`
@@ -149,6 +150,15 @@ type ClientGlobalCache struct {
 	ChannelMembership string `yaml:"channelMembership"`
 	Discovery         string `yaml:"discovery"`
 	Selection         string `yaml:"selection"`
+}
+
+func (c *Client) initSelfClient(tls bool, leagueName, orgName, userName, level string) error {
+	cryptoConfig := geneses.CryptoConfigPath(leagueName)
+	keyPath := strings.Join([]string{
+		cryptoConfig, "/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/tls/client.key"}, "")
+	certPath := strings.Join([]string{
+		cryptoConfig, "/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/tls/client.crt"}, "")
+	return c.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
 }
 
 func (c *Client) initClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string) error {

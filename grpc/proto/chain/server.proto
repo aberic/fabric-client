@@ -62,6 +62,8 @@ service LedgerConfig {
     }
     rpc InitClient (ReqClient) returns (String) {
     }
+    rpc InitClientSelf (ReqClientSelf) returns (String) {
+    }
     rpc InitClientCustom (ReqClientCustom) returns (String) {
     }
     rpc AddOrSetPeerForChannel (ReqChannelPeer) returns (String) {
@@ -74,12 +76,22 @@ service LedgerConfig {
     }
     rpc AddOrSetOrdererForOrganizations (ReqOrganizationsOrder) returns (String) {
     }
+    rpc AddOrSetOrdererForOrganizationsSelf (ReqOrganizationsOrderSelf) returns (String) {
+    }
     rpc AddOrSetOrgForOrganizations (ReqOrganizationsOrg) returns (String) {
+    }
+    rpc AddOrSetOrgForOrganizationsSelf (ReqOrganizationsOrgSelf) returns (String) {
     }
     rpc AddOrSetOrderer (ReqOrder) returns (String) {
     }
+    rpc AddOrSetOrdererSelf (ReqOrderSelf) returns (String) {
+    }
     rpc AddOrSetPeer (ReqPeer) returns (String) {
     }
+    rpc AddOrSetPeerSelf (ReqPeerSelf) returns (String) {
+    }
     rpc AddOrSetCertificateAuthority (ReqCertificateAuthority) returns (String) {
+    }
+    rpc AddOrSetCertificateAuthoritySelf (ReqCertificateAuthoritySelf) returns (String) {
     }
 }

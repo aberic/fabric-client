@@ -28,6 +28,18 @@ type Order struct {
 	AllowInsecure         bool   `json:"allowInsecure"`
 }
 
+type OrderSelf struct {
+	ConfigID         string `json:"configID"` // ConfigID 配置唯一ID
+	LeagueName       string `json:"leagueName"`
+	OrderName        string `json:"orderName"`
+	URL              string `json:"url"`
+	KeepAliveTime    string `json:"keepAliveTime"`
+	KeepAliveTimeout string `json:"keepAliveTimeout"`
+	KeepAlivePermit  bool   `json:"keepAlivePermit"`
+	FailFast         bool   `json:"failFast"`
+	AllowInsecure    bool   `json:"allowInsecure"`
+}
+
 type OrderConfig struct {
 	ConfigID  string `json:"configID"` // ConfigID 配置唯一ID
 	OrgName   string `json:"orgName"`

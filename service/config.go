@@ -50,6 +50,14 @@ func InitClient(client *Client) error {
 		client.KeyPath, client.CertPath)
 }
 
+func InitClientSelf(client *ClientSelf) error {
+	if nil == Configs[client.ConfigID] {
+		Configs[client.ConfigID] = &config.Config{}
+	}
+	return Configs[client.ConfigID].InitSelfClient(client.TlS, client.LeagueName, client.Organization, client.UserName,
+		client.Level)
+}
+
 func InitClientCustom(clientCustom *ClientCustom) error {
 	if nil == Configs[clientCustom.ConfigID] {
 		Configs[clientCustom.ConfigID] = &config.Config{}
@@ -104,6 +112,14 @@ func AddOrSetOrdererForOrganizations(order *OrganizationsOrder) error {
 	return nil
 }
 
+func AddOrSetOrdererForOrganizationsSelf(order *OrganizationsOrderSelf) error {
+	if nil == Configs[order.ConfigID] {
+		return errors.New("config client is not init")
+	}
+	Configs[order.ConfigID].AddOrSetSelfOrdererForOrganizations(order.LeagueName)
+	return nil
+}
+
 func AddOrSetOrgForOrganizations(org *OrganizationsOrg) error {
 	if nil == Configs[org.ConfigID] {
 		return errors.New("config client is not init")
@@ -113,12 +129,29 @@ func AddOrSetOrgForOrganizations(org *OrganizationsOrg) error {
 	return nil
 }
 
+func AddOrSetOrgForOrganizationsSelf(org *OrganizationsOrgSelf) error {
+	if nil == Configs[org.ConfigID] {
+		return errors.New("config client is not init")
+	}
+	Configs[org.ConfigID].AddOrSetSelfOrgForOrganizations(org.LeagueName, org.Peers, org.CertificateAuthorities)
+	return nil
+}
+
 func AddOrSetOrderer(order *Order) error {
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}
 	Configs[order.ConfigID].AddOrSetOrderer(order.OrderName, order.URL, order.SSLTargetNameOverride, order.KeepAliveTime,
 		order.KeepAliveTimeout, order.TLSCACerts, order.KeepAlivePermit, order.FailFast, order.AllowInsecure)
+	return nil
+}
+
+func AddOrSetOrdererSelf(order *OrderSelf) error {
+	if nil == Configs[order.ConfigID] {
+		return errors.New("config client is not init")
+	}
+	Configs[order.ConfigID].AddOrSetSelfOrderer(order.LeagueName, order.OrderName, order.URL, order.KeepAliveTime,
+		order.KeepAliveTimeout, order.KeepAlivePermit, order.FailFast, order.AllowInsecure)
 	return nil
 }
 
@@ -132,6 +165,15 @@ func AddOrSetPeer(peer *Peer) error {
 	return nil
 }
 
+func AddOrSetPeerSelf(peer *PeerSelf) error {
+	if nil == Configs[peer.ConfigID] {
+		return errors.New("config client is not init")
+	}
+	Configs[peer.ConfigID].AddOrSetSelfPeer(peer.LeagueName, peer.PeerName, peer.URL, peer.EventUrl, peer.KeepAliveTime,
+		peer.KeepAliveTimeout, peer.KeepAlivePermit, peer.FailFast, peer.AllowInsecure)
+	return nil
+}
+
 func AddOrSetCertificateAuthority(certificateAuthority *CertificateAuthority) error {
 	if nil == Configs[certificateAuthority.ConfigID] {
 		return errors.New("config client is not init")
@@ -140,5 +182,15 @@ func AddOrSetCertificateAuthority(certificateAuthority *CertificateAuthority) er
 		certificateAuthority.URL, certificateAuthority.TLSCACertPath,
 		certificateAuthority.TLSCACertClientKeyPath, certificateAuthority.TLSCACertClientCertPath,
 		certificateAuthority.CAName, certificateAuthority.EnrollId, certificateAuthority.EnrollSecret)
+	return nil
+}
+
+func AddOrSetCertificateAuthoritySelf(certificateAuthority *CertificateAuthoritySelf) error {
+	if nil == Configs[certificateAuthority.ConfigID] {
+		return errors.New("config client is not init")
+	}
+	Configs[certificateAuthority.ConfigID].AddOrSetSelfCertificateAuthority(certificateAuthority.LeagueName,
+		certificateAuthority.CertName, certificateAuthority.URL, certificateAuthority.CAName,
+		certificateAuthority.EnrollId, certificateAuthority.EnrollSecret)
 	return nil
 }

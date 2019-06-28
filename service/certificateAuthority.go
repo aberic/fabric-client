@@ -26,3 +26,13 @@ type CertificateAuthority struct {
 	EnrollId                string `json:"enrollId"`
 	EnrollSecret            string `json:"enrollSecret"`
 }
+
+type CertificateAuthoritySelf struct {
+	ConfigID     string `json:"configID"` // ConfigID 配置唯一ID
+	LeagueName   string `json:"leagueName"`
+	CertName     string `json:"certName"`
+	URL          string `json:"url"`
+	CAName       string `json:"caName"`
+	EnrollId     string `json:"enrollId"`
+	EnrollSecret string `json:"enrollSecret"`
+}

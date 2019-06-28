@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"github.com/ennoo/rivet/utils/log"
 	"gopkg.in/yaml.v2"
+	"strings"
 	"testing"
 )
 
@@ -47,6 +48,11 @@ func TestNewConfig2(t *testing.T) {
 	fmt.Printf("--- dump:\n%s\n\n", string(configData))
 }
 
+func TestSubString(t *testing.T) {
+	s := "league-org1"
+	t.Log(strings.Split(s, "-org"))
+}
+
 func TGetConfig() *Config {
 	config := Config{}
 	_ = config.InitClient(true, "Org1", "debug",
@@ -61,7 +67,7 @@ func TGetConfig() *Config {
 		1, 1, 5, 2.0)
 	config.AddOrSetDiscoveryPolicyForChannel("mychannel1", "500ms", "5s",
 		2, 4, 2.0)
-	config.AddOrSetEventServicePolicyForChannel("mychannel1", "PreferOrg", "Random",
+	config.AddOrSetEventServicePolicyForChannel("mychannel1", "PreferOrg", "RoundRobin",
 		"6s", 5, 8)
 	config.AddOrSetOrdererForOrganizations("OrdererMSP",
 		"/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp")
