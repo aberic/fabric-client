@@ -326,6 +326,7 @@ message ReqOrganizationsOrder {
     string configID = 1;
     string mspID = 2;
     string cryptoPath = 3;
+    map<string, string> users = 4;
 }
 
 message ReqOrganizationsOrderSelf {
@@ -338,8 +339,9 @@ message ReqOrganizationsOrg {
     string orgName = 2;
     string mspID = 3;
     string cryptoPath = 4;
-    repeated string peers = 5;
-    repeated string certificateAuthorities = 6;
+    map<string, string> users = 5;
+    repeated string peers = 6;
+    repeated string certificateAuthorities = 7;
 }
 
 message ReqOrganizationsOrgSelf {

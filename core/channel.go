@@ -28,8 +28,6 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/context"
 	ch "github.com/hyperledger/fabric-sdk-go/pkg/fab/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/comm"
-	"github.com/hyperledger/fabric-sdk-go/pkg/fab/mocks"
-	"github.com/hyperledger/fabric-sdk-go/pkg/fab/peer"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	peer2 "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 	"time"
@@ -53,7 +51,8 @@ func channelClient(orgName, orgUser, channelID string, sdk *fabsdk.FabricSDK) *c
 }
 
 // channelConfigPath mychannel.tx
-func createChannel(orgName, orgUser, channelID, channelConfigPath string, sdk *fabsdk.FabricSDK, client *resmgmt.Client) *response.Result {
+func createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath string, sdk *fabsdk.FabricSDK,
+	client *resmgmt.Client) *response.Result {
 	result := response.Result{}
 	mspClient, err := mspclient.New(sdk.Context(), mspclient.WithOrg(orgName))
 	if err != nil {
@@ -68,7 +67,7 @@ func createChannel(orgName, orgUser, channelID, channelConfigPath string, sdk *f
 			req := resmgmt.SaveChannelRequest{ChannelID: channelID,
 				ChannelConfigPath: channelConfigPath,
 				SigningIdentities: []msp.SigningIdentity{adminIdentity}}
-			txID, err := client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orgName))
+			txID, err := client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orderURL))
 			if err != nil {
 				log.Self.Error("error should be nil. " + err.Error())
 				result.Fail("error should be nil. " + err.Error())
@@ -81,34 +80,17 @@ func createChannel(orgName, orgUser, channelID, channelConfigPath string, sdk *f
 }
 
 // ordererUrl "orderer.example.com"
-// peerUrl grpc://peerUrl or grpcs://peerUrl
-func joinChannel(orderName, orgName, orgUser, channelID, peerUrl string, sdk *fabsdk.FabricSDK) *response.Result {
+func joinChannel(orderURL, channelID string, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
-	//prepare context
-	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
-	// Org resource management client
-	orgResMgmt, err := resmgmt.New(adminContext)
-	if err != nil {
-		log.Self.Error("Failed to join channel: " + err.Error())
-		result.Fail("Failed to join channel: " + err.Error())
+	// Org peers join channel
+	if err := client.JoinChannel(
+		channelID,
+		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+		resmgmt.WithOrdererEndpoint(orderURL)); err != nil {
+		log.Self.Error("Org peers failed to JoinChannel: " + err.Error())
+		result.Fail("Org peers failed to JoinChannel: " + err.Error())
 	} else {
-		if nil != orgResMgmt {
-			peerNew, _ := peer.New(mocks.NewMockEndpointConfig(), peer.WithURL(peerUrl))
-			// Org peers join channel
-			if err = orgResMgmt.JoinChannel(
-				channelID,
-				resmgmt.WithRetry(retry.DefaultResMgmtOpts),
-				resmgmt.WithOrdererEndpoint(orderName),
-				resmgmt.WithTargets(peerNew)); err != nil {
-				log.Self.Error("Org peers failed to JoinChannel: " + err.Error())
-				result.Fail("Org peers failed to JoinChannel: " + err.Error())
-			} else {
-				result.Success("success")
-			}
-		} else {
-			log.Self.Error("orgResMgmt error should be nil. ")
-			result.Fail("orgResMgmt error should be nil. ")
-		}
+		result.Success("success")
 	}
 	return &result
 }

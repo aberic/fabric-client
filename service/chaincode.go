@@ -16,13 +16,13 @@
 package service
 
 type Install struct {
-	ConfigID     string `json:"configID"` // ConfigID 配置唯一ID
-	OrderOrgName string `json:"orderOrgName"`
-	OrgUser      string `json:"orgUser"`
-	Name         string `json:"name"`
-	Source       string `json:"source"`
-	Path         string `json:"path"`
-	Version      string `json:"version"`
+	ConfigID string `json:"configID"` // ConfigID 配置唯一ID
+	OrgName  string `json:"orgName"`
+	OrgUser  string `json:"orgUser"`
+	Name     string `json:"name"`
+	Source   string `json:"source"`
+	Path     string `json:"path"`
+	Version  string `json:"version"`
 }
 
 type Installed struct {

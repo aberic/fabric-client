@@ -15,8 +15,17 @@
 package config
 
 type Organization struct {
-	MspID                  string   `yaml:"mspid"`
-	CryptoPath             string   `yaml:"cryptoPath"`
-	Peers                  []string `yaml:"peers,omitempty"`
-	CertificateAuthorities []string `yaml:"certificateAuthorities,omitempty"`
+	MspID                  string           `yaml:"mspid"`
+	CryptoPath             string           `yaml:"cryptoPath"`
+	Users                  map[string]*User `yaml:"users,omitempty"`
+	Peers                  []string         `yaml:"peers,omitempty"`
+	CertificateAuthorities []string         `yaml:"certificateAuthorities,omitempty"`
+}
+
+type User struct {
+	Cert *Cert `yaml:"cert"`
+}
+
+type Cert struct {
+	Path string `yaml:"path"`
 }

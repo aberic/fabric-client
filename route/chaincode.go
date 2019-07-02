@@ -46,7 +46,7 @@ func install(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Install(install.OrderOrgName, install.OrgUser, install.Name, install.Source, install.Path, install.Version,
+		sdk.Install(install.OrgName, install.OrgUser, install.Name, install.Source, install.Path, install.Version,
 			service.GetBytes(install.ConfigID)).Say(router.Context)
 	})
 }

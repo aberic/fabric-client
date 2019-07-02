@@ -209,6 +209,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *
 			ConfigID:   in.ConfigID,
 			MspID:      in.MspID,
 			CryptoPath: in.CryptoPath,
+			Users:      in.Users,
 		})
 	}
 }
@@ -235,6 +236,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.R
 			MspID:                  in.MspID,
 			CryptoPath:             in.CryptoPath,
 			OrgName:                in.OrgName,
+			Users:                  in.Users,
 			Peers:                  in.Peers,
 			CertificateAuthorities: in.CertificateAuthorities,
 		})

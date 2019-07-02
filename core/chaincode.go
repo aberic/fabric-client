@@ -28,16 +28,17 @@ import (
 	"net/http"
 )
 
-func install(name, source, path, version string, client *resmgmt.Client) *response.Result {
+// install 安装智能合约
+func install(name, goPath, chainCodePath, version string, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
-	ccPkg, err := gopackager.NewCCPackage(path, source)
+	ccPkg, err := gopackager.NewCCPackage(chainCodePath, goPath)
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	}
 	// Install example cc to org peers
-	installCCReq := resmgmt.InstallCCRequest{Name: name, Path: path, Version: version, Package: ccPkg}
+	installCCReq := resmgmt.InstallCCRequest{Name: name, Path: chainCodePath, Version: version, Package: ccPkg}
 	respList, err := client.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 	if err != nil {
 		log.Self.Error(err.Error())
@@ -153,13 +154,13 @@ func upgrade(channelID, name, path, version string, orgPolicies []string, args [
 
 // fcn invoke
 // args [][]byte{[]byte(coll1), []byte("key"), []byte("value")}
-func invoke(chaincodeID string, fcn string, args [][]byte, client *channel.Client) *response.Result {
+func invoke(chaincodeID string, fcn string, args [][]byte, client *channel.Client, targetEndpoints ...string) *response.Result {
 	result := response.Result{}
 	resp, err := client.Execute(channel.Request{
 		ChaincodeID: chaincodeID,
 		Fcn:         fcn,
 		Args:        args,
-	}, channel.WithRetry(retry.DefaultChannelOpts))
+	}, channel.WithRetry(retry.DefaultChannelOpts), channel.WithTargetEndpoints(targetEndpoints...))
 	if err != nil {
 		log.Self.Error("Failed to invoke:" + err.Error())
 		result.Fail(err.Error())

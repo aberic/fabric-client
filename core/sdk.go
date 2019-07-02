@@ -33,29 +33,30 @@ import (
 
 // setupAndRun enables testing an end-to-end scenario against the supplied SDK options
 // the createChannel flag will be used to either create a channel and the example CC or not(ie run the tests with existing ch and CC)
-func Create(orderOrgName, orgName, orgUser, channelID, channelConfigPath string, configBytes []byte,
+func Create(orderOrgName, orderOrgUser, orderURL, orgName, orgUser, channelID, channelConfigPath string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, sdk, err := resMgmtClient(orderOrgName, orgUser, configBytes, sdkOpts...)
+	resMgmtClient, sdk, err := resMgmtOrdererClient(orderOrgName, orderOrgUser, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
 	}
-	return createChannel(orgName, orgUser, channelID, channelConfigPath, sdk, resMgmtClient)
+	defer sdk.Close()
+	return createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath, sdk, resMgmtClient)
 }
 
-func Join(orderName, orgName, orgUser, channelID, peerUrl string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func Join(orderURL, orgName, orgUser, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	sdk, err := sdk(configBytes, sdkOpts...)
+	resMgmtClient, sdk, err := resMgmtOrgClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	}
 	defer sdk.Close()
-	return joinChannel(orderName, orgName, orgUser, channelID, peerUrl, sdk)
+	return joinChannel(orderURL, channelID, resMgmtClient)
 }
 
 func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -283,17 +284,17 @@ func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string,
 	return queryChannelTransaction(channelID, peerName, txID, client)
 }
 
-func Install(orderOrgName, orgUser, name, source, path, version string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
+func Install(orgName, orgUser, name, goPath, chainCodePath, version string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, _, err := resMgmtClient(orderOrgName, orgUser, configBytes, sdkOpts...)
+	resMgmtClient, sdk, err := resMgmtOrgClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
 	}
-	return install(name, source, path, version, resMgmtClient)
+	defer sdk.Close()
+	return install(name, goPath, chainCodePath, version, resMgmtClient)
 }
 
 func OrderConfig(orgName, orgUser, channelID, orderURL string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -320,12 +321,12 @@ func Installed(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ..
 	return queryInstalled(orgName, orgUser, peerName, sdk)
 }
 
-func Instantiate(orderOrgName, orgUser, channelID, name, path, version string, orgPolicies []string, args [][]byte,
+func Instantiate(orgName, orgUser, channelID, name, path, version string, orgPolicies []string, args [][]byte,
 	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, _, err := resMgmtClient(orderOrgName, orgUser, configBytes, sdkOpts...)
+	resMgmtClient, _, err := resMgmtOrdererClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
@@ -345,12 +346,12 @@ func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []by
 	return queryInstantiate(orgName, orgUser, channelID, peerName, sdk)
 }
 
-func Upgrade(ordererOrgName, orgUser, channelID, name, path, version string, orgPolicies []string, args [][]byte,
+func Upgrade(orgName, orgUser, channelID, name, path, version string, orgPolicies []string, args [][]byte,
 	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, _, err := resMgmtClient(ordererOrgName, orgUser, configBytes, sdkOpts...)
+	resMgmtClient, _, err := resMgmtOrdererClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		result.Fail(err.Error())
 		return &result
@@ -358,7 +359,7 @@ func Upgrade(ordererOrgName, orgUser, channelID, name, path, version string, org
 	return upgrade(channelID, name, path, version, orgPolicies, args, resMgmtClient)
 }
 
-func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, configBytes []byte,
+func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
@@ -369,7 +370,15 @@ func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte,
 	}
 	defer sdk.Close()
 	channelClient := channelClient(orgName, orgUser, channelID, sdk)
-	return invoke(chaincodeID, fcn, args, channelClient)
+	return invoke(chaincodeID, fcn, args, channelClient, targetEndpoints...)
+}
+
+func InvokeAsync(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
+	sdkOpts ...fabsdk.Option) *response.Result {
+	result := response.Result{}
+	go Invoke(chaincodeID, orgName, orgUser, channelID, fcn, args, targetEndpoints, configBytes, sdkOpts...)
+	result.Success("commit success")
+	return &result
 }
 
 func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
@@ -469,15 +478,14 @@ func clientContext(orgName, orgUser string, configBytes []byte, sdkOpts ...fabsd
 	return sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName)), sdk
 }
 
-func resMgmtClient(ordererOrgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) (*resmgmt.Client,
+func resMgmtOrdererClient(ordererOrgName, ordererUser string, configBytes []byte, sdkOpts ...fabsdk.Option) (*resmgmt.Client,
 	*fabsdk.FabricSDK, error) {
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
 		return nil, nil, err
 	}
-	defer sdk.Close()
 	//clientContext allows creation of transactions using the supplied identity as the credential.
-	clientContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(ordererOrgName))
+	clientContext := sdk.Context(fabsdk.WithUser(ordererUser), fabsdk.WithOrg(ordererOrgName))
 
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
@@ -487,6 +495,24 @@ func resMgmtClient(ordererOrgName, orgUser string, configBytes []byte, sdkOpts .
 		return nil, nil, fmt.Errorf("Failed to create channel management client: " + err.Error())
 	}
 	return resMgmtClient, sdk, nil
+}
+
+func resMgmtOrgClient(orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) (*resmgmt.Client,
+	*fabsdk.FabricSDK, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, nil, err
+	}
+	//clientContext allows creation of transactions using the supplied identity as the credential.
+	clientContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
+
+	// Org resource management client
+	orgResMgmt, err := resmgmt.New(clientContext)
+	if err != nil {
+		log.Self.Error("Failed to create new resource management client: " + err.Error())
+		return nil, nil, fmt.Errorf("Failed to create new resource management client: " + err.Error())
+	}
+	return orgResMgmt, sdk, nil
 }
 
 func get(configID, channelID string) (orgName, orgUser string, err error) {

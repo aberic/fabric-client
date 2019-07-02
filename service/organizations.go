@@ -16,9 +16,10 @@
 package service
 
 type OrganizationsOrder struct {
-	ConfigID   string `json:"configID"` // ConfigID 配置唯一ID
-	MspID      string `json:"mspID"`
-	CryptoPath string `json:"cryptoPath"`
+	ConfigID   string            `json:"configID"` // ConfigID 配置唯一ID
+	MspID      string            `json:"mspID"`
+	CryptoPath string            `json:"cryptoPath"`
+	Users      map[string]string `json:"users"`
 }
 
 type OrganizationsOrderSelf struct {
@@ -27,12 +28,13 @@ type OrganizationsOrderSelf struct {
 }
 
 type OrganizationsOrg struct {
-	ConfigID               string   `json:"configID"` // ConfigID 配置唯一ID
-	OrgName                string   `json:"orgName"`
-	MspID                  string   `json:"mspID"`
-	CryptoPath             string   `json:"cryptoPath"`
-	Peers                  []string `json:"peers"`
-	CertificateAuthorities []string `json:"certificateAuthorities"`
+	ConfigID               string            `json:"configID"` // ConfigID 配置唯一ID
+	OrgName                string            `json:"orgName"`
+	MspID                  string            `json:"mspID"`
+	CryptoPath             string            `json:"cryptoPath"`
+	Users                  map[string]string `json:"users"`
+	Peers                  []string          `json:"peers"`
+	CertificateAuthorities []string          `json:"certificateAuthorities"`
 }
 
 type OrganizationsOrgSelf struct {

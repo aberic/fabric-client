@@ -102,11 +102,16 @@ func (c *Config) AddOrSetEventServicePolicyForChannel(channelName, resolverStrat
 	}
 }
 
-func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string) {
+func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string, users map[string]string) {
 	c.initOrganizations()
+	userMap := map[string]*User{}
+	for username, path := range users {
+		userMap[username] = &User{Cert: &Cert{Path: path}}
+	}
 	c.Organizations[OrderOrgKey] = &Organization{
 		MspID:      mspID,
 		CryptoPath: cryptoPath,
+		Users:      userMap,
 	}
 }
 
@@ -115,17 +120,25 @@ func (c *Config) AddOrSetSelfOrdererForOrganizations(leagueName string) {
 	cryptoPath := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName), "/ordererOrganizations/", leagueName, "/users/Admin@", leagueName, "/msp"},
 		"")
+	userCertPath := strings.Join([]string{cryptoPath, "/signcerts/Admin@", leagueName, "-cert.pem"}, "")
 	c.Organizations[OrderOrgKey] = &Organization{
 		MspID:      "OrdererMSP",
 		CryptoPath: cryptoPath,
+		Users:      map[string]*User{"Admin": {Cert: &Cert{Path: userCertPath}}},
 	}
 }
 
-func (c *Config) AddOrSetOrgForOrganizations(orgName, mspid, cryptoPath string, peers, certificateAuthorities []string) {
+func (c *Config) AddOrSetOrgForOrganizations(orgName, mspid, cryptoPath string, users map[string]string,
+	peers, certificateAuthorities []string) {
 	c.initOrganizations()
+	userMap := map[string]*User{}
+	for username, path := range users {
+		userMap[username] = &User{Cert: &Cert{Path: path}}
+	}
 	c.Organizations[orgName] = &Organization{
 		MspID:                  mspid,
 		CryptoPath:             cryptoPath,
+		Users:                  userMap,
 		Peers:                  peers,
 		CertificateAuthorities: certificateAuthorities,
 	}
@@ -140,10 +153,12 @@ func (c *Config) AddOrSetSelfOrgForOrganizations(leagueName string, peers, certi
 	mspid := strings.Join([]string{"Org", strings.Split(orgName, "-org")[1]}, "")
 	cryptoPath := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
-		"/peerOrganizations/", orgName, "/users/", userName, "@", leagueName, "/msp"}, "")
+		"/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/msp"}, "")
+	userCertPath := strings.Join([]string{cryptoPath, "/signcerts/", userName, "@", orgName, "-cert.pem"}, "")
 	c.Organizations[orgName] = &Organization{
 		MspID:                  mspid,
 		CryptoPath:             cryptoPath,
+		Users:                  map[string]*User{userName: {Cert: &Cert{Path: userCertPath}}},
 		Peers:                  peers,
 		CertificateAuthorities: certificateAuthorities,
 	}

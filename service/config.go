@@ -108,7 +108,7 @@ func AddOrSetOrdererForOrganizations(order *OrganizationsOrder) error {
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}
-	Configs[order.ConfigID].AddOrSetOrdererForOrganizations(order.MspID, order.CryptoPath)
+	Configs[order.ConfigID].AddOrSetOrdererForOrganizations(order.MspID, order.CryptoPath, order.Users)
 	return nil
 }
 
@@ -124,7 +124,7 @@ func AddOrSetOrgForOrganizations(org *OrganizationsOrg) error {
 	if nil == Configs[org.ConfigID] {
 		return errors.New("config client is not init")
 	}
-	Configs[org.ConfigID].AddOrSetOrgForOrganizations(org.OrgName, org.MspID, org.CryptoPath, org.Peers,
+	Configs[org.ConfigID].AddOrSetOrgForOrganizations(org.OrgName, org.MspID, org.CryptoPath, org.Users, org.Peers,
 		org.CertificateAuthorities)
 	return nil
 }

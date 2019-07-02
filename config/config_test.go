@@ -70,9 +70,16 @@ func TGetConfig() *Config {
 	config.AddOrSetEventServicePolicyForChannel("mychannel1", "PreferOrg", "RoundRobin",
 		"6s", 5, 8)
 	config.AddOrSetOrdererForOrganizations("OrdererMSP",
-		"/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp")
+		"/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp",
+		map[string]string{
+			"Admin": "/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem",
+		})
 	config.AddOrSetOrgForOrganizations("Org1", "Org1MSP",
 		"/fabric/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp",
+		map[string]string{
+			"Admin": "/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem",
+			"User1": "/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem",
+		},
 		[]string{"peer0.org1.example.com", "peer1.org1.example.com"},
 		[]string{"ca.org1.example.com"},
 	)
@@ -103,6 +110,6 @@ func TGetConfig() *Config {
 		"peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem",
 		"peerOrganizations/org2.example.com/users/User1@org2.example.com/tls/client.key",
 		"peerOrganizations/org2.example.com/users/User1@org2.example.com/tls/client.crt",
-		"admin", "adminpw", "ca.org2.example.com")
+		"ca.org2.example.com", "admin", "adminpw")
 	return &config
 }
