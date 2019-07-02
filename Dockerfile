@@ -1,11 +1,8 @@
 FROM golang:1.12.3 as builder
 LABEL app="fabric-client" by="aberic"
-ENV MOCK=$GOPATH/src/github.com/golang/mock
 ENV REPO=$GOPATH/src/github.com/ennoo/fabric-client
 WORKDIR $REPO
-RUN git clone https://github.com/golang/mock.git ../../golang/mock && \
- git clone https://github.com/ennoo/fabric-client.git ../fabric-client && \
- git config --global http.postBuffer 524288000 && \
+RUN git clone https://github.com/ennoo/fabric-client.git ../fabric-client && \
  go build -o $REPO/runner/fabric $REPO/runner/fabric.go
 FROM centos:7
 ENV WORK_PATH=/home
