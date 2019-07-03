@@ -129,7 +129,7 @@ func invoke(router *response.Router) {
 			return
 		}
 		sdk.Invoke(invoke.ChainCodeID, invoke.OrgName, invoke.OrgUser, invoke.ChannelID, invoke.Fcn, invoke.Args,
-			service.GetBytes(invoke.ConfigID)).Say(router.Context)
+			invoke.TargetEndpoints, service.GetBytes(invoke.ConfigID)).Say(router.Context)
 	})
 }
 
@@ -147,8 +147,8 @@ func query(router *response.Router) {
 		if nil == query.TargetEndpoints {
 			query.TargetEndpoints = []string{}
 		}
-		sdk.Query(query.ChainCodeID, query.OrgName, query.OrgUser, query.ChannelID, query.Fcn, query.Args, query.TargetEndpoints,
-			service.GetBytes(query.ConfigID)).Say(router.Context)
+		sdk.Query(query.ChainCodeID, query.OrgName, query.OrgUser, query.ChannelID, query.Fcn, query.Args,
+			query.TargetEndpoints, service.GetBytes(query.ConfigID)).Say(router.Context)
 	})
 }
 

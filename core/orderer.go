@@ -29,13 +29,17 @@ func queryConfigFromOrderer(orgName, orgUser, channelID, orderURL string, sdk *f
 	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
-
-	channelCfg, err := orgResMgmt.QueryConfigFromOrderer(channelID, resmgmt.WithOrdererEndpoint(orderURL), resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 	if err != nil {
-		log.Self.Error("QueryConfig return error" + err.Error())
-		result.Fail("QueryConfig return error: " + err.Error())
+		log.Self.Error("Failed to query config from orderer: " + err.Error())
+		result.Fail("Failed to query config from orderer: " + err.Error())
 	} else {
-		result.Success(channelCfg.Orderers())
+		channelCfg, err := orgResMgmt.QueryConfigFromOrderer(channelID, resmgmt.WithOrdererEndpoint(orderURL), resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+		if err != nil {
+			log.Self.Error("QueryConfig return error" + err.Error())
+			result.Fail("QueryConfig return error: " + err.Error())
+		} else {
+			result.Success(channelCfg.Orderers())
+		}
 	}
 	return &result
 }

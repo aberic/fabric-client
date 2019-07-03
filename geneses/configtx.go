@@ -256,7 +256,7 @@ func getOrganizations(leagueComment, cryptoGenFilesPath string, peerCount int32)
 	for index := range organizations {
 		if index == 0 {
 			organizations[0] = &OrdererOrg{
-				Name:   "OrdererOrg",
+				Name:   OrdererOrgName,
 				ID:     "OrdererMSP",
 				MSPDir: strings.Join([]string{cryptoGenFilesPath, "ordererOrganizations", leagueComment, "msp"}, "/"),
 				Policies: &Policies{

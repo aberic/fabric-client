@@ -16,8 +16,11 @@ package chains
 
 import (
 	"errors"
+	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/core"
+	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+	genesis "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/trans/response"
 	"golang.org/x/net/context"
@@ -28,9 +31,34 @@ type ChannelServer struct {
 
 func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.String, error) {
 	var (
-		res *response.Result
+		res         *response.Result
+		conf        *config.Config
+		orderOrgURL string
+		orgName     string
 	)
-	if res = sdk.Create(in.OrderOrgName, in.OrgName, in.OrgUser, in.ChannelID, in.ChannelConfigPath, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
+	for _, order := range conf.Orderers {
+		orderOrgURL = order.URL
+	}
+	for name, org := range conf.Organizations {
+		if len(org.Peers) <= 0 {
+			continue
+		}
+		orgName = name
+	}
+	if _, _, err := geneses.GenerateChannelTX(
+		&genesis.ChannelTX{
+			LedgerName:  in.LeagueName,
+			ChannelName: in.ChannelID,
+			Force:       true,
+		}); nil != err {
+		return nil, err
+	}
+	channelTXFilePath := geneses.ChannelTXFilePath(in.LeagueName, in.ChannelID)
+	if res = sdk.Create(geneses.OrdererOrgName, "Admin", orderOrgURL, orgName, "Admin",
+		in.ChannelID, channelTXFilePath, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)
@@ -38,9 +66,17 @@ func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.S
 
 func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.String, error) {
 	var (
-		res *response.Result
+		res         *response.Result
+		conf        *config.Config
+		orderOrgURL string
 	)
-	if res = sdk.Join(in.OrderName, in.OrgName, in.OrgUser, in.ChannelID, in.PeerUrl, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
+	for _, order := range conf.Orderers {
+		orderOrgURL = order.URL
+	}
+	if res = sdk.Join(orderOrgURL, in.OrgName, in.OrgUser, in.ChannelID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.String{Data: res.Data.(string)}, nil
 	}
 	return nil, errors.New(res.Msg)

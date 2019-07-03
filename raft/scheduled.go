@@ -14,6 +14,7 @@ import (
 
 var (
 	ticker    *time.Ticker
+	tickerEnd bool
 	checkCron *cron.Cron
 	checkErr  chan error
 	pools     map[string]*ants.PoolWithFunc
@@ -28,8 +29,9 @@ func init() {
 	rv = "rv"
 	sn = "sn"
 	checkCron = cron.New()
-	checkErr = make(chan error)
+	checkErr = make(chan error, 1)
 	pools = map[string]*ants.PoolWithFunc{}
+	tickerEnd = false
 }
 
 // ReStartCheck 重启定时检查raft计时任务可用性任务
@@ -68,14 +70,10 @@ func Start() {
 // check 定时调用此方法检查raft计时任务可用性
 func check() {
 	go task()
-	for {
-		select {
-		case err := <-checkErr:
-			log.Self.Panic("scheduled", log.Error(err))
-			reStartCheck()
-			return
-		}
-	}
+	err := <-checkErr
+	log.Self.Panic("scheduled", log.Error(err))
+	tickerEnd = true
+	reStartCheck()
 }
 
 func task() {
@@ -85,6 +83,7 @@ func task() {
 		if nil == ticker {
 			log.Self.Debug("scheduled", log.Int32("Term", Term), log.String("cron", "start ticker"))
 			Time = time.Now().UnixNano() / 1e6
+			tickerEnd = false
 			tickerStart()
 		}
 		if Nodes[ID].Status == pb.Status_LEADER && Leader.BrokerID == ID { // 如果相等，则说明自身即为 Leader 节点
@@ -100,6 +99,7 @@ func task() {
 						URL: strings.Join([]string{node.Addr, ":", node.Rpc}, ""),
 						Req: &pb.NodeMap{Nodes: Nodes},
 					}); nil != err {
+						tickerEnd = true
 						reStartCheck()
 					}
 				}
@@ -119,7 +119,7 @@ func task() {
 func tickerStart() {
 	ticker = time.NewTicker(timeOut * time.Millisecond / 15)
 	go func() {
-		for {
+		for !tickerEnd {
 			select {
 			case <-ticker.C:
 				if Nodes[ID].Status == pb.Status_LEADER && Leader.BrokerID == ID { // 如果相等，则说明自身即为 Leader 节点
@@ -134,6 +134,7 @@ func tickerStart() {
 							Req: &pb.ReqElection{Node: Nodes[ID], Term: Term},
 						}); nil != err {
 							reStartCheck()
+							return
 						}
 					}
 				} else if time.Now().UnixNano()/1e6-Time > timeOut { // 如果超时没有收到 Leader 信息
@@ -160,6 +161,7 @@ func tickerStart() {
 							},
 						}); nil != err {
 							reStartCheck()
+							return
 						}
 					}
 				}

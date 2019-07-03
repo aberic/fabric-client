@@ -1,7 +1,5 @@
 FROM golang:latest as builder
 LABEL app="fabric-client" by="aberic"
-ENV MOCK=$GOPATH/src/github.com/golang/mock
-ENV PROTO=$GOPATH/src/github.com/golang/protobuf
 ENV REPO=$GOPATH/src/github.com/ennoo/fabric-client
 WORKDIR $REPO
 RUN git clone https://github.com/golang/mock.git ../../golang/mock && \

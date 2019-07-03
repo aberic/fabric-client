@@ -87,7 +87,7 @@ func TestQueryLedgerBlockByHeight(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHeight("test", "mychannel", 0, confData)
+	result := QueryLedgerBlockByHeight("test", "mychannel", 17, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 

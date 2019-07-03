@@ -77,6 +77,7 @@ message Invoke {
     string orgUser = 5;
     string fcn = 6;
     repeated bytes args = 7;
+    repeated string targetEndpoints = 8;
 }
 
 message Query {

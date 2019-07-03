@@ -57,21 +57,16 @@ type ChannelPolicyEvent struct {
 }
 
 type ChannelCreate struct {
-	ConfigID          string `json:"configID"` // ConfigID 配置唯一ID
-	OrderOrgName      string `json:"orderOrgName"`
-	OrgName           string `json:"orgName"`
-	OrgUser           string `json:"orgUser"`
-	ChannelID         string `json:"channelID"`
-	ChannelConfigPath string `json:"channelConfigPath"`
+	ConfigID   string `json:"configID"` // ConfigID 配置唯一ID
+	LeagueName string `json:"leagueName"`
+	ChannelID  string `json:"channelID"`
 }
 
 type ChannelJoin struct {
 	ConfigID  string `json:"configID"` // ConfigID 配置唯一ID
-	OrderName string `json:"orderName"`
 	OrgName   string `json:"orgName"`
 	OrgUser   string `json:"orgUser"`
 	ChannelID string `json:"channelID"`
-	PeerUrl   string `json:"peerUrl"`
 }
 
 type ChannelList struct {

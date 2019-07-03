@@ -54,18 +54,18 @@ type Upgrade struct {
 }
 
 type Invoke struct {
-	ConfigID    string   `json:"configID"` // ConfigID 配置唯一ID
-	ChannelID   string   `json:"channelID"`
-	ChainCodeID string   `json:"chainCodeID"`
-	OrgName     string   `json:"orgName"`
-	OrgUser     string   `json:"orgUser"`
-	Fcn         string   `json:"fcn"`
-	Args        [][]byte `json:"args"`
+	ConfigID        string   `json:"configID"` // ConfigID 配置唯一ID
+	ChannelID       string   `json:"channelID"`
+	ChainCodeID     string   `json:"chainCodeID"`
+	OrgName         string   `json:"orgName"`
+	OrgUser         string   `json:"orgUser"`
+	Fcn             string   `json:"fcn"`
+	Args            [][]byte `json:"args"`
+	TargetEndpoints []string `json:"targetEndpoints"`
 }
 
 type Query struct {
 	Invoke
-	TargetEndpoints []string `json:"targetEndpoints"`
 }
 
 type ChainCodeCollectionsConfig struct {

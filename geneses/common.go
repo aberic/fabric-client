@@ -35,7 +35,8 @@ const (
 	// Fabric 二进制文件目录 [template]
 	BinPath = "BIN_PATH"
 	// WorkPath 项目工作目录 [template]
-	WorkPath = "WORK_PATH"
+	WorkPath       = "WORK_PATH"
+	OrdererOrgName = "OrdererOrg"
 )
 
 func init() {

@@ -16,7 +16,10 @@
 package route
 
 import (
+	cfg "github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/core"
+	"github.com/ennoo/fabric-client/geneses"
+	genesis "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/trans/response"
@@ -37,12 +40,37 @@ func create(router *response.Router) {
 			result.SayFail(router.Context, err.Error())
 			return
 		}
-		if nil == service.Get(channelCreate.ConfigID) {
+		var (
+			conf        *cfg.Config
+			orderOrgURL string
+			orgName     string
+		)
+		if conf = service.Configs[channelCreate.ConfigID]; nil == conf {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Create(channelCreate.OrderOrgName, channelCreate.OrgName, channelCreate.OrgUser, channelCreate.ChannelID,
-			channelCreate.ChannelConfigPath, service.GetBytes(channelCreate.ConfigID)).Say(router.Context)
+		for _, order := range conf.Orderers {
+			orderOrgURL = order.URL
+		}
+		for name, org := range conf.Organizations {
+			if len(org.Peers) <= 0 {
+				continue
+			}
+			orgName = name
+		}
+		if _, _, err := geneses.GenerateChannelTX(
+			&genesis.ChannelTX{
+				LedgerName:  channelCreate.LeagueName,
+				ChannelName: channelCreate.ChannelID,
+				Force:       true,
+			}); nil != err {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		channelTXFilePath := geneses.ChannelTXFilePath(channelCreate.LeagueName, channelCreate.ChannelID)
+
+		sdk.Create(geneses.OrdererOrgName, "Admin", orderOrgURL, orgName, "Admin",
+			channelCreate.ChannelID, channelTXFilePath, service.GetBytes(channelCreate.ConfigID)).Say(router.Context)
 	})
 }
 
@@ -53,11 +81,18 @@ func join(router *response.Router) {
 			result.SayFail(router.Context, err.Error())
 			return
 		}
-		if nil == service.Get(channelJoin.ConfigID) {
+		var (
+			conf        *cfg.Config
+			orderOrgURL string
+		)
+		if conf = service.Configs[channelJoin.ConfigID]; nil == conf {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Join(channelJoin.OrderName, channelJoin.OrgName, channelJoin.OrgUser, channelJoin.ChannelID, channelJoin.PeerUrl,
+		for _, order := range conf.Orderers {
+			orderOrgURL = order.URL
+		}
+		sdk.Join(orderOrgURL, channelJoin.OrgName, channelJoin.OrgUser, channelJoin.ChannelID,
 			service.GetBytes(channelJoin.ConfigID)).Say(router.Context)
 	})
 }

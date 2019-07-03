@@ -60,6 +60,15 @@ func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider
 			if block, err := parseBlock(commonBlock); nil != err {
 				result.FailErr(err)
 			} else {
+				es := block.Envelopes
+				for i := 0; i < len(es); {
+					if nil == es[i] {
+						es = append(es[:i], es[i+1:]...)
+					} else {
+						i++
+					}
+				}
+				block.Envelopes = es
 				result.Success(block)
 			}
 		}

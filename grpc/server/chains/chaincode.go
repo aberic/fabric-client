@@ -108,7 +108,7 @@ func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Stri
 	var (
 		res *response.Result
 	)
-	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args,
+	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.String{Data: res.Data.(string)}, nil
 	}
