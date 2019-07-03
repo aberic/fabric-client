@@ -7,7 +7,7 @@ RUN go get github.com/golang/mock/gomock && \
     go get github.com/golang/protobuf/ptypes && \
     go get github.com/golang/protobuf/proto && \
     go get github.com/golang/protobuf/descriptor && \
-    go get -u golang.org/x/sys && \
+    go get golang.org/x/sys/unix && \
     go get -u golang.org/x/net && \
     go get -u golang.org/x/text && \
     go get -u golang.org/x/lint && \
