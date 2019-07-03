@@ -21,12 +21,14 @@ message Generate {
 // Crypto 请求生成区块链配置文件集合对象
 message Crypto {
     string ledgerName = 1;
-    bool force = 2;
+    string version = 2;
+    bool force = 3;
 }
 
 // ChannelTX 请求生成区块链配置文件集合对象
 message ChannelTX {
     string ledgerName = 1;
-    string channelName = 2;
-    bool force = 3;
+    string version = 2;
+    string channelName = 3;
+    bool force = 4;
 }

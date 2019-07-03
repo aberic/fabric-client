@@ -15,9 +15,7 @@
 package geneses
 
 import (
-	"fmt"
 	"github.com/ennoo/rivet/utils/env"
-	"runtime"
 	"strings"
 )
 
@@ -42,26 +40,26 @@ const (
 func init() {
 	goPath := env.GetEnv(env.GOPath)
 	WorkDir = env.GetEnvDefault(WorkPath, strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/geneses/example"}, "/"))
-	binDir := env.GetEnvDefault(BinPath, strings.Join([]string{WorkDir, "../../example/bin/1.4", systemDir()}, "/"))
-	FabricCryptoGenPathV14 = strings.Join([]string{binDir, "cryptogen"}, "/")
-	FabricConfigTXGenPathV14 = strings.Join([]string{binDir, "configtxgen"}, "/")
+	binDir := env.GetEnvDefault(BinPath, strings.Join([]string{WorkDir, "../../example/bin"}, "/"))
+	FabricCryptoGenPathV14 = strings.Join([]string{binDir, "1.4/cryptogen"}, "/")
+	FabricConfigTXGenPathV14 = strings.Join([]string{binDir, "1.4/configtxgen"}, "/")
 }
 
-func systemDir() string {
-	osStr := runtime.GOOS
-	osArch := runtime.GOARCH
-	fmt.Println(osStr, "-", osArch)
-	if osArch != "amd64" {
+func FabricCryptoGenPath(version string) string {
+	switch version {
+	case "1.4":
+		return FabricCryptoGenPathV14
+	default:
 		return ""
 	}
-	if osStr == "darwin" {
-		return "darwin-amd64"
-	} else if osStr == "linux" {
-		return "linux-amd64"
-	} else if osStr == "windows" {
-		return "windows-amd64"
-	} else {
-		return "nil"
+}
+
+func FabricConfigTXGenPath(version string) string {
+	switch version {
+	case "1.4":
+		return FabricConfigTXGenPathV14
+	default:
+		return ""
 	}
 }
 

@@ -100,8 +100,9 @@ ERR:
 // GenerateCryptoFiles 生成区块链配置文件集合
 func GenerateCryptoFiles(crypto *pb.Crypto) (int, []string, error) {
 	var (
-		exist bool
-		err   error
+		exist               bool
+		fabricCryptoGenPath string
+		err                 error
 	)
 	if str.IsEmpty(crypto.LedgerName) {
 		return 0, nil, errors.New("league name can not be nil")
@@ -117,8 +118,11 @@ func GenerateCryptoFiles(crypto *pb.Crypto) (int, []string, error) {
 	if err = os.RemoveAll(cryptoConfigPath); nil != err {
 		return 0, nil, err
 	}
+	if fabricCryptoGenPath = FabricCryptoGenPath(crypto.Version); str.IsEmpty(fabricCryptoGenPath) {
+		return 0, nil, errors.New("version not support")
+	}
 	return utils.ExecCommandTail(
-		FabricCryptoGenPathV14,
+		fabricCryptoGenPath,
 		"generate",
 		strings.Join([]string{"--config=", cryptoGenYmlPath}, ""),
 		strings.Join([]string{"--output=", cryptoConfigPath}, ""),
@@ -131,8 +135,9 @@ func GenerateGenesisBlock(crypto *pb.Crypto) (int, []string, error) {
 		return 0, nil, errors.New("league comment can not be nil")
 	}
 	var (
-		exist bool
-		err   error
+		exist                 bool
+		fabricConfigTXGenPath string
+		err                   error
 	)
 	cryptoConfigPath := CryptoConfigPath(crypto.LedgerName)
 	confPath := ConfPath(crypto.LedgerName)
@@ -153,7 +158,10 @@ func GenerateGenesisBlock(crypto *pb.Crypto) (int, []string, error) {
 	} else if err = os.Remove(genesisBlockFilePath); nil != err && exist && crypto.Force {
 		return 0, nil, err
 	}
-	return utils.ExecCommandTail(FabricConfigTXGenPathV14, "--configPath", confPath, "--profile",
+	if fabricConfigTXGenPath = FabricConfigTXGenPath(crypto.Version); str.IsEmpty(fabricConfigTXGenPath) {
+		return 0, nil, errors.New("version not support")
+	}
+	return utils.ExecCommandTail(fabricConfigTXGenPath, "--configPath", confPath, "--profile",
 		"HBaaSOrderGenesis", "--outputBlock", genesisBlockFilePath)
 }
 
@@ -163,8 +171,9 @@ func GenerateChannelTX(channelTX *pb.ChannelTX) (int, []string, error) {
 		return 0, nil, errors.New("league comment can not be nil")
 	}
 	var (
-		exist bool
-		err   error
+		exist                 bool
+		fabricConfigTXGenPath string
+		err                   error
 	)
 	cryptoConfigPath := CryptoConfigPath(channelTX.LedgerName)
 	confPath := ConfPath(channelTX.LedgerName)
@@ -185,6 +194,9 @@ func GenerateChannelTX(channelTX *pb.ChannelTX) (int, []string, error) {
 	} else if err = os.Remove(channelTXFilePath); nil != err && exist && channelTX.Force {
 		return 0, nil, err
 	}
-	return utils.ExecCommandTail(FabricConfigTXGenPathV14, "--configPath", confPath, "--profile",
+	if fabricConfigTXGenPath = FabricConfigTXGenPath(channelTX.Version); str.IsEmpty(fabricConfigTXGenPath) {
+		return 0, nil, errors.New("version not support")
+	}
+	return utils.ExecCommandTail(fabricConfigTXGenPath, "--configPath", confPath, "--profile",
 		"HBaaSChannel", "--outputCreateChannelTx", channelTXFilePath, "-channelID", channelTX.ChannelName)
 }
