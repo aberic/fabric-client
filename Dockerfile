@@ -2,14 +2,17 @@ FROM golang:latest as builder
 LABEL app="fabric-client" by="aberic"
 ENV REPO=$GOPATH/src/github.com/ennoo/fabric-client
 WORKDIR $REPO
-RUN git clone https://github.com/golang/mock.git ../../golang/mock && \
-    git clone https://github.com/golang/protobuf.git ../../golang/protobuf && \
-    git clone https://github.com/golang/sys.git ../../../golang/x/sys && \
-    git clone https://github.com/golang/net.git ../../../golang/x/net && \
-    git clone https://github.com/golang/text.git ../../../golang/x/text && \
-    git clone https://github.com/golang/lint.git ../../../golang/x/lint && \
-    git clone https://github.com/golang/tools.git ../../../golang/x/tools && \
-    git clone https://github.com/golang/crypto.git ../../../golang/x/crypto && \
+RUN go get github.com/golang/mock/gomock && \
+    go get github.com/golang/protobuf/jsonpb && \
+    go get github.com/golang/protobuf/ptypes && \
+    go get github.com/golang/protobuf/proto && \
+    go get github.com/golang/protobuf/descriptor && \
+    go get -u golang.org/x/sys && \
+    go get -u golang.org/x/net && \
+    go get -u golang.org/x/text && \
+    go get -u golang.org/x/lint && \
+    go get -u golang.org/x/tools && \
+    go get -u golang.org/x/crypto && \
     git clone https://github.com/ennoo/fabric-client.git ../fabric-client && \
     go build -o $REPO/runner/fabric $REPO/runner/fabric.go
 FROM docker.io/alpine:latest
