@@ -3,7 +3,7 @@ LABEL app="fabric-client" by="aberic"
 ENV REPO=$GOPATH/src/github.com/ennoo/fabric-client
 WORKDIR $REPO
 RUN git clone https://github.com/golang/mock.git ../../golang/mock && \
-    git clone https://github.com/golang/protobuf.git ../../../golang/protobuf && \
+    git clone https://github.com/golang/protobuf.git ../../golang/protobuf && \
     git clone https://github.com/golang/sys.git ../../../golang/x/sys && \
     git clone https://github.com/golang/net.git ../../../golang/x/net && \
     git clone https://github.com/golang/text.git ../../../golang/x/text && \
