@@ -309,7 +309,7 @@ func TestInvoke(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	result := Invoke("medical", "Org1", "Admin", "mychannel",
-		"invoke", [][]byte{[]byte("A"), []byte("B"), []byte("1")}, []string{"peer1"}, confData)
+		"invoke", [][]byte{[]byte("A"), []byte("B"), []byte("1")}, []string{}, confData)
 	log.Self.Debug("test invoke", log.Reflect("result", result))
 }
 
@@ -319,10 +319,10 @@ func TestInvokeAsync(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := InvokeAsync("medical", "Org1", "Admin", "mychannel",
+	result := InvokeAsync("medical", "Org1", "Admin", "mychannel", "http://localhost:8082/rivet/post",
 		"invoke", [][]byte{[]byte("A"), []byte("B"), []byte("1")}, []string{"peer1"}, confData)
 	log.Self.Debug("test invoke", log.Reflect("result", result))
-	time.Sleep(time.Second * 20)
+	time.Sleep(time.Second * 60)
 }
 
 func TestQuery(t *testing.T) {
@@ -332,7 +332,7 @@ func TestQuery(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	result := Query("medical", "Org1", "Admin", "mychannel",
-		"query", [][]byte{[]byte("A")}, []string{"peer1"}, confData)
+		"query", [][]byte{[]byte("A")}, []string{"peer0"}, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -413,7 +413,7 @@ func TGetConfig() *config.Config {
 		1, 1, 5, 2.0)
 	conf.AddOrSetDiscoveryPolicyForChannel("mychannel", "500ms", "5s",
 		2, 4, 2.0)
-	conf.AddOrSetEventServicePolicyForChannel("mychannel", "PreferOrg", "Random",
+	conf.AddOrSetEventServicePolicyForChannel("mychannel", "PreferOrg", "RoundRobin",
 		"6s", 5, 8)
 	conf.AddOrSetOrdererForOrganizations("OrdererMSP",
 		rootPath+"/config/crypto-config/ordererOrganizations/league01-vh-cn/users/Admin@league01-vh-cn/msp",

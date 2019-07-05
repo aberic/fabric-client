@@ -64,6 +64,11 @@ type Invoke struct {
 	TargetEndpoints []string `json:"targetEndpoints"`
 }
 
+type InvokeAsync struct {
+	Invoke
+	Callback string `json:"callback"`
+}
+
 type Query struct {
 	Invoke
 }

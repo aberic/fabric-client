@@ -31,6 +31,7 @@ func ChainCode(router *response.Router) {
 	router.POST("/instantiated", instantiated)
 	router.POST("/upgrade", upgrade)
 	router.POST("/invoke", invoke)
+	router.POST("/invoke/async", invokeAsync)
 	router.POST("/query", query)
 	router.POST("/config", queryCollectionsConfig)
 }
@@ -128,8 +129,24 @@ func invoke(router *response.Router) {
 			result.SayFail(router.Context, "config client is not exist")
 			return
 		}
-		sdk.Invoke(invoke.ChainCodeID, invoke.OrgName, invoke.OrgUser, invoke.ChannelID, invoke.Fcn, invoke.Args,
-			invoke.TargetEndpoints, service.GetBytes(invoke.ConfigID)).Say(router.Context)
+		sdk.Invoke(invoke.ChainCodeID, invoke.OrgName, invoke.OrgUser, invoke.ChannelID, invoke.Fcn,
+			invoke.Args, invoke.TargetEndpoints, service.GetBytes(invoke.ConfigID)).Say(router.Context)
+	})
+}
+
+func invokeAsync(router *response.Router) {
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var invoke = new(service.InvokeAsync)
+		if err := router.Context.ShouldBindJSON(invoke); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		if nil == service.Get(invoke.ConfigID) {
+			result.SayFail(router.Context, "config client is not exist")
+			return
+		}
+		sdk.InvokeAsync(invoke.ChainCodeID, invoke.OrgName, invoke.OrgUser, invoke.ChannelID, invoke.Callback,
+			invoke.Fcn, invoke.Args, invoke.TargetEndpoints, service.GetBytes(invoke.ConfigID)).Say(router.Context)
 	})
 }
 

@@ -80,6 +80,18 @@ message Invoke {
     repeated string targetEndpoints = 8;
 }
 
+message InvokeAsync {
+    string configID = 1;
+    string channelID = 2;
+    string chainCodeID = 3;
+    string orgName = 4;
+    string orgUser = 5;
+    string fcn = 6;
+    string callback = 7;
+    repeated bytes args = 8;
+    repeated string targetEndpoints = 9;
+}
+
 message Query {
     string configID = 1;
     string channelID = 2;

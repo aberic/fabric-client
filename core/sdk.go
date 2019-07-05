@@ -20,6 +20,7 @@ import (
 	"fmt"
 	config2 "github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/service"
+	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/ennoo/rivet/utils/string"
@@ -28,6 +29,7 @@ import (
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	"net/http"
 	"strings"
 )
 
@@ -373,10 +375,19 @@ func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte,
 	return invoke(chaincodeID, fcn, args, channelClient, targetEndpoints...)
 }
 
-func InvokeAsync(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
+func InvokeAsync(chaincodeID, orgName, orgUser, channelID, callback, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
-	go Invoke(chaincodeID, orgName, orgUser, channelID, fcn, args, targetEndpoints, configBytes, sdkOpts...)
+	go func() {
+		res := Invoke(chaincodeID, orgName, orgUser, channelID, fcn, args, targetEndpoints, configBytes, sdkOpts...)
+		if str.IsNotEmpty(callback) {
+			log.Self.Debug("InvokeAsync", log.String("callback", callback))
+			_, err := rivet.Request().RestJSONByURL(http.MethodPost, callback, res)
+			if nil != err {
+				log.Self.Error("InvokeAsync", log.Error(err))
+			}
+		}
+	}()
 	result.Success("commit success")
 	return &result
 }

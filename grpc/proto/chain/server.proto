@@ -34,6 +34,8 @@ service LedgerChainCode {
     }
     rpc InvokeCC (Invoke) returns (String) {
     }
+    rpc InvokeCCAsync (InvokeAsync) returns (String) {
+    }
     rpc QueryCC (Query) returns (String) {
     }
 }

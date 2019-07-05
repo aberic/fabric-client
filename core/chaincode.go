@@ -154,7 +154,7 @@ func upgrade(channelID, name, path, version string, orgPolicies []string, args [
 
 // fcn invoke
 // args [][]byte{[]byte(coll1), []byte("key"), []byte("value")}
-func invoke(chaincodeID string, fcn string, args [][]byte, client *channel.Client, targetEndpoints ...string) *response.Result {
+func invoke(chaincodeID, fcn string, args [][]byte, client *channel.Client, targetEndpoints ...string) *response.Result {
 	result := response.Result{}
 	resp, err := client.Execute(channel.Request{
 		ChaincodeID: chaincodeID,

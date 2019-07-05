@@ -115,6 +115,17 @@ func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Stri
 	return nil, errors.New(res.Msg)
 }
 
+func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync) (*pb.String, error) {
+	var (
+		res *response.Result
+	)
+	if res = sdk.InvokeAsync(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Callback, in.Fcn, in.Args, in.TargetEndpoints,
+		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		return &pb.String{Data: res.Data.(string)}, nil
+	}
+	return nil, errors.New(res.Msg)
+}
+
 func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.String, error) {
 	var (
 		res *response.Result
