@@ -78,7 +78,7 @@ func TestGenerateYmlErrParamsExceptionConfig(t *testing.T) {
 }
 
 func TestGenerateCryptoFilesTrue(t *testing.T) {
-	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: "league", Force: true}); nil != err {
+	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: "league", Version: "1.4", Force: true}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)

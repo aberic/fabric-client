@@ -2,14 +2,14 @@ version: "3"
 
 services:
   operation:
-    image: aberic/fabric:1.0-RC1
+    image: ennoo/fabric-client:latest
     ports:
       - 19865:19865
       - 19877:19877
     environment:
-      - PROTOCOL=HTTP
+      - PROTOCOL=BOTH
     volumes:
-      - /data/mount/dev/chain:/data/chain
+      - /data/mount/dev/chain:/home/data
     networks:
       - tmp
     deploy:
