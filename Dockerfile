@@ -11,7 +11,7 @@ RUN git clone https://github.com/golang/mock.git $GOPATH/src/github.com/golang/m
     git clone https://github.com/golang/tools.git $GOPATH/src/golang.org/x/tools && \
     git clone https://github.com/golang/crypto.git $GOPATH/src/golang.org/x/crypto && \
     git clone https://github.com/ennoo/fabric-client.git $REPO && \
-    go build -o $REPO/runner/fabric $REPO/runner/fabric.go
+    GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o $REPO/runner/fabric $REPO/runner/fabric.go
 FROM docker.io/alpine:latest
 RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.4/main" > /etc/apk/repositories
 RUN apk add --update curl bash && \
