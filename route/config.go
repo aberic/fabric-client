@@ -21,6 +21,7 @@ import (
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/trans/response"
+	str "github.com/ennoo/rivet/utils/string"
 	"net/http"
 	"strings"
 )
@@ -55,7 +56,7 @@ func Config(router *response.Router) {
 }
 
 func askSync(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var configs = new(map[string]*conf.Config)
 			if err := router.Context.ShouldBindJSON(configs); err != nil {
@@ -112,7 +113,7 @@ func get(router *response.Router) {
 }
 
 func initClient(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var client = new(service.Client)
 			if err := router.Context.ShouldBindJSON(client); err != nil {
@@ -136,7 +137,7 @@ func initClient(router *response.Router) {
 }
 
 func initClientSelf(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var client = new(service.ClientSelf)
 			if err := router.Context.ShouldBindJSON(client); err != nil {
@@ -160,7 +161,7 @@ func initClientSelf(router *response.Router) {
 }
 
 func initClientCustom(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var clientCustom = new(service.ClientCustom)
 			if err := router.Context.ShouldBindJSON(clientCustom); err != nil {
@@ -184,7 +185,7 @@ func initClientCustom(router *response.Router) {
 }
 
 func addOrSetPeerForChannel(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var channelPeer = new(service.ChannelPeer)
 			if err := router.Context.ShouldBindJSON(channelPeer); err != nil {
@@ -208,7 +209,7 @@ func addOrSetPeerForChannel(router *response.Router) {
 }
 
 func addOrSetQueryChannelPolicyForChannel(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var query = new(service.ChannelPolicyQuery)
 			if err := router.Context.ShouldBindJSON(query); err != nil {
@@ -232,7 +233,7 @@ func addOrSetQueryChannelPolicyForChannel(router *response.Router) {
 }
 
 func addOrSetDiscoveryPolicyForChannel(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var discovery = new(service.ChannelPolicyDiscovery)
 			if err := router.Context.ShouldBindJSON(discovery); err != nil {
@@ -256,7 +257,7 @@ func addOrSetDiscoveryPolicyForChannel(router *response.Router) {
 }
 
 func addOrSetEventServicePolicyForChannel(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var event = new(service.ChannelPolicyEvent)
 			if err := router.Context.ShouldBindJSON(event); err != nil {
@@ -280,7 +281,7 @@ func addOrSetEventServicePolicyForChannel(router *response.Router) {
 }
 
 func addOrSetOrdererForOrganizations(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var order = new(service.OrganizationsOrder)
 			if err := router.Context.ShouldBindJSON(order); err != nil {
@@ -304,7 +305,7 @@ func addOrSetOrdererForOrganizations(router *response.Router) {
 }
 
 func addOrSetOrdererForOrganizationsSelf(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var order = new(service.OrganizationsOrderSelf)
 			if err := router.Context.ShouldBindJSON(order); err != nil {
@@ -328,7 +329,7 @@ func addOrSetOrdererForOrganizationsSelf(router *response.Router) {
 }
 
 func addOrSetOrgForOrganizations(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var org = new(service.OrganizationsOrg)
 			if err := router.Context.ShouldBindJSON(org); err != nil {
@@ -352,7 +353,7 @@ func addOrSetOrgForOrganizations(router *response.Router) {
 }
 
 func addOrSetOrgForOrganizationsSelf(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var org = new(service.OrganizationsOrgSelf)
 			if err := router.Context.ShouldBindJSON(org); err != nil {
@@ -376,7 +377,7 @@ func addOrSetOrgForOrganizationsSelf(router *response.Router) {
 }
 
 func addOrSetOrderer(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var orderer = new(service.Order)
 			if err := router.Context.ShouldBindJSON(orderer); err != nil {
@@ -400,7 +401,7 @@ func addOrSetOrderer(router *response.Router) {
 }
 
 func addOrSetOrdererSelf(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var orderer = new(service.OrderSelf)
 			if err := router.Context.ShouldBindJSON(orderer); err != nil {
@@ -424,7 +425,7 @@ func addOrSetOrdererSelf(router *response.Router) {
 }
 
 func addOrSetPeer(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var peer = new(service.Peer)
 			if err := router.Context.ShouldBindJSON(peer); err != nil {
@@ -448,7 +449,7 @@ func addOrSetPeer(router *response.Router) {
 }
 
 func addOrSetPeerSelf(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var peer = new(service.PeerSelf)
 			if err := router.Context.ShouldBindJSON(peer); err != nil {
@@ -472,7 +473,7 @@ func addOrSetPeerSelf(router *response.Router) {
 }
 
 func addOrSetCertificateAuthority(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var certificateAuthority = new(service.CertificateAuthority)
 			if err := router.Context.ShouldBindJSON(certificateAuthority); err != nil {
@@ -496,7 +497,7 @@ func addOrSetCertificateAuthority(router *response.Router) {
 }
 
 func addOrSetCertificateAuthoritySelf(router *response.Router) {
-	if raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID { // 如果相等，则说明自身即为 Leader 节点
+	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		rivet.Response().Do(router.Context, func(result *response.Result) {
 			var certificateAuthority = new(service.CertificateAuthoritySelf)
 			if err := router.Context.ShouldBindJSON(certificateAuthority); err != nil {
