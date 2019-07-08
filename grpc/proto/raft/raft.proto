@@ -18,6 +18,10 @@ message ReqFollow {
     int32 term = 2; // 任期
 }
 
+message Nodes {
+    repeated Node nodes = 1;
+}
+
 message NodeMap {
     map<string, Node> nodes = 1;
 }

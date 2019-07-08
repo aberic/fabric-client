@@ -22,6 +22,7 @@ import (
 	"golang.org/x/net/context"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type RaftServer struct {
@@ -132,6 +133,18 @@ func (r *RaftServer) SyncNode(ctx context.Context, in *pb.NodeMap) (*pb.NodeMap,
 	// 同步节点信息当做一次心跳处理
 	raft.RefreshTimeOut()
 	return &pb.NodeMap{Nodes: raft.Nodes}, nil
+}
+
+func (r *RaftServer) NodeList(ctx context.Context, in *pb.Beat) (*pb.Nodes, error) {
+	var nodes []*pb.Node
+	for _, node := range raft.Nodes {
+		if time.Now().UnixNano()/1e6-node.LastActive < 1500 {
+			nodes = append(nodes, node)
+		}
+	}
+	return &pb.Nodes{
+		Nodes: nodes,
+	}, nil
 }
 
 func termLittle(req *pb.Node) (*pb.Resp, error) {

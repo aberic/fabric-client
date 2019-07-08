@@ -20,4 +20,7 @@ service Raft {
     // SyncNode 同步节点信息
     rpc SyncNode (NodeMap) returns (NodeMap) {
     }
+    // Nodes 获取节点集合信息
+    rpc NodeList (Beat) returns (Nodes) {
+    }
 }
