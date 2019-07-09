@@ -15,6 +15,7 @@
 package geneses
 
 import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/rivet/utils/env"
 	"strings"
 )
@@ -47,18 +48,18 @@ func init() {
 	FabricConfigTXGenPathV14 = strings.Join([]string{binDir, "1.4/configtxgen"}, "/")
 }
 
-func FabricCryptoGenPath(version string) string {
+func FabricCryptoGenPath(version pb.Version) string {
 	switch version {
-	case "1.4":
+	case pb.Version_V14:
 		return FabricCryptoGenPathV14
 	default:
 		return ""
 	}
 }
 
-func FabricConfigTXGenPath(version string) string {
+func FabricConfigTXGenPath(version pb.Version) string {
 	switch version {
-	case "1.4":
+	case pb.Version_V14:
 		return FabricConfigTXGenPathV14
 	default:
 		return ""

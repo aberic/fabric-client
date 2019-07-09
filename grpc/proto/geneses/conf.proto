@@ -21,14 +21,18 @@ message Generate {
 // Crypto 请求生成区块链配置文件集合对象
 message Crypto {
     string ledgerName = 1;
-    string version = 2;
+    Version version = 2;
     bool force = 3;
 }
 
 // ChannelTX 请求生成区块链配置文件集合对象
 message ChannelTX {
     string ledgerName = 1;
-    string version = 2;
+    Version version = 2;
     string channelName = 3;
     bool force = 4;
+}
+
+enum Version {
+    V14 = 0; // 1.4版
 }
