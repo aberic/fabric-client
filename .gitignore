@@ -25,5 +25,4 @@ gen### Go template
 /fabric/bin/
 logs
 /.maintainer.yml
-/bin/
 /geneses/example/

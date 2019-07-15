@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	brokerID = "BROKER_ID"    // BROKER_ID=1
+	BrokerID = "BROKER_ID"    // BROKER_ID=1
 	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com NODE_ADDRESS=127.0.0.1
 	// CLUSTER=1=127.0.0.1:19865:19877,2=127.0.0.2:19865:19877,3=127.0.0.3:19865:19877
 	cluster = "CLUSTER"
@@ -42,7 +42,7 @@ var (
 
 func init() {
 	// 仅测试用
-	//_ = os.Setenv(brokerID, "8")
+	//_ = os.Setenv(BrokerID, "8")
 	//_ = os.Setenv(nodeAddr, "127.0.0.1")
 	//_ = os.Setenv(cluster, "1=127.0.0.1:19865:19877,2=127.0.0.1:19866:19878,3=127.0.0.1:19867:19879,"+
 	//	"4=127.0.0.1:19868:19880,5=127.0.0.1:19869:19881,6=127.0.0.1:19870:19882,7=127.0.0.1:19871:19883")
@@ -51,7 +51,7 @@ func init() {
 		ID = ""
 		return
 	}
-	if id := env.GetEnv(brokerID); str.IsEmpty(id) {
+	if id := env.GetEnv(BrokerID); str.IsEmpty(id) {
 		log.Self.Error("raft", log.String("note", "broker id is not appoint"))
 		ID = ""
 		return

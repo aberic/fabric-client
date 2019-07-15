@@ -26,23 +26,17 @@ import (
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
+	str "github.com/ennoo/rivet/utils/string"
 	"google.golang.org/grpc"
 	"net"
 )
 
 func main() {
-	scheduled.Start()
-	switch env.GetEnv("PROTOCOL") {
-	case "HTTP":
-		httpListener()
-	case "GRPC":
-		grpcListener()
-	case "BOTH":
-		go httpListener()
-		grpcListener()
-	default:
-		httpListener()
+	if id := env.GetEnv(scheduled.BrokerID); str.IsNotEmpty(id) {
+		scheduled.Start()
 	}
+	go httpListener()
+	grpcListener()
 }
 
 func httpListener() {

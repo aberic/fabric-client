@@ -6,8 +6,6 @@ services:
     ports:
       - 19865:19865
       - 19877:19877
-    environment:
-      - PROTOCOL=BOTH
     volumes:
       - /data/mount/dev/chain:/home/data
     networks:

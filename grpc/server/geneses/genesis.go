@@ -24,7 +24,7 @@ type GenesisServer struct {
 }
 
 func (g *GenesisServer) GenerateYml(ctx context.Context, in *pb.Generate) (*pb.String, error) {
-	return nil, geneses.GenerateYml(in)
+	return &pb.String{}, geneses.GenerateYml(in)
 }
 
 func (g *GenesisServer) GenerateCryptoFiles(ctx context.Context, in *pb.Crypto) (*pb.CMDOut, error) {

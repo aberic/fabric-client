@@ -21,7 +21,7 @@ ENV WORK_PATH=/home
 ENV BIN_PATH=/home/bin
 WORKDIR $WORK_PATH
 COPY --from=builder /go/src/github.com/ennoo/fabric-client/runner/fabric .
-COPY --from=builder /go/src/github.com/ennoo/fabric-client/example/bin ./bin
+COPY --from=builder /go/src/github.com/ennoo/fabric-client/bin ./bin
 EXPOSE 19865
 EXPOSE 19877
 CMD ./fabric

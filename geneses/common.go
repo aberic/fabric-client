@@ -15,8 +15,10 @@
 package geneses
 
 import (
+	"fmt"
 	pb "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/rivet/utils/env"
+	"runtime"
 	"strings"
 )
 
@@ -24,9 +26,9 @@ var (
 	// WorkDir 项目工作目录
 	dataPath string
 	// FabricCryptoGenPathV14 1.4版本cryptogen二进制文件路径
-	FabricCryptoGenPathV14 string
+	fabricCryptoGenPathV14 string
 	// FabricConfigTXGenPathV14 1.4版本configtxgen二进制文件路径
-	FabricConfigTXGenPathV14 string
+	fabricConfigTXGenPathV14 string
 )
 
 // 环境变量
@@ -43,15 +45,33 @@ func init() {
 	dataPath = env.GetEnvDefault(strings.Join([]string{WorkPath, "data"}, "/"),
 		strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/geneses/example/data"}, "/"))
 	binDir := env.GetEnvDefault(BinPath,
-		strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/example/bin"}, "/"))
-	FabricCryptoGenPathV14 = strings.Join([]string{binDir, "1.4/cryptogen"}, "/")
-	FabricConfigTXGenPathV14 = strings.Join([]string{binDir, "1.4/configtxgen"}, "/")
+		strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/bin"}, "/"))
+	fabricCryptoGenPathV14 = strings.Join([]string{binDir, "1.4", systemDir(), "cryptogen"}, "/")
+	fabricConfigTXGenPathV14 = strings.Join([]string{binDir, "1.4", systemDir(), "configtxgen"}, "/")
+}
+
+func systemDir() string {
+	osStr := runtime.GOOS
+	osArch := runtime.GOARCH
+	fmt.Println(osStr, "-", osArch)
+	if osArch != "amd64" {
+		return ""
+	}
+	if osStr == "darwin" {
+		return "darwin-amd64"
+	} else if osStr == "linux" {
+		return "linux-amd64"
+	} else if osStr == "windows" {
+		return "windows-amd64"
+	} else {
+		return ""
+	}
 }
 
 func FabricCryptoGenPath(version pb.Version) string {
 	switch version {
 	case pb.Version_V14:
-		return FabricCryptoGenPathV14
+		return fabricCryptoGenPathV14
 	default:
 		return ""
 	}
@@ -60,7 +80,7 @@ func FabricCryptoGenPath(version pb.Version) string {
 func FabricConfigTXGenPath(version pb.Version) string {
 	switch version {
 	case pb.Version_V14:
-		return FabricConfigTXGenPathV14
+		return fabricConfigTXGenPathV14
 	default:
 		return ""
 	}

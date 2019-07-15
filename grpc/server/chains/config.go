@@ -46,23 +46,18 @@ func (c *ConfigServer) GetConfig(ctx context.Context, in *pb.String) (*pb.Config
 }
 
 func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		config := service.Get(in.ConfigID)
-		if nil == config {
-			return nil, errors.New("config is nil")
-		} else {
-			pbStr, err := &pb.String{Data: "success"}, service.InitClient(&service.Client{
-				ConfigID:     in.ConfigID,
-				TlS:          in.Tls,
-				Organization: in.Organization,
-				Level:        in.Level,
-				CryptoConfig: in.CryptoConfig,
-				KeyPath:      in.KeyPath,
-				CertPath:     in.CertPath,
-			})
-			go raft.SyncConfig()
-			return pbStr, err
-		}
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+		pbStr, err := &pb.String{Data: "success"}, service.InitClient(&service.Client{
+			ConfigID:     in.ConfigID,
+			TlS:          in.Tls,
+			Organization: in.Organization,
+			Level:        in.Level,
+			CryptoConfig: in.CryptoConfig,
+			KeyPath:      in.KeyPath,
+			CertPath:     in.CertPath,
+		})
+		go raft.SyncConfig()
+		return pbStr, err
 	} else { // 将该请求转发给Leader节点处理
 		leader := raft.Nodes[raft.Leader.BrokerID]
 		uri := strings.Join([]string{"http://", leader.Addr, ":", leader.Rpc}, "")
@@ -72,22 +67,17 @@ func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.St
 }
 
 func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		config := service.Get(in.ConfigID)
-		if nil == config {
-			return nil, errors.New("config is nil")
-		} else {
-			pbStr, err := &pb.String{Data: "success"}, service.InitClientSelf(&service.ClientSelf{
-				ConfigID:     in.ConfigID,
-				TlS:          in.Tls,
-				LeagueName:   in.LeagueName,
-				UserName:     in.UserName,
-				Organization: in.Organization,
-				Level:        in.Level,
-			})
-			go raft.SyncConfig()
-			return pbStr, err
-		}
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+		pbStr, err := &pb.String{Data: "success"}, service.InitClientSelf(&service.ClientSelf{
+			ConfigID:     in.ConfigID,
+			TlS:          in.Tls,
+			LeagueName:   in.LeagueName,
+			UserName:     in.UserName,
+			Organization: in.Organization,
+			Level:        in.Level,
+		})
+		go raft.SyncConfig()
+		return pbStr, err
 	} else { // 将该请求转发给Leader节点处理
 		leader := raft.Nodes[raft.Leader.BrokerID]
 		uri := strings.Join([]string{"http://", leader.Addr, ":", leader.Rpc}, "")
@@ -97,72 +87,67 @@ func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf)
 }
 
 func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCustom) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		config := service.Get(in.ConfigID)
-		if nil == config {
-			return nil, errors.New("config is nil")
-		} else {
-			pbStr, err := &pb.String{Data: "success"}, service.InitClientCustom(&service.ClientCustom{
-				ConfigID: in.ConfigID,
-				Client: &service.Client{
-					ConfigID:     in.ConfigID,
-					TlS:          in.Client.Tls,
-					Organization: in.Client.Organization,
-					Level:        in.Client.Level,
-					CryptoConfig: in.Client.CryptoConfig,
-					KeyPath:      in.Client.KeyPath,
-					CertPath:     in.Client.CertPath,
-				},
-				Peer: &configer.ClientPeer{
-					Timeout: &configer.ClientPeerTimeout{
-						Connection: in.Peer.Timeout.Connection,
-						Response:   in.Peer.Timeout.Response,
-						Discovery: &configer.ClientPeerTimeoutDiscovery{
-							GreyListExpiry: in.Peer.Timeout.Discovery.GreyListExpiry,
-						},
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+		pbStr, err := &pb.String{Data: "success"}, service.InitClientCustom(&service.ClientCustom{
+			ConfigID: in.ConfigID,
+			Client: &service.Client{
+				ConfigID:     in.ConfigID,
+				TlS:          in.Client.Tls,
+				Organization: in.Client.Organization,
+				Level:        in.Client.Level,
+				CryptoConfig: in.Client.CryptoConfig,
+				KeyPath:      in.Client.KeyPath,
+				CertPath:     in.Client.CertPath,
+			},
+			Peer: &configer.ClientPeer{
+				Timeout: &configer.ClientPeerTimeout{
+					Connection: in.Peer.Timeout.Connection,
+					Response:   in.Peer.Timeout.Response,
+					Discovery: &configer.ClientPeerTimeoutDiscovery{
+						GreyListExpiry: in.Peer.Timeout.Discovery.GreyListExpiry,
 					},
 				},
-				EventService: &configer.ClientEventService{
-					Timeout: &configer.ClientEventServiceTimeout{
-						RegistrationResponse: in.EventService.Timeout.RegistrationResponse,
-					},
+			},
+			EventService: &configer.ClientEventService{
+				Timeout: &configer.ClientEventServiceTimeout{
+					RegistrationResponse: in.EventService.Timeout.RegistrationResponse,
 				},
-				Order: &configer.ClientOrder{
-					Timeout: &configer.ClientOrderTimeout{
-						Connection: in.Order.Timeout.Connection,
-						Response:   in.Order.Timeout.Response,
-					},
+			},
+			Order: &configer.ClientOrder{
+				Timeout: &configer.ClientOrderTimeout{
+					Connection: in.Order.Timeout.Connection,
+					Response:   in.Order.Timeout.Response,
 				},
-				Global: &configer.ClientGlobal{
-					Timeout: &configer.ClientGlobalTimeout{
-						Query:   in.Global.Timeout.Query,
-						Execute: in.Global.Timeout.Execute,
-						Resmgmt: in.Global.Timeout.Resmgmt,
-					},
-					Cache: &configer.ClientGlobalCache{
-						ConnectionIdle:    in.Global.Cache.ConnectionIdle,
-						EventServiceIdle:  in.Global.Cache.EventServiceIdle,
-						ChannelMembership: in.Global.Cache.ChannelMembership,
-						ChannelConfig:     in.Global.Cache.ChannelConfig,
-						Discovery:         in.Global.Cache.Discovery,
-						Selection:         in.Global.Cache.Selection,
-					},
+			},
+			Global: &configer.ClientGlobal{
+				Timeout: &configer.ClientGlobalTimeout{
+					Query:   in.Global.Timeout.Query,
+					Execute: in.Global.Timeout.Execute,
+					Resmgmt: in.Global.Timeout.Resmgmt,
 				},
-				BCCSP: &configer.ClientBCCSP{
-					Security: &configer.ClientBCCSPSecurity{
-						Enabled: in.BCCSP.Security.Enabled,
-						Default: &configer.ClientBCCSPSecurityDefault{
-							Provider: in.BCCSP.Security.Default.Provider,
-						},
-						HashAlgorithm: in.BCCSP.Security.HashAlgorithm,
-						SoftVerify:    in.BCCSP.Security.SoftVerify,
-						Level:         in.BCCSP.Security.Level,
-					},
+				Cache: &configer.ClientGlobalCache{
+					ConnectionIdle:    in.Global.Cache.ConnectionIdle,
+					EventServiceIdle:  in.Global.Cache.EventServiceIdle,
+					ChannelMembership: in.Global.Cache.ChannelMembership,
+					ChannelConfig:     in.Global.Cache.ChannelConfig,
+					Discovery:         in.Global.Cache.Discovery,
+					Selection:         in.Global.Cache.Selection,
 				},
-			})
-			go raft.SyncConfig()
-			return pbStr, err
-		}
+			},
+			BCCSP: &configer.ClientBCCSP{
+				Security: &configer.ClientBCCSPSecurity{
+					Enabled: in.BCCSP.Security.Enabled,
+					Default: &configer.ClientBCCSPSecurityDefault{
+						Provider: in.BCCSP.Security.Default.Provider,
+					},
+					HashAlgorithm: in.BCCSP.Security.HashAlgorithm,
+					SoftVerify:    in.BCCSP.Security.SoftVerify,
+					Level:         in.BCCSP.Security.Level,
+				},
+			},
+		})
+		go raft.SyncConfig()
+		return pbStr, err
 	} else { // 将该请求转发给Leader节点处理
 		leader := raft.Nodes[raft.Leader.BrokerID]
 		uri := strings.Join([]string{"http://", leader.Addr, ":", leader.Rpc}, "")
@@ -172,7 +157,7 @@ func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCus
 }
 
 func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqChannelPeer) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -198,7 +183,7 @@ func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqCha
 }
 
 func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyQuery) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -225,7 +210,7 @@ func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context,
 }
 
 func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyDiscovery) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -251,7 +236,7 @@ func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in
 }
 
 func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyEvent) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -277,7 +262,7 @@ func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context,
 }
 
 func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrder) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -300,7 +285,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *
 }
 
 func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrderSelf) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -321,7 +306,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, 
 }
 
 func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrg) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -347,7 +332,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.R
 }
 
 func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrgSelf) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -370,7 +355,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *
 }
 
 func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -399,7 +384,7 @@ func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*p
 }
 
 func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderSelf) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -427,7 +412,7 @@ func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderS
 }
 
 func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -457,7 +442,7 @@ func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.St
 }
 
 func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -486,7 +471,7 @@ func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf)
 }
 
 func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.ReqCertificateAuthority) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
@@ -514,7 +499,7 @@ func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.
 }
 
 func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in *pb.ReqCertificateAuthoritySelf) (*pb.String, error) {
-	if (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pbRaft.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
 		config := service.Get(in.ConfigID)
 		if nil == config {
 			return nil, errors.New("config is nil")
