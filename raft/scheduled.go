@@ -176,10 +176,6 @@ func RefreshTimeOut() {
 
 func SyncConfig() {
 	for i, node := range Nodes {
-		timeNow := time.Now().UnixNano() / 1e6
-		if node.Id == ID || timeNow-node.LastActive > timeOut {
-			continue
-		}
 		uri := strings.Join([]string{"http://", node.Addr, ":", node.Http}, "")
 		log.Self.Debug("syncConfig", log.String("uri", uri))
 		_, err := rivet.Request().RestJSON(http.MethodPost, uri, "config/sync", service.Configs)

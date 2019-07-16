@@ -139,9 +139,11 @@ func (r *RaftServer) SyncNode(ctx context.Context, in *pb.NodeMap) (*pb.NodeMap,
 func (r *RaftServer) NodeList(ctx context.Context, in *pb.Beat) (*pb.Nodes, error) {
 	log.Self.Debug("raft", log.Int32("Term", raft.Term), log.String("NodeList", "获取节点集合"))
 	var nodes []*pb.Node
-	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+	if str.IsEmpty(raft.ID) ||
+		(raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) ||
+		(raft.Nodes[raft.ID].Status != pb.Status_LEADER && str.IsEmpty(raft.Leader.BrokerID)) { // 如果相等，则说明自身即为 Leader 节点
 		for _, node := range raft.Nodes {
-			if time.Now().UnixNano()/1e6-node.LastActive < 1500 {
+			if time.Now().UnixNano()/1e6-node.LastActive < 7500 && node.Id != raft.ID {
 				nodes = append(nodes, node)
 			}
 		}
