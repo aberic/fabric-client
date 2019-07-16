@@ -19,6 +19,7 @@ import (
 	"github.com/ennoo/fabric-client/raft"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/log"
+	str "github.com/ennoo/rivet/utils/string"
 	"golang.org/x/net/context"
 	"net/http"
 	"strings"
@@ -136,15 +137,27 @@ func (r *RaftServer) SyncNode(ctx context.Context, in *pb.NodeMap) (*pb.NodeMap,
 }
 
 func (r *RaftServer) NodeList(ctx context.Context, in *pb.Beat) (*pb.Nodes, error) {
+	log.Self.Debug("raft", log.Int32("Term", raft.Term), log.String("NodeList", "获取节点集合"))
 	var nodes []*pb.Node
-	for _, node := range raft.Nodes {
-		if time.Now().UnixNano()/1e6-node.LastActive < 1500 {
-			nodes = append(nodes, node)
+	if str.IsEmpty(raft.ID) || (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) { // 如果相等，则说明自身即为 Leader 节点
+		for _, node := range raft.Nodes {
+			if time.Now().UnixNano()/1e6-node.LastActive < 1500 {
+				nodes = append(nodes, node)
+			}
 		}
+		nodes = append(nodes, raft.Nodes[raft.ID])
+		return &pb.Nodes{
+			Nodes: nodes,
+		}, nil
+	} else { // 将该请求转发给Leader节点处理
+		leader := raft.Nodes[raft.Leader.BrokerID]
+		return &pb.Nodes{
+			Node: &pb.Node{
+				Addr: leader.Addr,
+				Rpc:  leader.Rpc,
+			},
+		}, nil
 	}
-	return &pb.Nodes{
-		Nodes: nodes,
-	}, nil
 }
 
 func termLittle(req *pb.Node) (*pb.Resp, error) {

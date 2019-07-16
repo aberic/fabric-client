@@ -45,11 +45,9 @@ const (
 
 // Config 日志配置对象
 type Config struct {
-	FilePath    string // 日志文件路径
-	Level       Level  // 日志输出级别
-	MaxSize     int    // 每个日志文件保存的最大尺寸 单位：M
-	MaxBackups  int    // 日志文件最多保存多少个备份
-	MaxAge      int    // 文件最多保存多少天
-	Compress    bool   // 是否压缩
-	ServiceName string // 日志所属服务名称
+	Level      Level // 日志输出级别
+	MaxSize    int   // 每个日志文件保存的最大尺寸 单位：M
+	MaxBackups int   // 日志文件最多保存多少个备份
+	MaxAge     int   // 文件最多保存多少天
+	Compress   bool  // 是否压缩
 }

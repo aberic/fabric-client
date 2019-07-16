@@ -6,8 +6,13 @@ import (
 	"github.com/ennoo/fabric-client/grpc/proto/utils"
 	"github.com/ennoo/rivet/utils/log"
 	"google.golang.org/grpc"
+	"strconv"
 	"strings"
 	"time"
+)
+
+var (
+	termTime int64
 )
 
 type HB struct {
@@ -36,6 +41,7 @@ func heartBeat(i interface{}) {
 		if _, err := c.HeartBeat(context.Background(), &pb.Beat{Beat: []byte(ID)}); nil != err {
 			return nil, err
 		}
+		hb.Req.Node.LastActive = time.Now().UnixNano() / 1e6
 		return nil, nil
 	})
 	//if nil != err {
@@ -49,7 +55,12 @@ func heartBeat(i interface{}) {
 
 // RequestVote 发起选举，索要选票
 func RequestVote(i interface{}) {
-	log.Self.Info("raft", log.Int32("Term", Term), log.String("RequestVote", "发起选举，索要选票"))
+	if time.Now().UnixNano()/1e6-termTime < 5000 {
+		i, _ := strconv.Atoi(ID)
+		time.Sleep(time.Second * time.Duration(i))
+		return
+	}
+	log.Self.Debug("raft", log.Int32("Term", Term), log.String("RequestVote", "发起选举，索要选票"))
 	rv := i.(*RV)
 	pbI, err := utils.RPC(rv.URL, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
@@ -72,7 +83,7 @@ func RequestVote(i interface{}) {
 	//		Nodes[rv.Target.Node.Id].LastActive = time.Now().UnixNano() / 1e6
 	//	}
 	//	if time.Now().UnixNano()/1e6-Nodes[rv.Target.Node.Id].LastActive > 1000 {
-	//		log.Self.Info("raft",
+	//		log.Self.Debug("raft",
 	//			log.Int32("Term", Term),
 	//			log.String("BrokerID", rv.Target.Node.Id),
 	//			log.String("RequestVote", "节点三次未连接成功，移除该节点"),
@@ -86,7 +97,7 @@ func RequestVote(i interface{}) {
 	resp := pbI.(*pb.Resp)
 	switch resp.Type {
 	case pb.Type_OK:
-		log.Self.Info("raft", log.Int32("Term", Term), log.String("RequestVote", "获得选票"))
+		log.Self.Debug("raft", log.Int32("Term", Term), log.String("RequestVote", "获得选票"))
 		voteCount += 1
 		var aliveNodeCount int32
 		aliveNodeCount = 0
@@ -97,7 +108,7 @@ func RequestVote(i interface{}) {
 		}
 		if voteCount+1 >= aliveNodeCount/2 {
 			voteCount = 0
-			log.Self.Info("raft", log.Int32("Term", Term), log.String("RequestVote", "became leader, now status LEADER"))
+			log.Self.Debug("raft", log.Int32("Term", Term), log.String("RequestVote", "became leader, now status LEADER"))
 			Leader = &pb.Leader{BrokerID: ID, Term: Term}
 			Nodes[ID].Status = pb.Status_LEADER
 			// 总得票数超过总节点数一半
@@ -111,6 +122,7 @@ func RequestVote(i interface{}) {
 				})
 			}
 		}
+		termTime = time.Now().UnixNano() / 1e6
 	case pb.Type_TERM:
 		Nodes[ID].Status = pb.Status_FOLLOWER
 		Term = resp.GetElection().Term
@@ -151,7 +163,7 @@ func FollowMe(url string, req *pb.ReqFollow) {
 
 // leaderMe 请求Leader将自身加入follows
 func leaderMe(url string, req *pb.Node) {
-	log.Self.Info("raft", log.Int32("Term", Term), log.String("leaderMe", "请求Leader将自身加入follows"))
+	log.Self.Debug("raft", log.Int32("Term", Term), log.String("leaderMe", "请求Leader将自身加入follows"))
 	pbI, err := utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
 			result *pb.Resp

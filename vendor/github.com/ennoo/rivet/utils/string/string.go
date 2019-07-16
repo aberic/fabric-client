@@ -65,7 +65,7 @@ func Convert(oriString string) string {
 	return string(em)
 }
 
-var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var letterRunes = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 // RandSeq 创建指定长度的随机字符串
 func RandSeq(n int) string {

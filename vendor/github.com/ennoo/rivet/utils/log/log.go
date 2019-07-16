@@ -52,9 +52,10 @@ var (
 )
 
 var (
-	instance *Logger
-	once     sync.Once
-	logPath  string
+	instance   *Logger
+	once       sync.Once
+	initialize sync.Once
+	logPath    string
 )
 
 // Logger 日志入口对象
@@ -68,7 +69,6 @@ func GetLogInstance() *Logger {
 		logPath = env.GetEnvDefault(env.LogPath, "./logs")
 		instance = &Logger{
 			&Config{
-				FilePath:   strings.Join([]string{logPath, "rivet.log"}, "/"),
 				Level:      DebugLevel,
 				MaxSize:    128,
 				MaxBackups: 30,
@@ -95,8 +95,24 @@ func (log *Logger) Conf(config *Config) {
 	log.Config = config
 }
 
-// Init 日志初始化操作，目前什么也不做
-func (log *Logger) Init() {}
+// Init 日志初始化操作
+func (log *Logger) Init(logPath, serviceName string, config *Config, dev bool) {
+	initialize.Do(func() {
+		instance = &Logger{config}
+		if dev {
+			Common = instance.New(strings.Join([]string{logPath, "common.log"}, "/"), "common")
+			Discovery = instance.New(strings.Join([]string{logPath, "discovery.log"}, "/"), "discovery")
+			Examples = instance.New(strings.Join([]string{logPath, "examples.log"}, "/"), "examples")
+			Rivet = instance.New(strings.Join([]string{logPath, "rivet.log"}, "/"), "rivet")
+			Server = instance.New(strings.Join([]string{logPath, "server.log"}, "/"), "server")
+			Bow = instance.New(strings.Join([]string{logPath, "bow.log"}, "/"), "bow")
+			Shunt = instance.New(strings.Join([]string{logPath, "shunt.log"}, "/"), "shunt")
+			Trans = instance.New(strings.Join([]string{logPath, "trans.log"}, "/"), "trans")
+			Scheduled = instance.New(strings.Join([]string{logPath, "scheduled.log"}, "/"), "scheduled")
+		}
+		Self = instance.New(strings.Join([]string{logPath, "/", serviceName, ".log"}, ""), serviceName)
+	})
+}
 
 func (log *Logger) Self(serviceName string) {
 	Self = instance.New(strings.Join([]string{logPath, "/", serviceName, ".log"}, ""), "serviceName")

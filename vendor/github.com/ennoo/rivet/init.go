@@ -65,11 +65,16 @@ type ListenServe struct {
 // serverManager：是否开启外界服务管理功能
 //
 // loadBalance：是否开启负载均衡
-func Initialize(healthCheck bool, serverManager bool, loadBalance bool) {
+func Initialize(healthCheck, serverManager, loadBalance, dev bool) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	hc = healthCheck
 	sm = serverManager
 	request.LB = loadBalance
+	if dev {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 }
 
 // UseBow 开启网关路由

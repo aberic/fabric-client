@@ -26,9 +26,11 @@ import (
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
+	"github.com/ennoo/rivet/utils/log"
 	str "github.com/ennoo/rivet/utils/string"
 	"google.golang.org/grpc"
 	"net"
+	"strings"
 )
 
 func main() {
@@ -39,8 +41,33 @@ func main() {
 	grpcListener()
 }
 
+func init() {
+	var (
+		level log.Level
+	)
+	rivet.Initialize(false, false, false, false)
+
+	logLevel := strings.ToLower(env.GetEnvDefault("LOG_LEVEL", "warn"))
+	switch logLevel {
+	case "debug":
+		level = log.DebugLevel
+	case "info":
+		level = log.InfoLevel
+	case "warn":
+		level = log.WarnLevel
+	case "error":
+		level = log.ErrorLevel
+	}
+	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs"), "fabric-client", &log.Config{
+		Level:      level,
+		MaxSize:    128,
+		MaxBackups: 30,
+		MaxAge:     30,
+		Compress:   true,
+	}, false)
+}
+
 func httpListener() {
-	rivet.Initialize(false, false, false)
 	rivet.ListenAndServe(&rivet.ListenServe{
 		Engine: rivet.SetupRouter(
 			route.Config,

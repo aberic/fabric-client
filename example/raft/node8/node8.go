@@ -24,6 +24,8 @@ import (
 	scheduled "github.com/ennoo/fabric-client/raft"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
+	"github.com/ennoo/rivet/utils/env"
+	"github.com/ennoo/rivet/utils/log"
 	"google.golang.org/grpc"
 	"net"
 )
@@ -35,7 +37,14 @@ func main() {
 }
 
 func httpListener() {
-	rivet.Initialize(false, false, false)
+	rivet.Initialize(false, false, false, true)
+	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs"), "node8", &log.Config{
+		Level:      log.DebugLevel,
+		MaxSize:    128,
+		MaxBackups: 30,
+		MaxAge:     30,
+		Compress:   true,
+	}, false)
 	rivet.ListenAndServe(&rivet.ListenServe{
 		Engine: rivet.SetupRouter(
 			route.Config,
