@@ -14,8 +14,13 @@ RUN git clone https://github.com/golang/mock.git $GOPATH/src/github.com/golang/m
     GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o $REPO/runner/fabric $REPO/runner/fabric.go
 FROM docker.io/alpine:latest
 RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.4/main" > /etc/apk/repositories
-RUN apk add --update curl bash && \
-    rm -rf /var/cache/apk/*
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache bash ca-certificates wget && \
+    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.29-r0/glibc-2.29-r0.apk && \
+    apk add glibc-2.29-r0.apk && \
+    rm -rf /var/cache/apk/* && \
 RUN mkdir -p /home/bin
 ENV WORK_PATH=/home
 ENV BIN_PATH=/home/bin
