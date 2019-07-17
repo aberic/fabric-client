@@ -42,8 +42,13 @@ const (
 
 func init() {
 	goPath := env.GetEnv(env.GOPath)
-	dataPath = env.GetEnvDefault(strings.Join([]string{WorkPath, "data"}, "/"),
-		strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/geneses/example/data"}, "/"))
+	dataPath = strings.Join([]string{
+		env.GetEnvDefault(
+			WorkPath,
+			strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/geneses/example"}, "/"),
+		),
+		"data",
+	}, "/")
 	binDir := env.GetEnvDefault(BinPath,
 		strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/bin"}, "/"))
 	fabricCryptoGenPathV14 = strings.Join([]string{binDir, "1.4", systemDir(), "cryptogen"}, "/")
