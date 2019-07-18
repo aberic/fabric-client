@@ -35,8 +35,10 @@ import (
 
 func main() {
 	if id := env.GetEnv(scheduled.BrokerID); str.IsNotEmpty(id) {
+		log.Self.Info("raft self", log.String("BrokerID", id))
 		scheduled.Start()
 	} else if k8s := env.GetEnvBool(scheduled.K8S); k8s {
+		log.Self.Info("raft k8s")
 		scheduled.Start()
 	}
 	go httpListener()

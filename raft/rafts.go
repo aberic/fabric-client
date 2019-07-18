@@ -50,9 +50,11 @@ func init() {
 
 	if k8s := env.GetEnvBool(K8S); k8s {
 		if Addr = env.GetEnv("HOSTNAME"); str.IsEmpty(Addr) {
+			log.Self.Info("raft k8s", log.String("Addr", Addr))
 			return
 		}
 		ID = strings.Split(Addr, "-")[1]
+		log.Self.Info("raft k8s", log.String("ID", ID))
 	} else {
 		if Addr = env.GetEnv(nodeAddr); str.IsEmpty(Addr) {
 			ID = ""
