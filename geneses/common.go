@@ -93,17 +93,17 @@ func FabricConfigTXGenPath(version pb.Version) string {
 
 // CryptoGenYmlPath cryptogen.yaml
 func CryptoGenYmlPath(leagueComment string) string {
-	return strings.Join([]string{dataPath, "chain", leagueComment, "config/cryptogen.yaml"}, "/")
+	return strings.Join([]string{dataPath, leagueComment, "config/cryptogen.yaml"}, "/")
 }
 
 // ConfigTxYmlPath configtx.yaml
 func ConfigTxYmlPath(leagueComment string) string {
-	return strings.Join([]string{dataPath, "chain", leagueComment, "config/configtx.yaml"}, "/")
+	return strings.Join([]string{dataPath, leagueComment, "config/configtx.yaml"}, "/")
 }
 
 // ConfPath crypto-config和channel-artifacts的上一级目录
 func ConfPath(leagueComment string) string {
-	return strings.Join([]string{dataPath, "chain", leagueComment, "config"}, "/")
+	return strings.Join([]string{dataPath, leagueComment, "config"}, "/")
 }
 
 // CryptoConfigPath crypto-config目录
