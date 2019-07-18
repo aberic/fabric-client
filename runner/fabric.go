@@ -36,6 +36,8 @@ import (
 func main() {
 	if id := env.GetEnv(scheduled.BrokerID); str.IsNotEmpty(id) {
 		scheduled.Start()
+	} else if k8s := env.GetEnvBool(scheduled.K8S); k8s {
+		scheduled.Start()
 	}
 	go httpListener()
 	grpcListener()

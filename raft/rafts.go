@@ -23,6 +23,7 @@ import (
 )
 
 const (
+	K8S      = "K8S"          // K8S=true
 	BrokerID = "BROKER_ID"    // BROKER_ID=1
 	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com NODE_ADDRESS=127.0.0.1
 	// CLUSTER=1=127.0.0.1:19865:19877,2=127.0.0.2:19865:19877,3=127.0.0.3:19865:19877
@@ -47,16 +48,23 @@ func init() {
 	//_ = os.Setenv(cluster, "1=127.0.0.1:19865:19877,2=127.0.0.1:19866:19878,3=127.0.0.1:19867:19879,"+
 	//	"4=127.0.0.1:19868:19880,5=127.0.0.1:19869:19881,6=127.0.0.1:19870:19882,7=127.0.0.1:19871:19883")
 
-	if Addr = env.GetEnv(nodeAddr); str.IsEmpty(Addr) {
-		ID = ""
-		return
-	}
-	if id := env.GetEnv(BrokerID); str.IsEmpty(id) {
-		log.Self.Error("raft", log.String("note", "broker id is not appoint"))
-		ID = ""
-		return
+	if k8s := env.GetEnvBool(K8S); k8s {
+		if Addr = env.GetEnv("HOSTNAME"); str.IsEmpty(Addr) {
+			return
+		}
+		ID = strings.Split(Addr, "-")[1]
 	} else {
-		ID = id
+		if Addr = env.GetEnv(nodeAddr); str.IsEmpty(Addr) {
+			ID = ""
+			return
+		}
+		if id := env.GetEnv(BrokerID); str.IsEmpty(id) {
+			log.Self.Error("raft", log.String("note", "broker id is not appoint"))
+			ID = ""
+			return
+		} else {
+			ID = id
+		}
 	}
 	Term = 0
 	voteCount = 0
