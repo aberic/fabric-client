@@ -26,3 +26,5 @@ gen### Go template
 logs
 /.maintainer.yml
 /geneses/example/
+/bin/fgc_linux_amd64.zip
+/bin/fgc_linux_amd64

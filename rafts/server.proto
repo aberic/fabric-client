@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto3";
+
+package raft;
+
+// AppendEntries 用于Leader节点复制日志给其他节点，也作为心跳
+//
+// prevLogIndex和prevLogTerm表示上一次发送的日志的索引和任期，用于保证收到的日志是连续的
+message appendEntries {
+    // Leader节点的任期
+    int32 term = 1;
+    // Leader节点的ID
+    string leaderId = 2;
+    // 此次追加请求的上一个日志的索引
+    int64 prevLogIndex = 3;
+    // 此次追加请求的上一个日志的任期
+    int32 prevLogTerm = 4;
+    // 追加的日志（空则为心跳请求）
+    repeated entry entries = 5;
+    // Leader上已经Commit的Index
+    int64 leaderCommit = 6;
+}
+
+// Entry 日志条目内容
+message entry {
+    // 指令索引
+    int64 index = 1;
+    // 同步指令
+    string command = 2;
+    // 服务器的任期，初始为0，递增
+    int32 term = 3;
+}
+
+// appendReturn 接收者实现逻辑
+//
+// 返回false，如果收到的任期比当前任期小
+//
+// 返回false，如果不包含之前的日志条目（没有匹配prevLogIndex和prevLogTerm）
+//
+// 如果存在index相同但是term不相同的日志，删除从该位置开始所有的日志
+//
+// 追加所有不存在的日志
+//
+// 如果leaderCommit>commitIndex，将commitIndex设置为commitIndex = min(leaderCommit, index of last new entry)
+message appendEntriesReturn {
+    // 当前任期号，用于Leader节点更新自己的任期（应该说是如果这个返回值比Leader自身的任期大，那么Leader需要更新自己的任期）
+    int32 term = 1;
+    // 如果Follower节点匹配prevLogIndex和prevLogTerm，返回true
+    bool success = 2;
+}
+
+// reqVote 用于Candidate获取选票
+message reqVote {
+    // Candidate的任期
+    int32 term = 1;
+    // Candidate的ID
+    string candidateId = 2;
+    // Candidate最后一条日志的索引
+    int64 lastLogIndex = 3;
+    // Candidate最后一条日志的任期
+    int32 lastLogTerm = 4;
+}
+
+// 接收者的实现逻辑
+//
+// 返回false，如果收到的任期比当前任期小
+//
+// 如果本地状态中votedFor为null或者candidateId，且candidate的日志等于或多余（按照index判断）接收者的日志，则接收者投票给candidate，即返回true
+message reqVoteReturn {
+    // 当前任期，用于Candidate更新自己的任期
+    int32 term = 1;
+    // true表示给Candidate投票
+    bool voteGranted = 2;
+}
+
+service Raft {
+    // HeartBeat 发送心跳
+    rpc heartBeat (appendEntries) returns (appendEntriesReturn) {
+    }
+    // RequestVote 发起选举，索要选票
+    rpc requestVote (reqVote) returns (reqVoteReturn) {
+    }
+}
