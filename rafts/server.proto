@@ -16,35 +16,29 @@ syntax = "proto3";
 
 package raft;
 
-// AppendEntries 用于Leader节点复制日志给其他节点，也作为心跳
+// node 节点信息
+message node {
+    // 节点ID
+    string id = 1;
+    // 节点地址
+    string url = 2;
+}
+
+// hBeat 用于Leader节点复制日志给其他节点，也作为心跳
 //
 // prevLogIndex和prevLogTerm表示上一次发送的日志的索引和任期，用于保证收到的日志是连续的
-message appendEntries {
+message hBeat {
     // Leader节点的任期
     int32 term = 1;
     // Leader节点的ID
     string leaderId = 2;
-    // 此次追加请求的上一个日志的索引
-    int64 prevLogIndex = 3;
-    // 此次追加请求的上一个日志的任期
-    int32 prevLogTerm = 4;
-    // 追加的日志（空则为心跳请求）
-    repeated entry entries = 5;
-    // Leader上已经Commit的Index
-    int64 leaderCommit = 6;
+    // 当前配置版本 index 递增
+    int32 version = 4;
+    // 当前term同步配置信息
+    bytes config = 5;
 }
 
-// Entry 日志条目内容
-message entry {
-    // 指令索引
-    int64 index = 1;
-    // 同步指令
-    string command = 2;
-    // 服务器的任期，初始为0，递增
-    int32 term = 3;
-}
-
-// appendReturn 接收者实现逻辑
+// hBeatReturn 接收者实现逻辑
 //
 // 返回false，如果收到的任期比当前任期小
 //
@@ -55,7 +49,7 @@ message entry {
 // 追加所有不存在的日志
 //
 // 如果leaderCommit>commitIndex，将commitIndex设置为commitIndex = min(leaderCommit, index of last new entry)
-message appendEntriesReturn {
+message hBeatReturn {
     // 当前任期号，用于Leader节点更新自己的任期（应该说是如果这个返回值比Leader自身的任期大，那么Leader需要更新自己的任期）
     int32 term = 1;
     // 如果Follower节点匹配prevLogIndex和prevLogTerm，返回true
@@ -68,10 +62,16 @@ message reqVote {
     int32 term = 1;
     // Candidate的ID
     string candidateId = 2;
-    // Candidate最后一条日志的索引
-    int64 lastLogIndex = 3;
+    // Candidate的URL
+    string url = 3;
+    // Candidate最后Leader节点的ID
+    string lastLeaderId = 4;
+    // Candidate最后一条日志的版本
+    int32 lastVersion = 5;
     // Candidate最后一条日志的任期
-    int32 lastLogTerm = 4;
+    int32 lastTerm = 6;
+    // 时间戳ns
+    int64 timestamp = 7;
 }
 
 // 接收者的实现逻辑
@@ -88,7 +88,7 @@ message reqVoteReturn {
 
 service Raft {
     // HeartBeat 发送心跳
-    rpc heartBeat (appendEntries) returns (appendEntriesReturn) {
+    rpc heartbeat (hBeat) returns (hBeatReturn) {
     }
     // RequestVote 发起选举，索要选票
     rpc requestVote (reqVote) returns (reqVoteReturn) {

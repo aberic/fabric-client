@@ -16,32 +16,47 @@ package raft
 
 import (
 	"context"
+	"github.com/ennoo/fabric-client/grpc/proto/utils"
+	"github.com/ennoo/rivet/utils/log"
 	"github.com/panjf2000/ants"
 	"google.golang.org/grpc"
+	"gopkg.in/yaml.v3"
 )
 
 // leader 负责接收客户端的请求，将日志复制到其他节点并告知其他节点何时应用这些日志是安全的
 type leader struct {
 	// raft服务
 	raft *Raft
-	// persistence 所有角色都拥有的持久化的状态（在响应RPC请求之前变更且持久化的状态）
-	persistence *persistence
-	// nonPersistence 所有角色都拥有的非持久化的状态
-	nonPersistence *nonPersistence
-	// leaderNonPersistence Leader节点上非持久化的状态（选举后重新初始化）
-	leaderNonPersistence *leaderNonPersistence
 	// 发送心跳协程池
 	heartBeatPool *ants.PoolWithFunc
 }
 
-func (l *leader) become() {
-	l.raft.role = roleLeader
-	l.raft.candidate.release()
-	l.raft.follower.release()
+func (l *leader) become(raft *Raft) {
+	log.Self.Info("raft", log.String("become", "Leader"))
+	l.raft = raft
+	l.raft.persistence.version = 0
+	l.raft.persistence.currentTerm = l.raft.term
+	l.raft.persistence.leaderID = l.raft.self.Id
+	l.raft.persistence.votedFor.id = ""
+	l.raft.persistence.votedFor.term = 0
 	l.heartBeatPool, _ = ants.NewPoolWithFunc(len(l.raft.nodes), func(i interface{}) {
-		l.heartBeat(i)
+		l.heartbeat(i)
 	})
 	l.raft.scheduled.tickerStart()
+}
+
+func (l *leader) leader() {}
+
+func (l *leader) candidate() {
+	l.release()
+	l.raft.role = &candidate{}
+	l.raft.role.become(l.raft)
+}
+
+func (l *leader) follower() {
+	l.release()
+	l.raft.role = &follower{}
+	l.raft.role.become(l.raft)
 }
 
 func (l *leader) release() {
@@ -51,48 +66,71 @@ func (l *leader) release() {
 	}
 }
 
+func (l *leader) role() int {
+	return roleLeader
+}
+
+func (l *leader) work() {
+	l.sendHeartbeats()
+}
+
 // HB 组合心跳发送参数
 type HB struct {
 	// Node 节点信息
 	node *Node
 	// AppendEntries 用于Leader节点复制日志给其他节点，也作为心跳
-	appendEntries *AppendEntries
+	hBeat *HBeat
 }
 
 // heartBeat 发送心跳
-func (l *leader) heartBeat(i interface{}) {
+func (l *leader) heartbeat(i interface{}) {
+	var (
+		hbr    interface{}
+		result *HBeatReturn
+		err    error
+	)
 	hb := i.(*HB)
-	_, _ = rpc(hb.node.URL, func(conn *grpc.ClientConn) (interface{}, error) {
+	hbr, err = utils.RPC(hb.node.Url, func(conn *grpc.ClientConn) (interface{}, error) {
 		// 创建grpc客户端
 		cli := NewRaftClient(conn)
 		//客户端向grpc服务端发起请求
-		if _, err := cli.HeartBeat(context.Background(), hb.appendEntries); nil != err {
+		if result, err = cli.Heartbeat(context.Background(), hb.hBeat); nil != err {
 			return nil, err
 		}
-		return nil, nil
+		return result, nil
 	})
+	if nil != err {
+		log.Self.Warn("raft", log.Error(err))
+		return
+	}
+	if heartbeatReturn := hbr.(*HBeatReturn); !heartbeatReturn.Success {
+		l.raft.term = heartbeatReturn.Term
+		l.candidate()
+	}
 }
 
 // sendHeartBeats 遍历发送心跳
-func (l *leader) sendHeartBeats() {
-	entryLen := len(l.persistence.entries)
-	appendEntries := &AppendEntries{
-		Term:         l.raft.term,
-		LeaderId:     l.raft.self.ID,
-		PrevLogIndex: l.persistence.entries[entryLen-1].Index,
-		PrevLogTerm:  l.persistence.entries[entryLen-1].Term,
-		Entries:      []*Entry{},
-		// todo
+func (l *leader) sendHeartbeats() {
+	configStr, err := yaml.Marshal(l.raft.persistence.configs)
+	if nil != err {
+		return
+	}
+	hBeat := &HBeat{
+		Term:     l.raft.term,
+		LeaderId: l.raft.self.Id,
+		Version:  l.raft.persistence.version,
+		Config:   configStr,
 	}
 	l.heartBeatPool.Tune(len(l.raft.nodes))
+	log.Self.Debug("raft", log.Reflect("send heartbeat", hBeat), log.Reflect("nodes", l.raft.nodes))
 	// 遍历发送心跳
 	for _, node := range l.raft.nodes {
-		if node.ID == l.raft.self.ID {
+		if node.Id == l.raft.self.Id {
 			continue
 		}
 		if err := l.heartBeatPool.Invoke(&HB{
-			node:          node,
-			appendEntries: appendEntries,
+			node:  node,
+			hBeat: hBeat,
 		}); nil != err {
 			return
 		}

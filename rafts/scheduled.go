@@ -34,6 +34,8 @@ type scheduled struct {
 	checkCron *cron.Cron
 	// 检查Raft计时任务可用性通道
 	checkErr chan error
+	// 释放关闭
+	checkRelease chan int8
 	// 心跳定时任务
 	ticker *time.Ticker
 	// 最后一次接收到心跳时间戳ms
@@ -46,24 +48,33 @@ func (s *scheduled) start() {
 	s.tickerEnd = make(chan int8, 1)
 	s.checkCron = cron.New()
 	s.checkErr = make(chan error, 1)
-	s.check()
+	s.checkRelease = make(chan int8, 1)
+	// 如果不异步，会阻塞主线程
+	go s.check()
 }
 
 // check 定时调用此方法检查raft计时任务可用性
 func (s *scheduled) check() {
 	go s.task()
-	err := <-s.checkErr
-	log.Self.Error("raft", log.String("check err", "reStartCheck"), log.Error(err))
-	s.check()
+Loop:
+	for {
+		select {
+		case err := <-s.checkErr:
+			log.Self.Error("raft", log.String("check err", "reStartCheck"), log.Error(err))
+			s.check()
+		case <-s.checkRelease:
+			break Loop
+		}
+	}
 }
 
 // task 心跳及Raft状态检查定时任务方法
 func (s *scheduled) task() {
 	s.checkCron.Stop()
 	err := s.checkCron.AddFunc(strings.Join([]string{"*/3 * * * * ?"}, ""), func() {
-		if s.raft.role != roleLeader && time.Now().UnixNano()/1e6-s.time > timeout { // 如果自身不是 Leader 节点
-			s.raft.role = roleCandidate
-			s.raft.candidate.become()
+		if s.raft.role.role() == roleFollower && time.Now().UnixNano()/1e6-s.time > timeout { // 如果自身是follower节点
+			log.Self.Debug("raft", log.Int32("Term", s.raft.term), log.String("task", "follower timeout"))
+			s.raft.role.candidate()
 		}
 	})
 	if nil != err {
@@ -82,12 +93,17 @@ func (s *scheduled) tickerStart() {
 		for {
 			select {
 			case <-s.ticker.C:
-				if s.raft.role != roleLeader { // 如果相等，则说明自身即为 Leader 节点
-					s.raft.leader.sendHeartBeats()
+				if s.raft.role.role() == roleLeader { // 如果相等，则说明自身即为 Leader 节点
+					s.raft.role.work()
 				}
 			case <-s.tickerEnd:
 				break Loop
 			}
 		}
 	}()
+}
+
+// refreshLastHeartBeatTime 更新最后一次接收到心跳时间戳ms
+func (s *scheduled) refreshLastHeartBeatTime() {
+	s.time = time.Now().UnixNano() / 1e6
 }

@@ -14,22 +14,40 @@
 
 package raft
 
+import "github.com/ennoo/rivet/utils/log"
+
 // follower 负责响应来自Leader或者Candidate的请求
 type follower struct {
 	// raft服务
 	raft *Raft
-	// persistence 所有角色都拥有的持久化的状态（在响应RPC请求之前变更且持久化的状态）
-	persistence *persistence
-	// nonPersistence 所有角色都拥有的非持久化的状态
-	nonPersistence *nonPersistence
 }
 
-func (f *follower) become() {
-	f.raft.role = roleFollower
-	f.raft.leader.release()
-	f.raft.candidate.release()
+func (f *follower) become(raft *Raft) {
+	log.Self.Info("raft", log.String("become", "Follower"))
+	f.raft = raft
+	f.raft.persistence.votedFor.id = ""
+	f.raft.persistence.votedFor.term = 0
+	f.raft.scheduled.refreshLastHeartBeatTime()
 }
 
-func (f *follower) release() {
-
+func (f *follower) leader() {
+	f.release()
+	f.raft.role = &leader{}
+	f.raft.role.become(f.raft)
 }
+
+func (f *follower) candidate() {
+	f.release()
+	f.raft.role = &candidate{}
+	f.raft.role.become(f.raft)
+}
+
+func (f *follower) follower() {}
+
+func (f *follower) release() {}
+
+func (f *follower) role() int {
+	return roleFollower
+}
+
+func (f *follower) work() {}
