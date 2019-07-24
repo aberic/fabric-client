@@ -20,6 +20,13 @@ message CCList {
     repeated ChainCodeInfo data = 1;
 }
 
+message Upload {
+    string configID = 1;
+    string name = 2;
+    string version = 5;
+    bytes data = 6;
+}
+
 message Install {
     string configID = 1;
     string orgName = 2;

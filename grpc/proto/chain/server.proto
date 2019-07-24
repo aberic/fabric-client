@@ -13,87 +13,89 @@ import "grpc/proto/chain/ledger.proto";
 import "grpc/proto/chain/config.proto";
 
 service LedgerChannel {
-    rpc Create (ChannelCreate) returns (String) {
+    rpc Create (ChannelCreate) returns (Result) {
     }
-    rpc Join (ChannelJoin) returns (String) {
+    rpc Join (ChannelJoin) returns (Result) {
     }
-    rpc List (ChannelList) returns (StringArr) {
+    rpc List (ChannelList) returns (ResultArr) {
     }
 }
 
 service LedgerChainCode {
-    rpc InstallCC (Install) returns (String) {
+    rpc UploadCC (stream Upload) returns (ResultUpload) {
     }
-    rpc InstalledCC (Installed) returns (CCList) {
+    rpc InstallCC (Install) returns (Result) {
     }
-    rpc InstantiateCC (Instantiate) returns (String) {
+    rpc InstalledCC (Installed) returns (ResultCCList) {
     }
-    rpc InstantiatedCC (Instantiated) returns (CCList) {
+    rpc InstantiateCC (Instantiate) returns (Result) {
     }
-    rpc UpgradeCC (Upgrade) returns (String) {
+    rpc InstantiatedCC (Instantiated) returns (ResultCCList) {
     }
-    rpc InvokeCC (Invoke) returns (String) {
+    rpc UpgradeCC (Upgrade) returns (Result) {
     }
-    rpc InvokeCCAsync (InvokeAsync) returns (String) {
+    rpc InvokeCC (Invoke) returns (Result) {
     }
-    rpc QueryCC (Query) returns (String) {
+    rpc InvokeCCAsync (InvokeAsync) returns (Result) {
+    }
+    rpc QueryCC (Query) returns (Result) {
     }
 }
 
 service Ledger {
-    rpc QueryLedgerInfo (ReqInfo) returns (ChannelInfo) {
+    rpc QueryLedgerInfo (ReqInfo) returns (ResultChannelInfo) {
     }
-    rpc QueryLedgerBlockByHeight (ReqBlockByHeight) returns (Block) {
+    rpc QueryLedgerBlockByHeight (ReqBlockByHeight) returns (ResultBlock) {
     }
-    rpc QueryLedgerBlockByHash (ReqBlockByHash) returns (Block) {
+    rpc QueryLedgerBlockByHash (ReqBlockByHash) returns (ResultBlock) {
     }
-    rpc QueryLedgerBlockByTxID (ReqBlockByTxID) returns (Block) {
+    rpc QueryLedgerBlockByTxID (ReqBlockByTxID) returns (ResultBlock) {
     }
-    rpc QueryLedgerInfoSpec (ReqInfoSpec) returns (ChannelInfo) {
+    rpc QueryLedgerInfoSpec (ReqInfoSpec) returns (ResultChannelInfo) {
     }
-    rpc QueryLedgerBlockByHeightSpec (ReqBlockByHeightSpec) returns (Block) {
+    rpc QueryLedgerBlockByHeightSpec (ReqBlockByHeightSpec) returns (ResultBlock) {
     }
-    rpc QueryLedgerBlockByHashSpec (ReqBlockByHashSpec) returns (Block) {
+    rpc QueryLedgerBlockByHashSpec (ReqBlockByHashSpec) returns (ResultBlock) {
     }
-    rpc QueryLedgerBlockByTxIDSpec (ReqBlockByTxIDSpec) returns (Block) {
+    rpc QueryLedgerBlockByTxIDSpec (ReqBlockByTxIDSpec) returns (ResultBlock) {
     }
 }
 
 service LedgerConfig {
-    rpc GetConfig (String) returns (Config) {
+    rpc GetConfig (ReqConfig) returns (ResultConfig) {
     }
-    rpc InitClient (ReqClient) returns (String) {
+    rpc InitClient (ReqClient) returns (Result) {
     }
-    rpc InitClientSelf (ReqClientSelf) returns (String) {
+    rpc InitClientSelf (ReqClientSelf) returns (Result) {
     }
-    rpc InitClientCustom (ReqClientCustom) returns (String) {
+    rpc InitClientCustom (ReqClientCustom) returns (Result) {
     }
-    rpc AddOrSetPeerForChannel (ReqChannelPeer) returns (String) {
+    rpc AddOrSetPeerForChannel (ReqChannelPeer) returns (Result) {
     }
-    rpc AddOrSetQueryChannelPolicyForChannel (ReqChannelPolicyQuery) returns (String) {
+    rpc AddOrSetQueryChannelPolicyForChannel (ReqChannelPolicyQuery) returns (Result) {
     }
-    rpc AddOrSetDiscoveryPolicyForChannel (ReqChannelPolicyDiscovery) returns (String) {
+    rpc AddOrSetDiscoveryPolicyForChannel (ReqChannelPolicyDiscovery) returns (Result) {
     }
-    rpc AddOrSetEventServicePolicyForChannel (ReqChannelPolicyEvent) returns (String) {
+    rpc AddOrSetEventServicePolicyForChannel (ReqChannelPolicyEvent) returns (Result) {
     }
-    rpc AddOrSetOrdererForOrganizations (ReqOrganizationsOrder) returns (String) {
+    rpc AddOrSetOrdererForOrganizations (ReqOrganizationsOrder) returns (Result) {
     }
-    rpc AddOrSetOrdererForOrganizationsSelf (ReqOrganizationsOrderSelf) returns (String) {
+    rpc AddOrSetOrdererForOrganizationsSelf (ReqOrganizationsOrderSelf) returns (Result) {
     }
-    rpc AddOrSetOrgForOrganizations (ReqOrganizationsOrg) returns (String) {
+    rpc AddOrSetOrgForOrganizations (ReqOrganizationsOrg) returns (Result) {
     }
-    rpc AddOrSetOrgForOrganizationsSelf (ReqOrganizationsOrgSelf) returns (String) {
+    rpc AddOrSetOrgForOrganizationsSelf (ReqOrganizationsOrgSelf) returns (Result) {
     }
-    rpc AddOrSetOrderer (ReqOrder) returns (String) {
+    rpc AddOrSetOrderer (ReqOrder) returns (Result) {
     }
-    rpc AddOrSetOrdererSelf (ReqOrderSelf) returns (String) {
+    rpc AddOrSetOrdererSelf (ReqOrderSelf) returns (Result) {
     }
-    rpc AddOrSetPeer (ReqPeer) returns (String) {
+    rpc AddOrSetPeer (ReqPeer) returns (Result) {
     }
-    rpc AddOrSetPeerSelf (ReqPeerSelf) returns (String) {
+    rpc AddOrSetPeerSelf (ReqPeerSelf) returns (Result) {
     }
-    rpc AddOrSetCertificateAuthority (ReqCertificateAuthority) returns (String) {
+    rpc AddOrSetCertificateAuthority (ReqCertificateAuthority) returns (Result) {
     }
-    rpc AddOrSetCertificateAuthoritySelf (ReqCertificateAuthoritySelf) returns (String) {
+    rpc AddOrSetCertificateAuthoritySelf (ReqCertificateAuthoritySelf) returns (Result) {
     }
 }

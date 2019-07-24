@@ -17,26 +17,58 @@ package chains
 import (
 	"errors"
 	"github.com/ennoo/fabric-client/core"
+	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/trans/response"
+	"github.com/ennoo/rivet/utils/file"
 	"golang.org/x/net/context"
+	"io"
 )
 
 type ChainCodeServer struct {
 }
 
-func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.String, error) {
+func (c *ChainCodeServer) UploadCC(stream pb.LedgerChainCode_UploadCCServer) error {
+	var (
+		upload *pb.Upload
+		data   []byte
+		err    error
+	)
+	data = make([]byte, 0)
+	for {
+		upload, err = stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Fail, ErrMsg: err.Error()})
+		}
+		for _, b := range upload.Data {
+			data = append(data, b)
+		}
+	}
+	if nil == upload {
+		return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Fail, ErrMsg: "upload nil"})
+	}
+	source, path, zipPath := geneses.ChainCodePath(upload.ConfigID, upload.Name, upload.Version)
+	if err := file.CreateAndWrite(zipPath, data, true); nil != err {
+		return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Fail, ErrMsg: err.Error()})
+	}
+	return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Success, Source: source, Path: path})
+}
+
+func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Result, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Install(in.OrgName, in.OrgUser, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*pb.CCList, error) {
+func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*pb.ResultCCList, error) {
 	var (
 		res              *response.Result
 		chainCodeInfoArr *sdk.ChainCodeInfoArr
@@ -54,23 +86,23 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 			data[index].Vscc = chainCodes[index].Name
 			data[index].Id = chainCodes[index].Id
 		}
-		return &pb.CCList{Data: data}, nil
+		return &pb.ResultCCList{Code: pb.Code_Success, List: &pb.CCList{Data: data}}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.ResultCCList{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate) (*pb.String, error) {
+func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate) (*pb.Result, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiated) (*pb.CCList, error) {
+func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiated) (*pb.ResultCCList, error) {
 	var (
 		res              *response.Result
 		chainCodeInfoArr *sdk.ChainCodeInfoArr
@@ -88,51 +120,51 @@ func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiate
 			data[index].Vscc = chainCodes[index].Name
 			data[index].Id = chainCodes[index].Id
 		}
-		return &pb.CCList{Data: data}, nil
+		return &pb.ResultCCList{Code: pb.Code_Success, List: &pb.CCList{Data: data}}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.ResultCCList{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.String, error) {
+func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Result, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.String, error) {
+func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Result, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync) (*pb.String, error) {
+func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync) (*pb.Result, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.InvokeAsync(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Callback, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.String, error) {
+func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.Result, error) {
 	var (
 		res *response.Result
 	)
 	if res = sdk.Query(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }

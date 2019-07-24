@@ -29,25 +29,26 @@ import (
 type ConfigServer struct {
 }
 
-func (c *ConfigServer) GetConfig(ctx context.Context, in *pb.String) (*pb.Config, error) {
-	config := service.Get(in.Data)
+func (c *ConfigServer) GetConfig(ctx context.Context, in *pb.ReqConfig) (*pb.ResultConfig, error) {
+	config := service.Get(in.ConfigID)
 	if nil == config {
-		return nil, errors.New("config is nil")
+		errStr := "config is nil"
+		return &pb.ResultConfig{Code: pb.Code_Fail, ErrMsg: errStr}, errors.New(errStr)
 	} else {
 		//confData, err := yaml.Marshal(&config)
 		//if err != nil {
 		//	log.Self.Debug("client", log.Error(err))
 		//}
 		//fmt.Printf("--- dump:\n%s\n\n", string(confData))
-		return config.GetPBConfig(), nil
+		return &pb.ResultConfig{Code: pb.Code_Success, Config: config.GetPBConfig()}, nil
 	}
 }
 
-func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.String, error) {
+func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.InitClient(&service.Client{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClient(&service.Client{
 				ConfigID:     in.ConfigID,
 				TlS:          in.Tls,
 				Organization: in.Organization,
@@ -60,20 +61,20 @@ func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.St
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := InitClient(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf) (*pb.String, error) {
+func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.InitClientSelf(&service.ClientSelf{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientSelf(&service.ClientSelf{
 				ConfigID:     in.ConfigID,
 				TlS:          in.Tls,
 				LeagueName:   in.LeagueName,
@@ -85,20 +86,20 @@ func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := InitClientSelf(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCustom) (*pb.String, error) {
+func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCustom) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.InitClientCustom(&service.ClientCustom{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientCustom(&service.ClientCustom{
 				ConfigID: in.ConfigID,
 				Client: &service.Client{
 					ConfigID:     in.ConfigID,
@@ -160,20 +161,20 @@ func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCus
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := InitClientCustom(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqChannelPeer) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqChannelPeer) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetPeerForChannel(&service.ChannelPeer{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerForChannel(&service.ChannelPeer{
 				ConfigID:       in.ConfigID,
 				ChannelName:    in.ChannelName,
 				PeerName:       in.PeerName,
@@ -186,20 +187,20 @@ func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqCha
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetPeerForChannel(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyQuery) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyQuery) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetQueryChannelPolicyForChannel(&service.ChannelPolicyQuery{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetQueryChannelPolicyForChannel(&service.ChannelPolicyQuery{
 				ConfigID:       in.ConfigID,
 				ChannelName:    in.ChannelName,
 				InitialBackOff: in.InitialBackOff,
@@ -213,20 +214,20 @@ func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context,
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetQueryChannelPolicyForChannel(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyDiscovery) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyDiscovery) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetDiscoveryPolicyForChannel(&service.ChannelPolicyDiscovery{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetDiscoveryPolicyForChannel(&service.ChannelPolicyDiscovery{
 				ConfigID:       in.ConfigID,
 				ChannelName:    in.ChannelName,
 				InitialBackOff: in.InitialBackOff,
@@ -239,20 +240,20 @@ func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetDiscoveryPolicyForChannel(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyEvent) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context, in *pb.ReqChannelPolicyEvent) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetEventServicePolicyForChannel(&service.ChannelPolicyEvent{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetEventServicePolicyForChannel(&service.ChannelPolicyEvent{
 				ConfigID:                         in.ConfigID,
 				ChannelName:                      in.ChannelName,
 				ReconnectBlockHeightLagThreshold: in.ReconnectBlockHeightLagThreshold,
@@ -265,20 +266,20 @@ func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context,
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetEventServicePolicyForChannel(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrder) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrder) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetOrdererForOrganizations(&service.OrganizationsOrder{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizations(&service.OrganizationsOrder{
 				ConfigID:   in.ConfigID,
 				MspID:      in.MspID,
 				CryptoPath: in.CryptoPath,
@@ -288,20 +289,20 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrdererForOrganizations(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrderSelf) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrderSelf) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(&service.OrganizationsOrderSelf{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(&service.OrganizationsOrderSelf{
 				ConfigID:   in.ConfigID,
 				LeagueName: in.LeagueName,
 			})
@@ -309,20 +310,20 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, 
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrdererForOrganizationsSelf(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrg) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.ReqOrganizationsOrg) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetOrgForOrganizations(&service.OrganizationsOrg{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizations(&service.OrganizationsOrg{
 				ConfigID:               in.ConfigID,
 				MspID:                  in.MspID,
 				CryptoPath:             in.CryptoPath,
@@ -335,20 +336,20 @@ func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.R
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrgForOrganizations(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrgSelf) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *pb.ReqOrganizationsOrgSelf) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(&service.OrganizationsOrgSelf{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(&service.OrganizationsOrgSelf{
 				ConfigID:               in.ConfigID,
 				LeagueName:             in.LeagueName,
 				Peers:                  in.Peers,
@@ -358,20 +359,20 @@ func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrgForOrganizationsSelf(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetOrderer(&service.Order{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrderer(&service.Order{
 				ConfigID:              in.ConfigID,
 				OrderName:             in.OrderName,
 				URL:                   in.Url,
@@ -387,20 +388,20 @@ func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*p
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrderer(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderSelf) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderSelf) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetOrdererSelf(&service.OrderSelf{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererSelf(&service.OrderSelf{
 				ConfigID:         in.ConfigID,
 				OrderName:        in.OrderName,
 				URL:              in.Url,
@@ -415,20 +416,20 @@ func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderS
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrdererSelf(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetPeer(&service.Peer{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeer(&service.Peer{
 				ConfigID:              in.ConfigID,
 				PeerName:              in.PeerName,
 				URL:                   in.Url,
@@ -445,20 +446,20 @@ func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.St
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetPeer(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetPeerSelf(&service.PeerSelf{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerSelf(&service.PeerSelf{
 				ConfigID:         in.ConfigID,
 				PeerName:         in.PeerName,
 				URL:              in.Url,
@@ -474,20 +475,20 @@ func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetPeerSelf(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.ReqCertificateAuthority) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.ReqCertificateAuthority) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetCertificateAuthority(&service.CertificateAuthority{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthority(&service.CertificateAuthority{
 				ConfigID:                in.ConfigID,
 				CertName:                in.CertName,
 				URL:                     in.Url,
@@ -502,20 +503,20 @@ func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetCertificateAuthority(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
-func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in *pb.ReqCertificateAuthoritySelf) (*pb.String, error) {
+func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in *pb.ReqCertificateAuthoritySelf) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.String{Data: "success"}, service.AddOrSetCertificateAuthoritySelf(&service.CertificateAuthoritySelf{
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthoritySelf(&service.CertificateAuthoritySelf{
 				ConfigID:     in.ConfigID,
 				CertName:     in.CertName,
 				URL:          in.Url,
@@ -528,20 +529,20 @@ func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in 
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetCertificateAuthoritySelf(rafts.LeaderURL(), in)
-			return pbStr.(*pb.String), err
+			return pbStr.(*pb.Result), err
 		},
 	); nil != err {
 		return nil, err
 	} else {
-		return i.(*pb.String), nil
+		return i.(*pb.Result), nil
 	}
 }
 
 // GetConfig 获取区块链配置信息
-func GetConfig(url string, req *pb.String) (interface{}, error) {
+func GetConfig(url string, req *pb.ReqConfig) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.Config
+			result *pb.ResultConfig
 			err    error
 		)
 		// 创建grpc客户端
@@ -558,7 +559,7 @@ func GetConfig(url string, req *pb.String) (interface{}, error) {
 func InitClient(url string, req *pb.ReqClient) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -575,7 +576,7 @@ func InitClient(url string, req *pb.ReqClient) (interface{}, error) {
 func InitClientSelf(url string, req *pb.ReqClientSelf) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -592,7 +593,7 @@ func InitClientSelf(url string, req *pb.ReqClientSelf) (interface{}, error) {
 func InitClientCustom(url string, req *pb.ReqClientCustom) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -609,7 +610,7 @@ func InitClientCustom(url string, req *pb.ReqClientCustom) (interface{}, error) 
 func AddOrSetPeerForChannel(url string, req *pb.ReqChannelPeer) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -626,7 +627,7 @@ func AddOrSetPeerForChannel(url string, req *pb.ReqChannelPeer) (interface{}, er
 func AddOrSetQueryChannelPolicyForChannel(url string, req *pb.ReqChannelPolicyQuery) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -643,7 +644,7 @@ func AddOrSetQueryChannelPolicyForChannel(url string, req *pb.ReqChannelPolicyQu
 func AddOrSetDiscoveryPolicyForChannel(url string, req *pb.ReqChannelPolicyDiscovery) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -660,7 +661,7 @@ func AddOrSetDiscoveryPolicyForChannel(url string, req *pb.ReqChannelPolicyDisco
 func AddOrSetEventServicePolicyForChannel(url string, req *pb.ReqChannelPolicyEvent) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -677,7 +678,7 @@ func AddOrSetEventServicePolicyForChannel(url string, req *pb.ReqChannelPolicyEv
 func AddOrSetOrdererForOrganizations(url string, req *pb.ReqOrganizationsOrder) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -694,7 +695,7 @@ func AddOrSetOrdererForOrganizations(url string, req *pb.ReqOrganizationsOrder) 
 func AddOrSetOrdererForOrganizationsSelf(url string, req *pb.ReqOrganizationsOrderSelf) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -711,7 +712,7 @@ func AddOrSetOrdererForOrganizationsSelf(url string, req *pb.ReqOrganizationsOrd
 func AddOrSetOrgForOrganizations(url string, req *pb.ReqOrganizationsOrg) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -728,7 +729,7 @@ func AddOrSetOrgForOrganizations(url string, req *pb.ReqOrganizationsOrg) (inter
 func AddOrSetOrgForOrganizationsSelf(url string, req *pb.ReqOrganizationsOrgSelf) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -745,7 +746,7 @@ func AddOrSetOrgForOrganizationsSelf(url string, req *pb.ReqOrganizationsOrgSelf
 func AddOrSetOrderer(url string, req *pb.ReqOrder) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -762,7 +763,7 @@ func AddOrSetOrderer(url string, req *pb.ReqOrder) (interface{}, error) {
 func AddOrSetOrdererSelf(url string, req *pb.ReqOrderSelf) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -779,7 +780,7 @@ func AddOrSetOrdererSelf(url string, req *pb.ReqOrderSelf) (interface{}, error) 
 func AddOrSetPeer(url string, req *pb.ReqPeer) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -796,7 +797,7 @@ func AddOrSetPeer(url string, req *pb.ReqPeer) (interface{}, error) {
 func AddOrSetPeerSelf(url string, req *pb.ReqPeerSelf) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -813,7 +814,7 @@ func AddOrSetPeerSelf(url string, req *pb.ReqPeerSelf) (interface{}, error) {
 func AddOrSetCertificateAuthority(url string, req *pb.ReqCertificateAuthority) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端
@@ -830,7 +831,7 @@ func AddOrSetCertificateAuthority(url string, req *pb.ReqCertificateAuthority) (
 func AddOrSetCertificateAuthoritySelf(url string, req *pb.ReqCertificateAuthoritySelf) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
 		var (
-			result *pb.String
+			result *pb.Result
 			err    error
 		)
 		// 创建grpc客户端

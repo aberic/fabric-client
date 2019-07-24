@@ -27,8 +27,8 @@ const (
 )
 
 func TestGetConfig(t *testing.T) {
-	t.Log(GetConfig("127.0.0.1:19879", &pb.String{
-		Data: configID,
+	t.Log(GetConfig("127.0.0.1:19879", &pb.ReqConfig{
+		ConfigID: configID,
 	}))
 }
 

@@ -252,6 +252,11 @@ message CertificateAuthorityRegistrar {
 }
 
 
+
+message ReqConfig {
+    string configID = 1;
+}
+
 message ReqClient {
     string configID = 1;
     bool tls = 2;

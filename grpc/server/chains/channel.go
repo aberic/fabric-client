@@ -29,7 +29,7 @@ import (
 type ChannelServer struct {
 }
 
-func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.String, error) {
+func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.Result, error) {
 	var (
 		res         *response.Result
 		conf        *config.Config
@@ -59,12 +59,12 @@ func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.S
 	channelTXFilePath := geneses.ChannelTXFilePath(in.LeagueName, in.ChannelID)
 	if res = sdk.Create(geneses.OrdererOrgName, "Admin", orderOrgURL, orgName, "Admin",
 		in.ChannelID, channelTXFilePath, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.String, error) {
+func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.Result, error) {
 	var (
 		res         *response.Result
 		conf        *config.Config
@@ -77,12 +77,12 @@ func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.Strin
 		orderOrgURL = order.URL
 	}
 	if res = sdk.Join(orderOrgURL, in.OrgName, in.OrgUser, in.ChannelID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.String{Data: res.Data.(string)}, nil
+		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }
 
-func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.StringArr, error) {
+func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.ResultArr, error) {
 	var (
 		res        *response.Result
 		channelArr *sdk.ChannelArr
@@ -94,7 +94,7 @@ func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.Strin
 		for index := range channels {
 			data[index] = channels[index].ChannelId
 		}
-		return &pb.StringArr{Data: data}, nil
+		return &pb.ResultArr{Code: pb.Code_Success, Data: data}, nil
 	}
-	return nil, errors.New(res.Msg)
+	return &pb.ResultArr{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
 }

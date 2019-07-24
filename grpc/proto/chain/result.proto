@@ -6,14 +6,54 @@ option go_package = "grpc/proto/chain";
 
 package chain;
 
-message String {
-    string data = 1;
+import "grpc/proto/chain/chaincode.proto";
+import "grpc/proto/chain/ledger.proto";
+import "grpc/proto/chain/config.proto";
+
+message Result {
+    Code code = 1;
+    string data = 2;
+    string errMsg = 3;
 }
 
-message StringArr {
-    repeated string data = 1;
+message ResultArr {
+    Code code = 1;
+    repeated string data = 2;
+    string errMsg = 3;
 }
 
-message Bytes {
-    bytes payload = 1;
+message ResultCCList {
+    Code code = 1;
+    CCList list = 2;
+    string errMsg = 3;
+}
+
+message ResultChannelInfo {
+    Code code = 1;
+    ChannelInfo info = 2;
+    string errMsg = 3;
+}
+
+message ResultBlock {
+    Code code = 1;
+    Block block = 2;
+    string errMsg = 3;
+}
+
+message ResultConfig {
+    Code code = 1;
+    Config config = 2;
+    string errMsg = 3;
+}
+
+message ResultUpload {
+    Code code = 1;
+    string source = 2;
+    string path = 3;
+    string errMsg = 4;
+}
+
+enum Code {
+    Success = 0;
+    Fail = 1;
 }

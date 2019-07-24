@@ -25,58 +25,60 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 func init() { proto.RegisterFile("grpc/proto/chain/server.proto", fileDescriptor_3248a815c2f630c6) }
 
 var fileDescriptor_3248a815c2f630c6 = []byte{
-	// 815 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x96, 0xcf, 0x73, 0x1b, 0x35,
-	0x14, 0xc7, 0xcd, 0x10, 0x02, 0x7e, 0x89, 0x63, 0x8f, 0x0c, 0x01, 0x36, 0x21, 0x18, 0xc3, 0x0c,
-	0x0c, 0x09, 0x36, 0xe3, 0x30, 0xe4, 0x90, 0x03, 0xd8, 0x0a, 0x24, 0x0e, 0x99, 0x71, 0x88, 0x9b,
-	0xb6, 0xd3, 0xdb, 0x66, 0x57, 0x5e, 0x6b, 0xb2, 0x95, 0x1c, 0xad, 0xec, 0xa9, 0xfb, 0x9f, 0xf4,
-	0xd0, 0x7b, 0xff, 0xc8, 0x1e, 0x3a, 0xd2, 0xfe, 0xf0, 0x7a, 0x25, 0xbb, 0x39, 0xea, 0xfb, 0xde,
-	0xf7, 0xf3, 0x9e, 0x9e, 0xa5, 0xb5, 0xe0, 0xbb, 0x40, 0x4c, 0xbc, 0xf6, 0x44, 0x70, 0xc9, 0xdb,
-	0xde, 0xd8, 0xa5, 0xac, 0x1d, 0x11, 0x31, 0x23, 0xa2, 0xa5, 0x25, 0xf4, 0x99, 0xd6, 0x1c, 0x33,
-	0x4b, 0x90, 0x68, 0x1a, 0xca, 0x38, 0xcb, 0x39, 0x30, 0xc2, 0xde, 0xd8, 0x65, 0x8c, 0x84, 0x49,
-	0xbc, 0x61, 0x8b, 0x53, 0xe6, 0x71, 0x9f, 0x24, 0x19, 0x66, 0x81, 0x90, 0xf8, 0x41, 0xda, 0x86,
-	0x25, 0xec, 0x71, 0x36, 0xa2, 0x41, 0x1c, 0xee, 0xbc, 0xfd, 0x04, 0x2a, 0x57, 0x3a, 0x1f, 0xc7,
-	0x75, 0x51, 0x1b, 0x36, 0xb1, 0x20, 0xae, 0x24, 0xe8, 0xcb, 0x96, 0x36, 0xb4, 0x92, 0x48, 0xac,
-	0x3a, 0x95, 0x44, 0x1d, 0x4a, 0x41, 0x59, 0xd0, 0x2c, 0xa1, 0x43, 0xd8, 0xb8, 0xe4, 0x94, 0x21,
-	0xb4, 0x9c, 0xae, 0x34, 0x33, 0xb9, 0x05, 0x1b, 0x57, 0x34, 0x92, 0xc5, 0x64, 0xa5, 0x39, 0xb5,
-	0xa5, 0xe4, 0xae, 0x10, 0xcd, 0x52, 0xe7, 0xcd, 0xa7, 0x50, 0xcd, 0xfa, 0xa3, 0x0c, 0x73, 0x9f,
-	0xa0, 0x23, 0x28, 0xf7, 0x59, 0x24, 0xdd, 0x30, 0xc4, 0x18, 0xed, 0x24, 0xa6, 0x44, 0x31, 0x2b,
-	0xfe, 0x0e, 0x5b, 0x49, 0x8c, 0xf8, 0x18, 0xa3, 0xda, 0x72, 0x3e, 0xf1, 0x33, 0x07, 0xc6, 0xaa,
-	0x8b, 0x66, 0x09, 0xfd, 0x01, 0x15, 0x1d, 0x65, 0x92, 0xba, 0x92, 0x60, 0x9c, 0x35, 0x9b, 0x53,
-	0xcd, 0x3a, 0x7f, 0xc2, 0x4e, 0x2e, 0xae, 0x4a, 0xd5, 0x4d, 0x9b, 0xa5, 0xda, 0x11, 0x94, 0x6f,
-	0x27, 0x81, 0x70, 0x7d, 0x92, 0xdb, 0x4d, 0xa2, 0x98, 0x55, 0x7e, 0x85, 0x2f, 0xfa, 0x6c, 0xc6,
-	0xef, 0x55, 0x72, 0x25, 0xe3, 0x2b, 0xc1, 0xcc, 0xd5, 0xfb, 0x88, 0x73, 0xbb, 0xd1, 0x9c, 0x79,
-	0xb9, 0x7d, 0x28, 0x55, 0x6b, 0xa6, 0xeb, 0x17, 0xf8, 0xfc, 0xff, 0x29, 0x11, 0x73, 0x8c, 0xd1,
-	0x76, 0x12, 0xd3, 0x6b, 0x23, 0xb3, 0xf3, 0x6e, 0x03, 0x36, 0xe3, 0xdf, 0x06, 0x9d, 0x40, 0x55,
-	0x27, 0xc5, 0xcb, 0x3e, 0x1b, 0xf1, 0x6c, 0x2b, 0x37, 0xe4, 0x41, 0xad, 0x9d, 0xc2, 0x2f, 0xae,
-	0xb4, 0x66, 0x09, 0x61, 0xf8, 0x26, 0x67, 0xec, 0x85, 0xdc, 0xbb, 0xef, 0xcd, 0x2f, 0x08, 0x0d,
-	0xc6, 0x12, 0x7d, 0xbd, 0x20, 0x2c, 0x05, 0x9c, 0xb4, 0x2f, 0xad, 0x36, 0x4b, 0xe8, 0x2f, 0xd8,
-	0xb5, 0x40, 0xdc, 0x68, 0x8c, 0xbe, 0x32, 0x11, 0x6e, 0x34, 0x7e, 0x1c, 0xe0, 0xc9, 0xab, 0xfe,
-	0x99, 0x05, 0xa0, 0x64, 0x0b, 0xa0, 0x5e, 0xd8, 0xff, 0x70, 0x42, 0x16, 0x03, 0x4f, 0x66, 0xa0,
-	0xb4, 0x15, 0x73, 0xf8, 0x0f, 0xf6, 0x57, 0xcd, 0x41, 0x93, 0xf6, 0x56, 0xcc, 0x42, 0x23, 0x8b,
-	0xdd, 0x9c, 0x83, 0x63, 0x9f, 0x87, 0x46, 0x7d, 0x6b, 0x9d, 0xc9, 0xe3, 0x41, 0x6a, 0x00, 0x2b,
-	0x40, 0x69, 0xa8, 0x08, 0xea, 0xbc, 0x2f, 0xc3, 0x76, 0x72, 0x8d, 0xf5, 0xd7, 0x07, 0x1d, 0x42,
-	0xf9, 0x9c, 0xc8, 0x64, 0xb1, 0x7c, 0xb2, 0x16, 0x57, 0x44, 0x47, 0x9b, 0x25, 0xd4, 0x06, 0xe8,
-	0x33, 0x2a, 0x71, 0x48, 0x09, 0x93, 0xd9, 0x0d, 0xbe, 0x21, 0x0f, 0xb1, 0x62, 0x9e, 0xe1, 0x13,
-	0x75, 0x17, 0x53, 0xc3, 0x90, 0x84, 0xa3, 0xec, 0x5b, 0x96, 0x99, 0x94, 0x6a, 0x1a, 0x4f, 0xa1,
-	0xb6, 0x30, 0xe2, 0x69, 0x24, 0xf9, 0x4b, 0xb4, 0x5b, 0xb4, 0xc6, 0xba, 0x69, 0xfe, 0x1b, 0x76,
-	0xbb, 0xbe, 0x3f, 0x10, 0x43, 0x22, 0xaf, 0x09, 0x11, 0xff, 0xf2, 0xec, 0x9b, 0x9a, 0x3b, 0x45,
-	0x89, 0xa4, 0x12, 0x4c, 0xc2, 0x2d, 0xfc, 0x94, 0x12, 0xe2, 0x3b, 0x98, 0x24, 0xf3, 0x90, 0x7a,
-	0xf3, 0x1c, 0x6f, 0xdf, 0xe4, 0xe9, 0x14, 0xfb, 0x45, 0x45, 0x4f, 0xe1, 0x87, 0x14, 0x7b, 0x46,
-	0x23, 0x8f, 0xcf, 0x88, 0x98, 0x1b, 0xcc, 0xc6, 0x0a, 0x66, 0xe6, 0x58, 0xdb, 0xee, 0x3f, 0x33,
-	0x3d, 0x53, 0x31, 0xa3, 0x1e, 0x79, 0x74, 0xbb, 0xda, 0x64, 0x62, 0xaf, 0xe1, 0xfb, 0x14, 0x3b,
-	0x10, 0x3e, 0x11, 0x7a, 0x94, 0x03, 0x11, 0xb8, 0x8c, 0xbe, 0x76, 0x25, 0xe5, 0x2c, 0xca, 0x13,
-	0x97, 0x02, 0x3a, 0xdf, 0x24, 0x3e, 0x87, 0x1f, 0x3f, 0x42, 0xd4, 0x87, 0xa4, 0xb1, 0x8e, 0x6a,
-	0x3f, 0x30, 0x97, 0xb0, 0xb7, 0x20, 0x07, 0x46, 0x9f, 0xce, 0x4a, 0x62, 0x60, 0xb2, 0x6e, 0xf2,
-	0xfb, 0x0e, 0xac, 0x1d, 0x1e, 0xac, 0xe6, 0xd9, 0xfb, 0x3b, 0x86, 0x6a, 0x61, 0xe7, 0xa8, 0x9a,
-	0x67, 0x58, 0xc7, 0x75, 0x0a, 0xf5, 0x82, 0x49, 0x17, 0xaf, 0x17, 0x8c, 0xf6, 0x8a, 0x6d, 0xd8,
-	0xce, 0xdf, 0x82, 0xfc, 0xff, 0x80, 0xfd, 0xd0, 0x9f, 0x40, 0x2d, 0x6f, 0xd0, 0xa5, 0xd0, 0xb2,
-	0xc9, 0x5e, 0x69, 0x00, 0xfb, 0xa9, 0x11, 0x13, 0x21, 0xe9, 0x88, 0x7a, 0xae, 0x24, 0xdd, 0xa9,
-	0x1c, 0x73, 0x41, 0xe5, 0x3c, 0x3f, 0x2c, 0x5b, 0xdc, 0x04, 0x3e, 0x83, 0xc6, 0x3a, 0xa0, 0xee,
-	0xac, 0xb9, 0x1e, 0x6a, 0xed, 0xb4, 0x77, 0x01, 0x3f, 0x53, 0xde, 0x22, 0x8c, 0x71, 0xde, 0x1a,
-	0xb9, 0x77, 0x82, 0x7a, 0xbf, 0x79, 0xfa, 0x53, 0xd2, 0x52, 0xaf, 0xb3, 0xf8, 0x29, 0x16, 0x7b,
-	0x7a, 0x5b, 0x43, 0xfd, 0x88, 0xbc, 0x56, 0xd2, 0x8b, 0x5a, 0xf1, 0xf1, 0x76, 0xb7, 0xa9, 0x17,
-	0xc7, 0x1f, 0x02, 0x00, 0x00, 0xff, 0xff, 0xf9, 0xa1, 0xf9, 0x55, 0x7d, 0x0a, 0x00, 0x00,
+	// 837 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x96, 0x51, 0x6f, 0x23, 0x35,
+	0x10, 0xc7, 0x73, 0xa2, 0x94, 0xeb, 0x5c, 0x7b, 0x89, 0x1c, 0x28, 0xc7, 0x5e, 0x39, 0xc2, 0x82,
+	0xc4, 0x09, 0x8e, 0x44, 0xca, 0x9d, 0xb8, 0x87, 0x03, 0x89, 0xc4, 0x2d, 0x34, 0x55, 0x51, 0xda,
+	0x86, 0x02, 0xe2, 0x6d, 0xbb, 0xeb, 0x6c, 0xac, 0x2e, 0x76, 0xea, 0x75, 0x22, 0xc2, 0x3b, 0x1f,
+	0x83, 0xef, 0x05, 0xdf, 0x06, 0xd9, 0xde, 0x4d, 0x76, 0xd7, 0xde, 0x40, 0x1f, 0xfd, 0x9f, 0xf9,
+	0xff, 0x66, 0x3c, 0xb1, 0x9d, 0x85, 0x0f, 0x63, 0x31, 0x0f, 0x7b, 0x73, 0xc1, 0x25, 0xef, 0x85,
+	0xb3, 0x80, 0xb2, 0x5e, 0x4a, 0xc4, 0x92, 0x88, 0xae, 0x96, 0xd0, 0xdb, 0x5a, 0xf3, 0xec, 0x2c,
+	0x41, 0xd2, 0x45, 0x22, 0x4d, 0x96, 0xf7, 0xcc, 0x0a, 0x87, 0xb3, 0x80, 0x31, 0x92, 0x64, 0xf1,
+	0x8e, 0x2b, 0x4e, 0x59, 0xc8, 0x23, 0x92, 0x65, 0xd8, 0x05, 0x12, 0x12, 0xc5, 0x79, 0x1b, 0x8e,
+	0x70, 0xc8, 0xd9, 0x94, 0xc6, 0x26, 0xdc, 0xff, 0xeb, 0x01, 0x1c, 0x9c, 0xeb, 0x7c, 0x6c, 0xea,
+	0xa2, 0x1e, 0xec, 0x62, 0x41, 0x02, 0x49, 0xd0, 0xbb, 0x5d, 0x6d, 0xe8, 0x66, 0x11, 0xa3, 0x7a,
+	0x07, 0x99, 0x7a, 0xa5, 0xb7, 0xe1, 0x37, 0xd0, 0x17, 0xb0, 0x73, 0xc6, 0x29, 0x43, 0xa8, 0x9c,
+	0xae, 0x34, 0x3b, 0xb9, 0x0b, 0x3b, 0xe7, 0x34, 0x95, 0xd5, 0x64, 0xa5, 0x79, 0xad, 0x52, 0xf2,
+	0x40, 0x08, 0xbf, 0xd1, 0xff, 0xe7, 0x2d, 0x68, 0xae, 0xfb, 0xa3, 0x0c, 0xf3, 0x88, 0xa0, 0x3e,
+	0x3c, 0xbc, 0x9e, 0x27, 0x3c, 0x88, 0x30, 0x46, 0x79, 0x01, 0x23, 0x78, 0xed, 0x12, 0xc2, 0x88,
+	0x7e, 0xe3, 0xf9, 0x03, 0xf4, 0x02, 0xf6, 0x46, 0x2c, 0x95, 0x41, 0x92, 0x60, 0x8c, 0x1e, 0x67,
+	0x59, 0x99, 0x62, 0x77, 0xf9, 0x15, 0x3c, 0xca, 0x62, 0x44, 0x15, 0x69, 0x95, 0xf3, 0x49, 0xb5,
+	0x0e, 0xc6, 0xaa, 0x7f, 0xbf, 0x81, 0x5e, 0xc1, 0x81, 0xce, 0x61, 0x92, 0x06, 0x92, 0x60, 0xbc,
+	0xde, 0x66, 0x41, 0xb5, 0xab, 0x7d, 0x0d, 0x8f, 0x0b, 0x71, 0x55, 0xb0, 0x6d, 0xdb, 0x6a, 0x6b,
+	0xbe, 0x80, 0xbd, 0xeb, 0x79, 0x2c, 0x82, 0x88, 0x14, 0x76, 0x96, 0x29, 0x76, 0xad, 0xcf, 0xe1,
+	0xe1, 0x88, 0x2d, 0xf9, 0x2d, 0x29, 0xcc, 0xce, 0x08, 0x76, 0xae, 0xde, 0x8d, 0xc9, 0x1d, 0xa4,
+	0x2b, 0x16, 0x16, 0x76, 0xa3, 0x54, 0xad, 0xd9, 0xae, 0xe7, 0xf0, 0xce, 0xe5, 0x82, 0x88, 0x15,
+	0xc6, 0x68, 0x3f, 0x8b, 0xe9, 0xb5, 0x95, 0xd9, 0xff, 0x7b, 0x07, 0x76, 0xcd, 0x6f, 0x8b, 0xbe,
+	0x81, 0xa6, 0x4e, 0x32, 0xcb, 0x11, 0x9b, 0xf2, 0xf5, 0x56, 0xae, 0xc8, 0x9d, 0x5a, 0x7b, 0x4f,
+	0xca, 0xdb, 0x37, 0xe7, 0x46, 0x45, 0xfc, 0x06, 0x1a, 0xc1, 0x93, 0x82, 0x7d, 0x98, 0xf0, 0xf0,
+	0x76, 0xb8, 0x3a, 0x25, 0x34, 0x9e, 0x49, 0xf4, 0xfe, 0x86, 0x53, 0x0a, 0x78, 0xa8, 0x04, 0xd4,
+	0x31, 0xbf, 0x81, 0x4e, 0xe0, 0xd0, 0x81, 0x0a, 0xd2, 0x19, 0x7a, 0xcf, 0x06, 0x05, 0xe9, 0xec,
+	0x3e, 0x98, 0x1f, 0x7f, 0x1f, 0x1d, 0x3b, 0x30, 0x4a, 0xae, 0xc5, 0xb4, 0x2b, 0x73, 0x99, 0xcc,
+	0xc9, 0xe6, 0x87, 0xc8, 0x66, 0xa3, 0xb4, 0xad, 0xf3, 0xb9, 0x84, 0xa3, 0xba, 0xf9, 0x68, 0xde,
+	0xd3, 0x9a, 0x19, 0x69, 0xb0, 0xbb, 0xb3, 0x1f, 0xc0, 0x73, 0xcf, 0x49, 0x03, 0x3f, 0x70, 0xce,
+	0xea, 0xbe, 0x38, 0x35, 0x98, 0x1a, 0x5c, 0x1e, 0x72, 0xe3, 0xfa, 0x7f, 0x02, 0xec, 0x67, 0xcf,
+	0x86, 0x7e, 0xed, 0xd0, 0x2b, 0xd8, 0xfb, 0x9e, 0xc8, 0x6c, 0xb1, 0x79, 0x68, 0xee, 0x8c, 0x52,
+	0xbd, 0x5b, 0x5a, 0xf4, 0x1b, 0xa8, 0x07, 0x30, 0x62, 0x54, 0xe2, 0x84, 0x12, 0x26, 0x4b, 0x36,
+	0xad, 0xd8, 0x87, 0xff, 0xb5, 0xba, 0xca, 0xb9, 0x61, 0x42, 0x92, 0xe9, 0xfa, 0x11, 0x5d, 0x9b,
+	0x94, 0x6a, 0x1b, 0xdf, 0x40, 0x6b, 0x63, 0xc4, 0x8b, 0x54, 0xf2, 0xdf, 0xd0, 0x61, 0xd5, 0x6a,
+	0x74, 0xdb, 0xfc, 0x2d, 0x1c, 0x0e, 0xa2, 0x68, 0x2c, 0x26, 0x44, 0x5e, 0x10, 0x22, 0xbe, 0xe3,
+	0xeb, 0xc7, 0xbc, 0x70, 0xd8, 0x32, 0x49, 0x25, 0xd8, 0x84, 0x6b, 0xf8, 0x34, 0x27, 0x98, 0xcb,
+	0x9b, 0x25, 0xf3, 0x84, 0x86, 0xab, 0x02, 0xef, 0xc8, 0xe6, 0xe9, 0x14, 0xf7, 0x0d, 0x47, 0x3f,
+	0xc1, 0xc7, 0x39, 0xf6, 0x98, 0xa6, 0x21, 0x5f, 0x12, 0xb1, 0xb2, 0x98, 0x9d, 0x1a, 0xe6, 0xda,
+	0xb1, 0xb5, 0xdd, 0x93, 0xa5, 0x9e, 0xa9, 0x58, 0xd2, 0x90, 0xfc, 0xef, 0x76, 0xb5, 0xc9, 0xc6,
+	0x5e, 0xc0, 0x47, 0x39, 0x76, 0x2c, 0x22, 0x22, 0xf4, 0x28, 0xc7, 0x22, 0x0e, 0x18, 0xfd, 0x23,
+	0x90, 0x94, 0xb3, 0xb4, 0x48, 0x2c, 0x05, 0x74, 0xbe, 0x4d, 0xfc, 0x05, 0x3e, 0xf9, 0x0f, 0xa2,
+	0x3e, 0x24, 0x9d, 0x6d, 0x54, 0xf7, 0x81, 0x39, 0x83, 0xa7, 0x1b, 0x72, 0x6c, 0xf5, 0xe9, 0xd5,
+	0x12, 0x63, 0x9b, 0x75, 0x55, 0xdc, 0x77, 0xec, 0xec, 0xf0, 0x59, 0x3d, 0xcf, 0xdd, 0xdf, 0x4b,
+	0x68, 0x56, 0x76, 0x8e, 0x9a, 0x45, 0x86, 0x73, 0x5c, 0x6f, 0xa0, 0x5d, 0x31, 0xe9, 0xe2, 0xed,
+	0x8a, 0xd1, 0x5d, 0xb1, 0x07, 0xfb, 0xc5, 0x5b, 0x50, 0xfc, 0x03, 0x71, 0x1f, 0xfa, 0xd7, 0xd0,
+	0x2a, 0x1a, 0x74, 0x29, 0x54, 0x36, 0xb9, 0x2b, 0x8d, 0xe1, 0x28, 0x37, 0x62, 0x22, 0x24, 0x9d,
+	0xd2, 0x30, 0x90, 0x64, 0xb0, 0x90, 0x33, 0x2e, 0xa8, 0x5c, 0x15, 0x87, 0xe5, 0x8a, 0xdb, 0xc0,
+	0x9f, 0xa1, 0xb3, 0x0d, 0xa8, 0x3b, 0xf3, 0xb7, 0x43, 0x9d, 0x9d, 0x0e, 0x4f, 0xe1, 0x33, 0xca,
+	0xbb, 0x84, 0x31, 0xce, 0xbb, 0xd3, 0xe0, 0x46, 0xd0, 0xf0, 0xcb, 0x50, 0x3f, 0x25, 0x5d, 0xf5,
+	0x59, 0x68, 0xbe, 0x01, 0x8d, 0x67, 0xf8, 0x68, 0xa2, 0xbf, 0x5e, 0x2f, 0x94, 0xf4, 0x6b, 0xab,
+	0xfa, 0xd5, 0x78, 0xb3, 0xab, 0x17, 0x2f, 0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0xb0, 0x3a, 0x9b,
+	0x71, 0xf6, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -91,9 +93,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LedgerChannelClient interface {
-	Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*String, error)
-	Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*String, error)
-	List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*StringArr, error)
+	Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*Result, error)
+	Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*Result, error)
+	List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*ResultArr, error)
 }
 
 type ledgerChannelClient struct {
@@ -104,8 +106,8 @@ func NewLedgerChannelClient(cc *grpc.ClientConn) LedgerChannelClient {
 	return &ledgerChannelClient{cc}
 }
 
-func (c *ledgerChannelClient) Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChannelClient) Create(ctx context.Context, in *ChannelCreate, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChannel/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -113,8 +115,8 @@ func (c *ledgerChannelClient) Create(ctx context.Context, in *ChannelCreate, opt
 	return out, nil
 }
 
-func (c *ledgerChannelClient) Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChannelClient) Join(ctx context.Context, in *ChannelJoin, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChannel/Join", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -122,8 +124,8 @@ func (c *ledgerChannelClient) Join(ctx context.Context, in *ChannelJoin, opts ..
 	return out, nil
 }
 
-func (c *ledgerChannelClient) List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*StringArr, error) {
-	out := new(StringArr)
+func (c *ledgerChannelClient) List(ctx context.Context, in *ChannelList, opts ...grpc.CallOption) (*ResultArr, error) {
+	out := new(ResultArr)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChannel/List", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -133,9 +135,9 @@ func (c *ledgerChannelClient) List(ctx context.Context, in *ChannelList, opts ..
 
 // LedgerChannelServer is the server API for LedgerChannel service.
 type LedgerChannelServer interface {
-	Create(context.Context, *ChannelCreate) (*String, error)
-	Join(context.Context, *ChannelJoin) (*String, error)
-	List(context.Context, *ChannelList) (*StringArr, error)
+	Create(context.Context, *ChannelCreate) (*Result, error)
+	Join(context.Context, *ChannelJoin) (*Result, error)
+	List(context.Context, *ChannelList) (*ResultArr, error)
 }
 
 func RegisterLedgerChannelServer(s *grpc.Server, srv LedgerChannelServer) {
@@ -221,14 +223,15 @@ var _LedgerChannel_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LedgerChainCodeClient interface {
-	InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error)
-	InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error)
-	InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*String, error)
-	InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*CCList, error)
-	UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*String, error)
-	InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*String, error)
-	InvokeCCAsync(ctx context.Context, in *InvokeAsync, opts ...grpc.CallOption) (*String, error)
-	QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error)
+	UploadCC(ctx context.Context, opts ...grpc.CallOption) (LedgerChainCode_UploadCCClient, error)
+	InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*Result, error)
+	InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*ResultCCList, error)
+	InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*Result, error)
+	InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*ResultCCList, error)
+	UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*Result, error)
+	InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*Result, error)
+	InvokeCCAsync(ctx context.Context, in *InvokeAsync, opts ...grpc.CallOption) (*Result, error)
+	QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error)
 }
 
 type ledgerChainCodeClient struct {
@@ -239,8 +242,42 @@ func NewLedgerChainCodeClient(cc *grpc.ClientConn) LedgerChainCodeClient {
 	return &ledgerChainCodeClient{cc}
 }
 
-func (c *ledgerChainCodeClient) InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChainCodeClient) UploadCC(ctx context.Context, opts ...grpc.CallOption) (LedgerChainCode_UploadCCClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_LedgerChainCode_serviceDesc.Streams[0], "/chain.LedgerChainCode/UploadCC", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &ledgerChainCodeUploadCCClient{stream}
+	return x, nil
+}
+
+type LedgerChainCode_UploadCCClient interface {
+	Send(*Upload) error
+	CloseAndRecv() (*ResultUpload, error)
+	grpc.ClientStream
+}
+
+type ledgerChainCodeUploadCCClient struct {
+	grpc.ClientStream
+}
+
+func (x *ledgerChainCodeUploadCCClient) Send(m *Upload) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *ledgerChainCodeUploadCCClient) CloseAndRecv() (*ResultUpload, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(ResultUpload)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *ledgerChainCodeClient) InstallCC(ctx context.Context, in *Install, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/InstallCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -248,8 +285,8 @@ func (c *ledgerChainCodeClient) InstallCC(ctx context.Context, in *Install, opts
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*CCList, error) {
-	out := new(CCList)
+func (c *ledgerChainCodeClient) InstalledCC(ctx context.Context, in *Installed, opts ...grpc.CallOption) (*ResultCCList, error) {
+	out := new(ResultCCList)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/InstalledCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -257,8 +294,8 @@ func (c *ledgerChainCodeClient) InstalledCC(ctx context.Context, in *Installed, 
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChainCodeClient) InstantiateCC(ctx context.Context, in *Instantiate, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/InstantiateCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -266,8 +303,8 @@ func (c *ledgerChainCodeClient) InstantiateCC(ctx context.Context, in *Instantia
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*CCList, error) {
-	out := new(CCList)
+func (c *ledgerChainCodeClient) InstantiatedCC(ctx context.Context, in *Instantiated, opts ...grpc.CallOption) (*ResultCCList, error) {
+	out := new(ResultCCList)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/InstantiatedCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -275,8 +312,8 @@ func (c *ledgerChainCodeClient) InstantiatedCC(ctx context.Context, in *Instanti
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChainCodeClient) UpgradeCC(ctx context.Context, in *Upgrade, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/UpgradeCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -284,8 +321,8 @@ func (c *ledgerChainCodeClient) UpgradeCC(ctx context.Context, in *Upgrade, opts
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/InvokeCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -293,8 +330,8 @@ func (c *ledgerChainCodeClient) InvokeCC(ctx context.Context, in *Invoke, opts .
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) InvokeCCAsync(ctx context.Context, in *InvokeAsync, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChainCodeClient) InvokeCCAsync(ctx context.Context, in *InvokeAsync, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/InvokeCCAsync", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -302,8 +339,8 @@ func (c *ledgerChainCodeClient) InvokeCCAsync(ctx context.Context, in *InvokeAsy
 	return out, nil
 }
 
-func (c *ledgerChainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerChainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerChainCode/QueryCC", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -313,18 +350,45 @@ func (c *ledgerChainCodeClient) QueryCC(ctx context.Context, in *Query, opts ...
 
 // LedgerChainCodeServer is the server API for LedgerChainCode service.
 type LedgerChainCodeServer interface {
-	InstallCC(context.Context, *Install) (*String, error)
-	InstalledCC(context.Context, *Installed) (*CCList, error)
-	InstantiateCC(context.Context, *Instantiate) (*String, error)
-	InstantiatedCC(context.Context, *Instantiated) (*CCList, error)
-	UpgradeCC(context.Context, *Upgrade) (*String, error)
-	InvokeCC(context.Context, *Invoke) (*String, error)
-	InvokeCCAsync(context.Context, *InvokeAsync) (*String, error)
-	QueryCC(context.Context, *Query) (*String, error)
+	UploadCC(LedgerChainCode_UploadCCServer) error
+	InstallCC(context.Context, *Install) (*Result, error)
+	InstalledCC(context.Context, *Installed) (*ResultCCList, error)
+	InstantiateCC(context.Context, *Instantiate) (*Result, error)
+	InstantiatedCC(context.Context, *Instantiated) (*ResultCCList, error)
+	UpgradeCC(context.Context, *Upgrade) (*Result, error)
+	InvokeCC(context.Context, *Invoke) (*Result, error)
+	InvokeCCAsync(context.Context, *InvokeAsync) (*Result, error)
+	QueryCC(context.Context, *Query) (*Result, error)
 }
 
 func RegisterLedgerChainCodeServer(s *grpc.Server, srv LedgerChainCodeServer) {
 	s.RegisterService(&_LedgerChainCode_serviceDesc, srv)
+}
+
+func _LedgerChainCode_UploadCC_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(LedgerChainCodeServer).UploadCC(&ledgerChainCodeUploadCCServer{stream})
+}
+
+type LedgerChainCode_UploadCCServer interface {
+	SendAndClose(*ResultUpload) error
+	Recv() (*Upload, error)
+	grpc.ServerStream
+}
+
+type ledgerChainCodeUploadCCServer struct {
+	grpc.ServerStream
+}
+
+func (x *ledgerChainCodeUploadCCServer) SendAndClose(m *ResultUpload) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *ledgerChainCodeUploadCCServer) Recv() (*Upload, error) {
+	m := new(Upload)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 func _LedgerChainCode_InstallCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -508,7 +572,13 @@ var _LedgerChainCode_serviceDesc = grpc.ServiceDesc{
 			Handler:    _LedgerChainCode_QueryCC_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "UploadCC",
+			Handler:       _LedgerChainCode_UploadCC_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "grpc/proto/chain/server.proto",
 }
 
@@ -516,14 +586,14 @@ var _LedgerChainCode_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LedgerClient interface {
-	QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ChannelInfo, error)
-	QueryLedgerBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*Block, error)
-	QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*Block, error)
-	QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*Block, error)
-	QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec, opts ...grpc.CallOption) (*ChannelInfo, error)
-	QueryLedgerBlockByHeightSpec(ctx context.Context, in *ReqBlockByHeightSpec, opts ...grpc.CallOption) (*Block, error)
-	QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBlockByHashSpec, opts ...grpc.CallOption) (*Block, error)
-	QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBlockByTxIDSpec, opts ...grpc.CallOption) (*Block, error)
+	QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ResultChannelInfo, error)
+	QueryLedgerBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*ResultBlock, error)
+	QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*ResultBlock, error)
+	QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*ResultBlock, error)
+	QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec, opts ...grpc.CallOption) (*ResultChannelInfo, error)
+	QueryLedgerBlockByHeightSpec(ctx context.Context, in *ReqBlockByHeightSpec, opts ...grpc.CallOption) (*ResultBlock, error)
+	QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBlockByHashSpec, opts ...grpc.CallOption) (*ResultBlock, error)
+	QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBlockByTxIDSpec, opts ...grpc.CallOption) (*ResultBlock, error)
 }
 
 type ledgerClient struct {
@@ -534,8 +604,8 @@ func NewLedgerClient(cc *grpc.ClientConn) LedgerClient {
 	return &ledgerClient{cc}
 }
 
-func (c *ledgerClient) QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ChannelInfo, error) {
-	out := new(ChannelInfo)
+func (c *ledgerClient) QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ...grpc.CallOption) (*ResultChannelInfo, error) {
+	out := new(ResultChannelInfo)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -543,8 +613,8 @@ func (c *ledgerClient) QueryLedgerInfo(ctx context.Context, in *ReqInfo, opts ..
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*Block, error) {
-	out := new(Block)
+func (c *ledgerClient) QueryLedgerBlockByHeight(ctx context.Context, in *ReqBlockByHeight, opts ...grpc.CallOption) (*ResultBlock, error) {
+	out := new(ResultBlock)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerBlockByHeight", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -552,8 +622,8 @@ func (c *ledgerClient) QueryLedgerBlockByHeight(ctx context.Context, in *ReqBloc
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*Block, error) {
-	out := new(Block)
+func (c *ledgerClient) QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockByHash, opts ...grpc.CallOption) (*ResultBlock, error) {
+	out := new(ResultBlock)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerBlockByHash", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -561,8 +631,8 @@ func (c *ledgerClient) QueryLedgerBlockByHash(ctx context.Context, in *ReqBlockB
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*Block, error) {
-	out := new(Block)
+func (c *ledgerClient) QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockByTxID, opts ...grpc.CallOption) (*ResultBlock, error) {
+	out := new(ResultBlock)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerBlockByTxID", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -570,8 +640,8 @@ func (c *ledgerClient) QueryLedgerBlockByTxID(ctx context.Context, in *ReqBlockB
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec, opts ...grpc.CallOption) (*ChannelInfo, error) {
-	out := new(ChannelInfo)
+func (c *ledgerClient) QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec, opts ...grpc.CallOption) (*ResultChannelInfo, error) {
+	out := new(ResultChannelInfo)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerInfoSpec", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -579,8 +649,8 @@ func (c *ledgerClient) QueryLedgerInfoSpec(ctx context.Context, in *ReqInfoSpec,
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerBlockByHeightSpec(ctx context.Context, in *ReqBlockByHeightSpec, opts ...grpc.CallOption) (*Block, error) {
-	out := new(Block)
+func (c *ledgerClient) QueryLedgerBlockByHeightSpec(ctx context.Context, in *ReqBlockByHeightSpec, opts ...grpc.CallOption) (*ResultBlock, error) {
+	out := new(ResultBlock)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerBlockByHeightSpec", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -588,8 +658,8 @@ func (c *ledgerClient) QueryLedgerBlockByHeightSpec(ctx context.Context, in *Req
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBlockByHashSpec, opts ...grpc.CallOption) (*Block, error) {
-	out := new(Block)
+func (c *ledgerClient) QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBlockByHashSpec, opts ...grpc.CallOption) (*ResultBlock, error) {
+	out := new(ResultBlock)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerBlockByHashSpec", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -597,8 +667,8 @@ func (c *ledgerClient) QueryLedgerBlockByHashSpec(ctx context.Context, in *ReqBl
 	return out, nil
 }
 
-func (c *ledgerClient) QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBlockByTxIDSpec, opts ...grpc.CallOption) (*Block, error) {
-	out := new(Block)
+func (c *ledgerClient) QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBlockByTxIDSpec, opts ...grpc.CallOption) (*ResultBlock, error) {
+	out := new(ResultBlock)
 	err := c.cc.Invoke(ctx, "/chain.Ledger/QueryLedgerBlockByTxIDSpec", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -608,14 +678,14 @@ func (c *ledgerClient) QueryLedgerBlockByTxIDSpec(ctx context.Context, in *ReqBl
 
 // LedgerServer is the server API for Ledger service.
 type LedgerServer interface {
-	QueryLedgerInfo(context.Context, *ReqInfo) (*ChannelInfo, error)
-	QueryLedgerBlockByHeight(context.Context, *ReqBlockByHeight) (*Block, error)
-	QueryLedgerBlockByHash(context.Context, *ReqBlockByHash) (*Block, error)
-	QueryLedgerBlockByTxID(context.Context, *ReqBlockByTxID) (*Block, error)
-	QueryLedgerInfoSpec(context.Context, *ReqInfoSpec) (*ChannelInfo, error)
-	QueryLedgerBlockByHeightSpec(context.Context, *ReqBlockByHeightSpec) (*Block, error)
-	QueryLedgerBlockByHashSpec(context.Context, *ReqBlockByHashSpec) (*Block, error)
-	QueryLedgerBlockByTxIDSpec(context.Context, *ReqBlockByTxIDSpec) (*Block, error)
+	QueryLedgerInfo(context.Context, *ReqInfo) (*ResultChannelInfo, error)
+	QueryLedgerBlockByHeight(context.Context, *ReqBlockByHeight) (*ResultBlock, error)
+	QueryLedgerBlockByHash(context.Context, *ReqBlockByHash) (*ResultBlock, error)
+	QueryLedgerBlockByTxID(context.Context, *ReqBlockByTxID) (*ResultBlock, error)
+	QueryLedgerInfoSpec(context.Context, *ReqInfoSpec) (*ResultChannelInfo, error)
+	QueryLedgerBlockByHeightSpec(context.Context, *ReqBlockByHeightSpec) (*ResultBlock, error)
+	QueryLedgerBlockByHashSpec(context.Context, *ReqBlockByHashSpec) (*ResultBlock, error)
+	QueryLedgerBlockByTxIDSpec(context.Context, *ReqBlockByTxIDSpec) (*ResultBlock, error)
 }
 
 func RegisterLedgerServer(s *grpc.Server, srv LedgerServer) {
@@ -811,24 +881,24 @@ var _Ledger_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LedgerConfigClient interface {
-	GetConfig(ctx context.Context, in *String, opts ...grpc.CallOption) (*Config, error)
-	InitClient(ctx context.Context, in *ReqClient, opts ...grpc.CallOption) (*String, error)
-	InitClientSelf(ctx context.Context, in *ReqClientSelf, opts ...grpc.CallOption) (*String, error)
-	InitClientCustom(ctx context.Context, in *ReqClientCustom, opts ...grpc.CallOption) (*String, error)
-	AddOrSetPeerForChannel(ctx context.Context, in *ReqChannelPeer, opts ...grpc.CallOption) (*String, error)
-	AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *ReqChannelPolicyQuery, opts ...grpc.CallOption) (*String, error)
-	AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *ReqChannelPolicyDiscovery, opts ...grpc.CallOption) (*String, error)
-	AddOrSetEventServicePolicyForChannel(ctx context.Context, in *ReqChannelPolicyEvent, opts ...grpc.CallOption) (*String, error)
-	AddOrSetOrdererForOrganizations(ctx context.Context, in *ReqOrganizationsOrder, opts ...grpc.CallOption) (*String, error)
-	AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrderSelf, opts ...grpc.CallOption) (*String, error)
-	AddOrSetOrgForOrganizations(ctx context.Context, in *ReqOrganizationsOrg, opts ...grpc.CallOption) (*String, error)
-	AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrgSelf, opts ...grpc.CallOption) (*String, error)
-	AddOrSetOrderer(ctx context.Context, in *ReqOrder, opts ...grpc.CallOption) (*String, error)
-	AddOrSetOrdererSelf(ctx context.Context, in *ReqOrderSelf, opts ...grpc.CallOption) (*String, error)
-	AddOrSetPeer(ctx context.Context, in *ReqPeer, opts ...grpc.CallOption) (*String, error)
-	AddOrSetPeerSelf(ctx context.Context, in *ReqPeerSelf, opts ...grpc.CallOption) (*String, error)
-	AddOrSetCertificateAuthority(ctx context.Context, in *ReqCertificateAuthority, opts ...grpc.CallOption) (*String, error)
-	AddOrSetCertificateAuthoritySelf(ctx context.Context, in *ReqCertificateAuthoritySelf, opts ...grpc.CallOption) (*String, error)
+	GetConfig(ctx context.Context, in *ReqConfig, opts ...grpc.CallOption) (*ResultConfig, error)
+	InitClient(ctx context.Context, in *ReqClient, opts ...grpc.CallOption) (*Result, error)
+	InitClientSelf(ctx context.Context, in *ReqClientSelf, opts ...grpc.CallOption) (*Result, error)
+	InitClientCustom(ctx context.Context, in *ReqClientCustom, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetPeerForChannel(ctx context.Context, in *ReqChannelPeer, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *ReqChannelPolicyQuery, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *ReqChannelPolicyDiscovery, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetEventServicePolicyForChannel(ctx context.Context, in *ReqChannelPolicyEvent, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetOrdererForOrganizations(ctx context.Context, in *ReqOrganizationsOrder, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrderSelf, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetOrgForOrganizations(ctx context.Context, in *ReqOrganizationsOrg, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrgSelf, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetOrderer(ctx context.Context, in *ReqOrder, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetOrdererSelf(ctx context.Context, in *ReqOrderSelf, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetPeer(ctx context.Context, in *ReqPeer, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetPeerSelf(ctx context.Context, in *ReqPeerSelf, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetCertificateAuthority(ctx context.Context, in *ReqCertificateAuthority, opts ...grpc.CallOption) (*Result, error)
+	AddOrSetCertificateAuthoritySelf(ctx context.Context, in *ReqCertificateAuthoritySelf, opts ...grpc.CallOption) (*Result, error)
 }
 
 type ledgerConfigClient struct {
@@ -839,8 +909,8 @@ func NewLedgerConfigClient(cc *grpc.ClientConn) LedgerConfigClient {
 	return &ledgerConfigClient{cc}
 }
 
-func (c *ledgerConfigClient) GetConfig(ctx context.Context, in *String, opts ...grpc.CallOption) (*Config, error) {
-	out := new(Config)
+func (c *ledgerConfigClient) GetConfig(ctx context.Context, in *ReqConfig, opts ...grpc.CallOption) (*ResultConfig, error) {
+	out := new(ResultConfig)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/GetConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -848,8 +918,8 @@ func (c *ledgerConfigClient) GetConfig(ctx context.Context, in *String, opts ...
 	return out, nil
 }
 
-func (c *ledgerConfigClient) InitClient(ctx context.Context, in *ReqClient, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) InitClient(ctx context.Context, in *ReqClient, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/InitClient", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -857,8 +927,8 @@ func (c *ledgerConfigClient) InitClient(ctx context.Context, in *ReqClient, opts
 	return out, nil
 }
 
-func (c *ledgerConfigClient) InitClientSelf(ctx context.Context, in *ReqClientSelf, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) InitClientSelf(ctx context.Context, in *ReqClientSelf, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/InitClientSelf", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -866,8 +936,8 @@ func (c *ledgerConfigClient) InitClientSelf(ctx context.Context, in *ReqClientSe
 	return out, nil
 }
 
-func (c *ledgerConfigClient) InitClientCustom(ctx context.Context, in *ReqClientCustom, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) InitClientCustom(ctx context.Context, in *ReqClientCustom, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/InitClientCustom", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -875,8 +945,8 @@ func (c *ledgerConfigClient) InitClientCustom(ctx context.Context, in *ReqClient
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetPeerForChannel(ctx context.Context, in *ReqChannelPeer, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetPeerForChannel(ctx context.Context, in *ReqChannelPeer, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetPeerForChannel", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -884,8 +954,8 @@ func (c *ledgerConfigClient) AddOrSetPeerForChannel(ctx context.Context, in *Req
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *ReqChannelPolicyQuery, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetQueryChannelPolicyForChannel(ctx context.Context, in *ReqChannelPolicyQuery, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetQueryChannelPolicyForChannel", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -893,8 +963,8 @@ func (c *ledgerConfigClient) AddOrSetQueryChannelPolicyForChannel(ctx context.Co
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *ReqChannelPolicyDiscovery, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in *ReqChannelPolicyDiscovery, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetDiscoveryPolicyForChannel", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -902,8 +972,8 @@ func (c *ledgerConfigClient) AddOrSetDiscoveryPolicyForChannel(ctx context.Conte
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetEventServicePolicyForChannel(ctx context.Context, in *ReqChannelPolicyEvent, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetEventServicePolicyForChannel(ctx context.Context, in *ReqChannelPolicyEvent, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetEventServicePolicyForChannel", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -911,8 +981,8 @@ func (c *ledgerConfigClient) AddOrSetEventServicePolicyForChannel(ctx context.Co
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetOrdererForOrganizations(ctx context.Context, in *ReqOrganizationsOrder, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetOrdererForOrganizations(ctx context.Context, in *ReqOrganizationsOrder, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetOrdererForOrganizations", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -920,8 +990,8 @@ func (c *ledgerConfigClient) AddOrSetOrdererForOrganizations(ctx context.Context
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrderSelf, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrderSelf, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetOrdererForOrganizationsSelf", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -929,8 +999,8 @@ func (c *ledgerConfigClient) AddOrSetOrdererForOrganizationsSelf(ctx context.Con
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetOrgForOrganizations(ctx context.Context, in *ReqOrganizationsOrg, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetOrgForOrganizations(ctx context.Context, in *ReqOrganizationsOrg, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetOrgForOrganizations", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -938,8 +1008,8 @@ func (c *ledgerConfigClient) AddOrSetOrgForOrganizations(ctx context.Context, in
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrgSelf, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *ReqOrganizationsOrgSelf, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetOrgForOrganizationsSelf", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -947,8 +1017,8 @@ func (c *ledgerConfigClient) AddOrSetOrgForOrganizationsSelf(ctx context.Context
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetOrderer(ctx context.Context, in *ReqOrder, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetOrderer(ctx context.Context, in *ReqOrder, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetOrderer", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -956,8 +1026,8 @@ func (c *ledgerConfigClient) AddOrSetOrderer(ctx context.Context, in *ReqOrder, 
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetOrdererSelf(ctx context.Context, in *ReqOrderSelf, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetOrdererSelf(ctx context.Context, in *ReqOrderSelf, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetOrdererSelf", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -965,8 +1035,8 @@ func (c *ledgerConfigClient) AddOrSetOrdererSelf(ctx context.Context, in *ReqOrd
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetPeer(ctx context.Context, in *ReqPeer, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetPeer(ctx context.Context, in *ReqPeer, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetPeer", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -974,8 +1044,8 @@ func (c *ledgerConfigClient) AddOrSetPeer(ctx context.Context, in *ReqPeer, opts
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetPeerSelf(ctx context.Context, in *ReqPeerSelf, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetPeerSelf(ctx context.Context, in *ReqPeerSelf, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetPeerSelf", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -983,8 +1053,8 @@ func (c *ledgerConfigClient) AddOrSetPeerSelf(ctx context.Context, in *ReqPeerSe
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetCertificateAuthority(ctx context.Context, in *ReqCertificateAuthority, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetCertificateAuthority(ctx context.Context, in *ReqCertificateAuthority, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetCertificateAuthority", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -992,8 +1062,8 @@ func (c *ledgerConfigClient) AddOrSetCertificateAuthority(ctx context.Context, i
 	return out, nil
 }
 
-func (c *ledgerConfigClient) AddOrSetCertificateAuthoritySelf(ctx context.Context, in *ReqCertificateAuthoritySelf, opts ...grpc.CallOption) (*String, error) {
-	out := new(String)
+func (c *ledgerConfigClient) AddOrSetCertificateAuthoritySelf(ctx context.Context, in *ReqCertificateAuthoritySelf, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
 	err := c.cc.Invoke(ctx, "/chain.LedgerConfig/AddOrSetCertificateAuthoritySelf", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1003,24 +1073,24 @@ func (c *ledgerConfigClient) AddOrSetCertificateAuthoritySelf(ctx context.Contex
 
 // LedgerConfigServer is the server API for LedgerConfig service.
 type LedgerConfigServer interface {
-	GetConfig(context.Context, *String) (*Config, error)
-	InitClient(context.Context, *ReqClient) (*String, error)
-	InitClientSelf(context.Context, *ReqClientSelf) (*String, error)
-	InitClientCustom(context.Context, *ReqClientCustom) (*String, error)
-	AddOrSetPeerForChannel(context.Context, *ReqChannelPeer) (*String, error)
-	AddOrSetQueryChannelPolicyForChannel(context.Context, *ReqChannelPolicyQuery) (*String, error)
-	AddOrSetDiscoveryPolicyForChannel(context.Context, *ReqChannelPolicyDiscovery) (*String, error)
-	AddOrSetEventServicePolicyForChannel(context.Context, *ReqChannelPolicyEvent) (*String, error)
-	AddOrSetOrdererForOrganizations(context.Context, *ReqOrganizationsOrder) (*String, error)
-	AddOrSetOrdererForOrganizationsSelf(context.Context, *ReqOrganizationsOrderSelf) (*String, error)
-	AddOrSetOrgForOrganizations(context.Context, *ReqOrganizationsOrg) (*String, error)
-	AddOrSetOrgForOrganizationsSelf(context.Context, *ReqOrganizationsOrgSelf) (*String, error)
-	AddOrSetOrderer(context.Context, *ReqOrder) (*String, error)
-	AddOrSetOrdererSelf(context.Context, *ReqOrderSelf) (*String, error)
-	AddOrSetPeer(context.Context, *ReqPeer) (*String, error)
-	AddOrSetPeerSelf(context.Context, *ReqPeerSelf) (*String, error)
-	AddOrSetCertificateAuthority(context.Context, *ReqCertificateAuthority) (*String, error)
-	AddOrSetCertificateAuthoritySelf(context.Context, *ReqCertificateAuthoritySelf) (*String, error)
+	GetConfig(context.Context, *ReqConfig) (*ResultConfig, error)
+	InitClient(context.Context, *ReqClient) (*Result, error)
+	InitClientSelf(context.Context, *ReqClientSelf) (*Result, error)
+	InitClientCustom(context.Context, *ReqClientCustom) (*Result, error)
+	AddOrSetPeerForChannel(context.Context, *ReqChannelPeer) (*Result, error)
+	AddOrSetQueryChannelPolicyForChannel(context.Context, *ReqChannelPolicyQuery) (*Result, error)
+	AddOrSetDiscoveryPolicyForChannel(context.Context, *ReqChannelPolicyDiscovery) (*Result, error)
+	AddOrSetEventServicePolicyForChannel(context.Context, *ReqChannelPolicyEvent) (*Result, error)
+	AddOrSetOrdererForOrganizations(context.Context, *ReqOrganizationsOrder) (*Result, error)
+	AddOrSetOrdererForOrganizationsSelf(context.Context, *ReqOrganizationsOrderSelf) (*Result, error)
+	AddOrSetOrgForOrganizations(context.Context, *ReqOrganizationsOrg) (*Result, error)
+	AddOrSetOrgForOrganizationsSelf(context.Context, *ReqOrganizationsOrgSelf) (*Result, error)
+	AddOrSetOrderer(context.Context, *ReqOrder) (*Result, error)
+	AddOrSetOrdererSelf(context.Context, *ReqOrderSelf) (*Result, error)
+	AddOrSetPeer(context.Context, *ReqPeer) (*Result, error)
+	AddOrSetPeerSelf(context.Context, *ReqPeerSelf) (*Result, error)
+	AddOrSetCertificateAuthority(context.Context, *ReqCertificateAuthority) (*Result, error)
+	AddOrSetCertificateAuthoritySelf(context.Context, *ReqCertificateAuthoritySelf) (*Result, error)
 }
 
 func RegisterLedgerConfigServer(s *grpc.Server, srv LedgerConfigServer) {
@@ -1028,7 +1098,7 @@ func RegisterLedgerConfigServer(s *grpc.Server, srv LedgerConfigServer) {
 }
 
 func _LedgerConfig_GetConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(String)
+	in := new(ReqConfig)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1040,7 +1110,7 @@ func _LedgerConfig_GetConfig_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/chain.LedgerConfig/GetConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LedgerConfigServer).GetConfig(ctx, req.(*String))
+		return srv.(LedgerConfigServer).GetConfig(ctx, req.(*ReqConfig))
 	}
 	return interceptor(ctx, in, info, handler)
 }

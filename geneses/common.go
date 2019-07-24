@@ -106,6 +106,14 @@ func ConfPath(leagueComment string) string {
 	return strings.Join([]string{dataPath, leagueComment, "config"}, "/")
 }
 
+// ChainCodePath code目录
+func ChainCodePath(leagueComment, chainCodeName, version string) (source, path, zipPath string) {
+	source = strings.Join([]string{ConfPath(leagueComment), "code/go"}, "/")
+	path = strings.Join([]string{chainCodeName, version, chainCodeName}, "/")
+	zipPath = strings.Join([]string{source, "/src/", path, ".zip"}, "")
+	return
+}
+
 // CryptoConfigPath crypto-config目录
 func CryptoConfigPath(leagueComment string) string {
 	return strings.Join([]string{ConfPath(leagueComment), "crypto-config"}, "/")
