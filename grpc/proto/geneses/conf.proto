@@ -10,7 +10,7 @@ package geneses;
 message Generate {
     string ledgerName = 1;
     int32 orderCount = 2;
-    int32 peerCount = 3;
+    int32 orgCount = 3;
     int32 templateCount = 4;
     int32 userCount = 5;
     int32 batchTimeout = 6;
