@@ -12,42 +12,43 @@
  * limitations under the License.
  */
 
-package raft
+package rafts
 
 import (
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	str "github.com/ennoo/rivet/utils/string"
 	"golang.org/x/net/context"
 	"gopkg.in/yaml.v3"
 )
 
-type RaftsServer struct{}
+type Server struct{}
 
 // HeartBeat 发送心跳
-func (r *RaftsServer) Heartbeat(_ context.Context, hBeat *HBeat) (hbr *HBeatReturn, err error) {
+func (s *Server) Heartbeat(_ context.Context, hBeat *HBeat) (hbr *HBeatReturn, err error) {
 	log.Self.Debug("raft", log.Reflect("receive heartbeat", hBeat))
 	hbr = &HBeatReturn{}
 	if hBeat.Term < obtainRaft().term {
 		hbr.Success = false
 	} else if hBeat.Term == obtainRaft().term {
 		switch obtainRaft().role.role() {
-		case roleLeader:
+		case RoleLeader:
 			obtainRaft().role.candidate()
 			hbr.Success = false
-		case roleCandidate:
+		case RoleCandidate:
 			obtainRaft().role.follower()
-			r.syncConfig(hBeat)
+			s.syncConfig(hBeat)
 			hbr.Success = true
-		case roleFollower:
-			r.syncConfig(hBeat)
+		case RoleFollower:
+			s.syncConfig(hBeat)
 			hbr.Success = true
 		}
 	} else if hBeat.Term > obtainRaft().term {
 		switch obtainRaft().role.role() {
-		case roleLeader, roleCandidate:
+		case RoleLeader, RoleCandidate:
 			obtainRaft().role.follower()
 		}
-		r.syncConfig(hBeat)
+		s.syncConfig(hBeat)
 		hbr.Success = true
 	}
 	hbr.Term = obtainRaft().term
@@ -55,7 +56,7 @@ func (r *RaftsServer) Heartbeat(_ context.Context, hBeat *HBeat) (hbr *HBeatRetu
 }
 
 // RequestVote 发起选举，索要选票
-func (r *RaftsServer) RequestVote(_ context.Context, rv *ReqVote) (rvr *ReqVoteReturn, err error) {
+func (s *Server) RequestVote(_ context.Context, rv *ReqVote) (rvr *ReqVoteReturn, err error) {
 	log.Self.Info("raft", log.Reflect("receive RequestVote", rv))
 	rvr = &ReqVoteReturn{}
 	rvr.Term = obtainRaft().term
@@ -65,16 +66,16 @@ func (r *RaftsServer) RequestVote(_ context.Context, rv *ReqVote) (rvr *ReqVoteR
 			log.Int32("termReceive", rv.Term))
 		rvr.VoteGranted = false
 	} else if rv.Term >= obtainRaft().term {
-		rvr.VoteGranted = r.voteFor(rv)
+		rvr.VoteGranted = s.voteFor(rv)
 	}
-	r.syncNodes(&Node{
+	s.syncNodes(&Node{
 		Id:  rv.CandidateId,
 		Url: rv.Url,
 	})
 	return
 }
 
-func (r *RaftsServer) syncNodes(node *Node) {
+func (s *Server) syncNodes(node *Node) {
 	have := false
 	for _, n := range obtainRaft().nodes {
 		if n.Id == node.Id {
@@ -87,12 +88,12 @@ func (r *RaftsServer) syncNodes(node *Node) {
 }
 
 // syncConfig 同步配置信息方案
-func (r *RaftsServer) syncConfig(hBeat *HBeat) {
+func (s *Server) syncConfig(hBeat *HBeat) {
 	if obtainRaft().persistence.leaderID == hBeat.LeaderId && obtainRaft().persistence.version == hBeat.Version && obtainRaft().term == hBeat.Term {
 		obtainRaft().scheduled.refreshLastHeartBeatTime()
 		return
 	}
-	if err := yaml.Unmarshal(hBeat.Config, obtainRaft().persistence.configs); nil != err {
+	if err := yaml.Unmarshal(hBeat.Config, service.Configs); nil != err {
 		log.Self.Error("raft", log.Error(err))
 	} else {
 		log.Self.Debug("raft", log.String("syncConfig", "refresh time"))
@@ -100,25 +101,24 @@ func (r *RaftsServer) syncConfig(hBeat *HBeat) {
 		obtainRaft().persistence.leaderID = hBeat.LeaderId
 		obtainRaft().persistence.version = hBeat.Version
 		obtainRaft().persistence.currentTerm = hBeat.Term
-		// todo config storage
 		obtainRaft().scheduled.refreshLastHeartBeatTime()
 	}
 }
 
 // voteFor 要求投票节点任期大于当前任期返回方案
-func (r *RaftsServer) voteFor(rv *ReqVote) bool {
+func (s *Server) voteFor(rv *ReqVote) bool {
 	if rv.Term == obtainRaft().term {
 		if rv.Timestamp < obtainRaft().persistence.votedFor.timestamp {
-			r.vote(rv)
+			s.vote(rv)
 			return true
 		}
 	}
 	if rv.Term > obtainRaft().persistence.votedFor.term {
-		r.vote(rv)
+		s.vote(rv)
 		return true
 	}
 	if rv.Term == obtainRaft().persistence.votedFor.term && str.IsEmpty(obtainRaft().persistence.votedFor.id) {
-		r.vote(rv)
+		s.vote(rv)
 		return true
 	}
 	log.Self.Info("raft", log.Reflect("refuse", rv),
@@ -127,7 +127,7 @@ func (r *RaftsServer) voteFor(rv *ReqVote) bool {
 	return false
 }
 
-func (r *RaftsServer) vote(rv *ReqVote) {
+func (s *Server) vote(rv *ReqVote) {
 	obtainRaft().persistence.votedFor.id = rv.CandidateId
 	obtainRaft().persistence.votedFor.term = rv.Term
 	obtainRaft().scheduled.refreshLastHeartBeatTime()

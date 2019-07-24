@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package raft
+package rafts
 
 import "github.com/ennoo/rivet/utils/log"
 
@@ -47,7 +47,7 @@ func (f *follower) follower() {}
 func (f *follower) release() {}
 
 func (f *follower) role() int {
-	return roleFollower
+	return RoleFollower
 }
 
 func (f *follower) work() {}

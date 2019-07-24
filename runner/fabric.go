@@ -18,11 +18,9 @@ package main
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	pbGeneses "github.com/ennoo/fabric-client/grpc/proto/geneses"
-	pbRaft "github.com/ennoo/fabric-client/grpc/proto/raft"
 	"github.com/ennoo/fabric-client/grpc/server/chains"
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
-	"github.com/ennoo/fabric-client/grpc/server/raft"
-	scheduled "github.com/ennoo/fabric-client/raft"
+	"github.com/ennoo/fabric-client/rafts"
 	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
@@ -34,12 +32,12 @@ import (
 )
 
 func main() {
-	if id := env.GetEnv(scheduled.BrokerID); str.IsNotEmpty(id) {
+	if id := env.GetEnv(rafts.BrokerID); str.IsNotEmpty(id) {
 		log.Self.Info("raft self", log.String("BrokerID", id))
-		scheduled.Start()
-	} else if k8s := env.GetEnvBool(scheduled.K8S); k8s {
+		rafts.NewRaft()
+	} else if k8s := env.GetEnvBool(rafts.K8S); k8s {
 		log.Self.Info("raft k8s")
-		scheduled.Start()
+		rafts.NewRaft()
 	}
 	go httpListener()
 	grpcListener()
@@ -47,11 +45,12 @@ func main() {
 
 func init() {
 	var (
-		level log.Level
+		level    log.Level
+		logLevel string
 	)
 	rivet.Initialize(false, false, false, false)
 
-	logLevel := strings.ToLower(env.GetEnvDefault("LOG_LEVEL", "warn"))
+	logLevel = strings.ToLower(env.GetEnvDefault("LOG_LEVEL", "warn"))
 	switch logLevel {
 	case "debug":
 		level = log.DebugLevel
@@ -62,7 +61,8 @@ func init() {
 	case "error":
 		level = log.ErrorLevel
 	}
-	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs"), "fabric-client", &log.Config{
+	logPath := env.GetEnvDefault(env.LogPath, "./logs")
+	rivet.Log().Init(logPath, "fabric-client", &log.Config{
 		Level:      level,
 		MaxSize:    128,
 		MaxBackups: 30,
@@ -102,7 +102,7 @@ func grpcListener() {
 	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
 	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
 	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
-	pbRaft.RegisterRaftServer(rpcServer, &rafts.RaftServer{})
+	rafts.RegisterRaftServer(rpcServer, &rafts.Server{})
 
 	//  启动grpc服务
 	if err = rpcServer.Serve(listener); nil != err {

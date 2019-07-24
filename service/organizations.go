@@ -15,6 +15,10 @@
 
 package service
 
+import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+)
+
 type OrganizationsOrder struct {
 	ConfigID   string            `json:"configID"` // ConfigID 配置唯一ID
 	MspID      string            `json:"mspID"`
@@ -22,9 +26,25 @@ type OrganizationsOrder struct {
 	Users      map[string]string `json:"users"`
 }
 
+func (o *OrganizationsOrder) Trans2pb() *pb.ReqOrganizationsOrder {
+	return &pb.ReqOrganizationsOrder{
+		ConfigID:   o.ConfigID,
+		MspID:      o.MspID,
+		CryptoPath: o.CryptoPath,
+		Users:      o.Users,
+	}
+}
+
 type OrganizationsOrderSelf struct {
 	ConfigID   string `json:"configID"` // ConfigID 配置唯一ID
 	LeagueName string `json:"leagueName"`
+}
+
+func (o *OrganizationsOrderSelf) Trans2pb() *pb.ReqOrganizationsOrderSelf {
+	return &pb.ReqOrganizationsOrderSelf{
+		ConfigID:   o.ConfigID,
+		LeagueName: o.LeagueName,
+	}
 }
 
 type OrganizationsOrg struct {
@@ -37,9 +57,30 @@ type OrganizationsOrg struct {
 	CertificateAuthorities []string          `json:"certificateAuthorities"`
 }
 
+func (o *OrganizationsOrg) Trans2pb() *pb.ReqOrganizationsOrg {
+	return &pb.ReqOrganizationsOrg{
+		ConfigID:               o.ConfigID,
+		OrgName:                o.OrgName,
+		MspID:                  o.MspID,
+		CryptoPath:             o.CryptoPath,
+		Users:                  o.Users,
+		Peers:                  o.Peers,
+		CertificateAuthorities: o.CertificateAuthorities,
+	}
+}
+
 type OrganizationsOrgSelf struct {
 	ConfigID               string   `json:"configID"` // ConfigID 配置唯一ID
 	LeagueName             string   `json:"leagueName"`
 	Peers                  []string `json:"peers"`
 	CertificateAuthorities []string `json:"certificateAuthorities"`
+}
+
+func (o *OrganizationsOrgSelf) Trans2pb() *pb.ReqOrganizationsOrgSelf {
+	return &pb.ReqOrganizationsOrgSelf{
+		ConfigID:               o.ConfigID,
+		LeagueName:             o.LeagueName,
+		Peers:                  o.Peers,
+		CertificateAuthorities: o.CertificateAuthorities,
+	}
 }

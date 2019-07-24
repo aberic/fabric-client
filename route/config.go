@@ -15,15 +15,13 @@
 package route
 
 import (
-	conf "github.com/ennoo/fabric-client/config"
-	pb "github.com/ennoo/fabric-client/grpc/proto/raft"
-	"github.com/ennoo/fabric-client/raft"
+	"github.com/ennoo/fabric-client/grpc/server/chains"
+	"github.com/ennoo/fabric-client/rafts"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/trans/response"
-	str "github.com/ennoo/rivet/utils/string"
-	"net/http"
 	"strings"
+	"time"
 )
 
 func Config(router *response.Router) {
@@ -51,53 +49,6 @@ func Config(router *response.Router) {
 	router.POST("/self/order", addOrSetOrdererSelf)
 	router.POST("/self/peer", addOrSetPeerSelf)
 	router.POST("/self/ca", addOrSetCertificateAuthoritySelf)
-	router.POST("/sync", sync)
-	router.POST("/sync/ask", askSync)
-}
-
-func askSync(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var configs = new(map[string]*conf.Config)
-			if err := router.Context.ShouldBindJSON(configs); err != nil {
-				result.SayFail(router.Context, err.Error())
-				go raft.SyncConfig()
-				return
-			}
-			for keyNet, configNet := range *configs {
-				haveOne := false
-				for keyLocal := range service.Configs {
-					if keyNet == keyLocal {
-						haveOne = true
-						break
-					}
-				}
-				if !haveOne {
-					service.Configs[keyNet] = configNet
-				}
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/sync/ask", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
-}
-
-func sync(router *response.Router) {
-	rivet.Response().Do(router.Context, func(result *response.Result) {
-		var configs = new(map[string]*conf.Config)
-		if err := router.Context.ShouldBindJSON(configs); err != nil {
-			result.SayFail(router.Context, err.Error())
-			return
-		}
-		service.Configs = *configs
-		result.Say(router.Context)
-	})
 }
 
 func get(router *response.Router) {
@@ -113,409 +64,516 @@ func get(router *response.Router) {
 }
 
 func initClient(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var client = new(service.Client)
-			if err := router.Context.ShouldBindJSON(client); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.Client)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.InitClient(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.InitClient(client); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/client", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.InitClient(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func initClientSelf(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var client = new(service.ClientSelf)
-			if err := router.Context.ShouldBindJSON(client); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.ClientSelf)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.InitClientSelf(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.InitClientSelf(client); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/self/client", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.InitClientSelf(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func initClientCustom(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var clientCustom = new(service.ClientCustom)
-			if err := router.Context.ShouldBindJSON(clientCustom); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.ClientCustom)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.InitClientCustom(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.InitClientCustom(clientCustom); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/client/custom", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.InitClientCustom(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetPeerForChannel(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var channelPeer = new(service.ChannelPeer)
-			if err := router.Context.ShouldBindJSON(channelPeer); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.ChannelPeer)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetPeerForChannel(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetPeerForChannel(channelPeer); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/channel/peer", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetPeerForChannel(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetQueryChannelPolicyForChannel(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var query = new(service.ChannelPolicyQuery)
-			if err := router.Context.ShouldBindJSON(query); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.ChannelPolicyQuery)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetQueryChannelPolicyForChannel(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetQueryChannelPolicyForChannel(query); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/channel/policy/query", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetQueryChannelPolicyForChannel(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetDiscoveryPolicyForChannel(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var discovery = new(service.ChannelPolicyDiscovery)
-			if err := router.Context.ShouldBindJSON(discovery); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.ChannelPolicyDiscovery)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetDiscoveryPolicyForChannel(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetDiscoveryPolicyForChannel(discovery); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/channel/policy/discovery", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetDiscoveryPolicyForChannel(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetEventServicePolicyForChannel(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var event = new(service.ChannelPolicyEvent)
-			if err := router.Context.ShouldBindJSON(event); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.ChannelPolicyEvent)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetEventServicePolicyForChannel(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetEventServicePolicyForChannel(event); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/channel/policy/event", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetEventServicePolicyForChannel(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetOrdererForOrganizations(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var order = new(service.OrganizationsOrder)
-			if err := router.Context.ShouldBindJSON(order); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.OrganizationsOrder)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetOrdererForOrganizations(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetOrdererForOrganizations(order); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/organizations/order", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetOrdererForOrganizations(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetOrdererForOrganizationsSelf(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var order = new(service.OrganizationsOrderSelf)
-			if err := router.Context.ShouldBindJSON(order); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.OrganizationsOrderSelf)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetOrdererForOrganizationsSelf(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetOrdererForOrganizationsSelf(order); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/self/organizations/order", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetOrdererForOrganizationsSelf(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetOrgForOrganizations(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var org = new(service.OrganizationsOrg)
-			if err := router.Context.ShouldBindJSON(org); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.OrganizationsOrg)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetOrgForOrganizations(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetOrgForOrganizations(org); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/organizations/org", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetOrgForOrganizations(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetOrgForOrganizationsSelf(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var org = new(service.OrganizationsOrgSelf)
-			if err := router.Context.ShouldBindJSON(org); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.OrganizationsOrgSelf)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetOrgForOrganizationsSelf(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetOrgForOrganizationsSelf(org); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/self/organizations/org", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetOrgForOrganizationsSelf(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetOrderer(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var orderer = new(service.Order)
-			if err := router.Context.ShouldBindJSON(orderer); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.Order)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetOrderer(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetOrderer(orderer); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/order", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetOrderer(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetOrdererSelf(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var orderer = new(service.OrderSelf)
-			if err := router.Context.ShouldBindJSON(orderer); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.OrderSelf)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetOrdererSelf(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetOrdererSelf(orderer); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/self/order", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetOrdererSelf(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetPeer(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var peer = new(service.Peer)
-			if err := router.Context.ShouldBindJSON(peer); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.Peer)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetPeer(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetPeer(peer); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/peer", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetPeer(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetPeerSelf(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var peer = new(service.PeerSelf)
-			if err := router.Context.ShouldBindJSON(peer); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.PeerSelf)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetPeerSelf(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetPeerSelf(peer); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/self/peer", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetPeerSelf(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetCertificateAuthority(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var certificateAuthority = new(service.CertificateAuthority)
-			if err := router.Context.ShouldBindJSON(certificateAuthority); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.CertificateAuthority)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetCertificateAuthority(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetCertificateAuthority(certificateAuthority); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/ca", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
-	}
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetCertificateAuthority(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
 }
 
 func addOrSetCertificateAuthoritySelf(router *response.Router) {
-	if (raft.Nodes[raft.ID].Status == pb.Status_LEADER && raft.Leader.BrokerID == raft.ID) || str.IsEmpty(raft.ID) { // 如果相等，则说明自身即为 Leader 节点
-		rivet.Response().Do(router.Context, func(result *response.Result) {
-			var certificateAuthority = new(service.CertificateAuthoritySelf)
-			if err := router.Context.ShouldBindJSON(certificateAuthority); err != nil {
-				result.SayFail(router.Context, err.Error())
+	rivet.Response().Do(router.Context, func(result *response.Result) {
+		var in = new(service.CertificateAuthoritySelf)
+		if err := router.Context.ShouldBindJSON(in); err != nil {
+			result.SayFail(router.Context, err.Error())
+			return
+		}
+		proxy(
+			router,
+			true,
+			func() (err error) {
+				if err = service.AddOrSetCertificateAuthoritySelf(in); nil != err {
+					result.SayFail(router.Context, err.Error())
+					return
+				}
+				result.SaySuccess(router.Context, "success")
 				return
-			}
-			if err := service.AddOrSetCertificateAuthoritySelf(certificateAuthority); nil != err {
-				result.SayFail(router.Context, err.Error())
-				return
-			}
-			go raft.SyncConfig()
-			result.SaySuccess(router.Context, "success")
-		})
-	} else { // 将该请求转发给Leader节点处理
-		leader := raft.Nodes[raft.Leader.BrokerID]
-		rivet.Request().Callback(router.Context, http.MethodPost,
-			strings.Join([]string{"http://", leader.Addr, ":", leader.Http}, ""), "config/self/ca", func() *response.Result {
-				return &response.Result{ResultCode: response.Fail, Msg: "请求失败，检查集群状态"}
-			})
+			},
+			func(result *response.Result) {
+				if _, err := chains.AddOrSetCertificateAuthoritySelf(rafts.LeaderURL(), in.Trans2pb()); nil != err {
+					result.SayFail(router.Context, err.Error())
+				} else {
+					result.SaySuccess(router.Context, "success")
+				}
+			},
+		)
+	})
+}
+
+func proxy(router *response.Router, sleep bool, exec func() error, trans func(result *response.Result)) {
+	result := &response.Result{}
+	switch rafts.Character() {
+	case rafts.RoleLeader: // 自身即为 Leader 节点
+		err := exec()
+		if nil == err {
+			rafts.VersionAdd()
+		}
+	case rafts.RoleCandidate: // 等待选举结果，如果超时则返回
+		if sleep {
+			time.Sleep(1000 * time.Millisecond)
+			proxy(router, false, exec, trans)
+		} else {
+			result.SayFail(router.Context, "leader is nil")
+		}
+	case rafts.RoleFollower: // 将该请求转发给Leader节点处理
+		trans(result)
+	default:
+		result.SayFail(router.Context, "unknown err")
 	}
 }

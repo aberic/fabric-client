@@ -24,19 +24,14 @@
 //
 // Raft把时间切割为任意长度的任期（term），每个任期都有一个任期号，采用连续的整数
 
-package raft
-
-import (
-	"github.com/ennoo/fabric-client/config"
-)
+package rafts
 
 // persistence 所有角色都拥有的持久化的状态（在响应RPC请求之前变更且持久化的状态）
 type persistence struct {
-	leaderID    string                    // 当前任务Leader ID
-	currentTerm int32                     // 服务器的任期，初始为0，递增
-	votedFor    *votedFor                 // 在当前获得选票的候选人的 Id
-	version     int32                     // 当前配置版本 index 递增
-	configs     map[string]*config.Config // 当前term同步配置信息
+	leaderID    string    // 当前任务Leader ID
+	currentTerm int32     // 服务器的任期，初始为0，递增
+	votedFor    *votedFor // 在当前获得选票的候选人的 Id
+	version     int32     // 当前配置版本 index 递增
 }
 
 type votedFor struct {

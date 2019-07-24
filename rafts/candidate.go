@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package raft
+package rafts
 
 import (
 	"context"
@@ -93,7 +93,7 @@ func (c *candidate) release() {
 }
 
 func (c *candidate) role() int {
-	return roleCandidate
+	return RoleCandidate
 }
 
 func (c *candidate) work() {

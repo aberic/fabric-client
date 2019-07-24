@@ -12,12 +12,13 @@
  * limitations under the License.
  */
 
-package raft
+package rafts
 
 import (
-	"github.com/ennoo/fabric-client/config"
-	"github.com/ennoo/rivet"
+	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"
+	str "github.com/ennoo/rivet/utils/string"
+	"strings"
 	"sync"
 	"time"
 )
@@ -61,71 +62,104 @@ type roleChange interface {
 }
 
 const (
-	roleLeader = iota
-	roleCandidate
-	roleFollower
+	RoleLeader = iota
+	RoleCandidate
+	RoleFollower
+)
+
+const (
+	K8S      = "K8S"          // K8S=true
+	BrokerID = "BROKER_ID"    // BROKER_ID=1
+	nodeAddr = "NODE_ADDRESS" // NODE_ADDRESS=example.com NODE_ADDRESS=127.0.0.1
+	// CLUSTER=1=127.0.0.1:19865:19877,2=127.0.0.2:19865:19877,3=127.0.0.3:19865:19877
+	cluster = "CLUSTER"
 )
 
 var (
 	// instance Raft 实例
 	instance *Raft
 	// once 确保Raft的启动方法只会被调用一次
-	once          sync.Once
-	logLevelLocal string
-	logPathLocal  string
-	selfLocal     *Node
-	nodesLocal    []*Node
+	once  sync.Once
+	self  *Node
+	nodes []*Node
 )
 
-func NewRaft(logLevel, logPath string, self *Node, nodes []*Node) {
+func init() {
+	// 仅测试用
+	//_ = os.Setenv(BrokerID, "4")
+	//_ = os.Setenv(nodeAddr, "127.0.0.1:19880")
+	//_ = os.Setenv(cluster, "1=127.0.0.1:19877,2=127.0.0.1:19878,3=127.0.0.1:19879,4=127.0.0.1:19880")
+
+	self = &Node{}
+	if k8s := env.GetEnvBool(K8S); k8s {
+		if self.Url = env.GetEnv("HOSTNAME"); str.IsEmpty(self.Url) {
+			log.Self.Info("raft k8s fail", log.String("addr", self.Url))
+			return
+		}
+		log.Self.Info("raft k8s", log.String("addr", self.Url))
+		self.Id = strings.Split(self.Url, "-")[1]
+		log.Self.Info("raft k8s", log.String("id", self.Id))
+	} else {
+		if self.Url = env.GetEnv(nodeAddr); str.IsEmpty(self.Url) {
+			return
+		}
+		if self.Id = env.GetEnv(BrokerID); str.IsEmpty(self.Id) {
+			log.Self.Error("raft", log.String("note", "broker id is not appoint"))
+			return
+		}
+	}
+	nodesStr := env.GetEnv(cluster)
+	if str.IsEmpty(nodesStr) {
+		nodes = make([]*Node, 0)
+	} else {
+		clusterArr := strings.Split(nodesStr, ",")
+		nodes = make([]*Node, 0)
+		for _, cluster := range clusterArr {
+			clusterSplit := strings.Split(cluster, "=")
+			id := clusterSplit[0]
+			if str.IsEmpty(id) {
+				log.Self.Error("raft", log.String("cluster", "broker id is nil"))
+				continue
+			}
+			if id == self.Id {
+				continue
+			}
+			nodeUrl := clusterSplit[1]
+			nodes = append(nodes, &Node{
+				Id:  id,
+				Url: nodeUrl,
+			})
+		}
+	}
+}
+
+func NewRaft() {
 	log.Self.Info("raft", log.String("new", "新建Raft"))
-	logLevelLocal = logLevel
-	logPathLocal = logPath
-	selfLocal = self
-	nodesLocal = nodes
 	_ = obtainRaft()
 }
 
 func obtainRaft() *Raft {
 	once.Do(func() {
 		instance = &Raft{}
-		instance.start(logLevelLocal, logPathLocal, selfLocal, nodesLocal)
+		instance.start()
 	})
 	return instance
 }
 
 // Start Raft启用方法
-func (r *Raft) start(logLevel, logPath string, self *Node, nodes []*Node) {
+func (r *Raft) start() {
 	r.once.Do(func() {
-		var (
-			level log.Level
-		)
-		rivet.Initialize(false, false, false, false)
-
-		switch logLevel {
-		case "debug":
-			level = log.DebugLevel
-		case "info":
-			level = log.InfoLevel
-		case "warn":
-			level = log.WarnLevel
-		case "error":
-			level = log.ErrorLevel
-		}
-		rivet.Log().Init(logPath, "raft", &log.Config{
-			Level:      level,
-			MaxSize:    128,
-			MaxBackups: 30,
-			MaxAge:     30,
-			Compress:   true,
-		}, false)
 		r.initRaft(self, nodes)
 	})
 }
 
 // initRaft Raft初始化
 func (r *Raft) initRaft(self *Node, nodes []*Node) {
-	log.Self.Info("raft", log.String("init", "初始化Raft"))
+	log.Self.Info("raft", log.String("initRaft", "初始化Raft"))
+	if nil == self || nil == nodes {
+		log.Self.Info("raft", log.String("initRaft", "未组网或参数配置有误，raft集群无法启动"))
+		return
+	}
 	r.term = 0
 	r.self = self
 	r.nodes = nodes
@@ -137,7 +171,6 @@ func (r *Raft) initRaft(self *Node, nodes []*Node) {
 			timestamp: time.Now().UnixNano(),
 		},
 		version: 0,
-		configs: make(map[string]*config.Config),
 	}
 	r.role = &follower{raft: r}
 	r.scheduled = &scheduled{
@@ -154,4 +187,21 @@ func (r *Raft) appendNode(node *Node) {
 func (r *Raft) release() {
 	r.scheduled.tickerEnd <- 1
 	r.scheduled.checkRelease <- 1
+}
+
+func Character() int {
+	return obtainRaft().role.role()
+}
+
+func LeaderURL() string {
+	for _, node := range obtainRaft().nodes {
+		if node.Id == obtainRaft().persistence.leaderID {
+			return node.Url
+		}
+	}
+	return ""
+}
+
+func VersionAdd() {
+	obtainRaft().persistence.version++
 }

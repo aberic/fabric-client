@@ -15,6 +15,10 @@
 
 package service
 
+import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+)
+
 type Order struct {
 	ConfigID              string `json:"configID"` // ConfigID 配置唯一ID
 	OrderName             string `json:"orderName"`
@@ -28,6 +32,21 @@ type Order struct {
 	AllowInsecure         bool   `json:"allowInsecure"`
 }
 
+func (o *Order) Trans2pb() *pb.ReqOrder {
+	return &pb.ReqOrder{
+		ConfigID:              o.ConfigID,
+		OrderName:             o.OrderName,
+		Url:                   o.URL,
+		SslTargetNameOverride: o.SSLTargetNameOverride,
+		KeepAliveTime:         o.KeepAliveTime,
+		KeepAliveTimeout:      o.KeepAliveTimeout,
+		TlsCACerts:            o.TLSCACerts,
+		KeepAlivePermit:       o.KeepAlivePermit,
+		FailFast:              o.FailFast,
+		AllowInsecure:         o.AllowInsecure,
+	}
+}
+
 type OrderSelf struct {
 	ConfigID         string `json:"configID"` // ConfigID 配置唯一ID
 	LeagueName       string `json:"leagueName"`
@@ -38,6 +57,19 @@ type OrderSelf struct {
 	KeepAlivePermit  bool   `json:"keepAlivePermit"`
 	FailFast         bool   `json:"failFast"`
 	AllowInsecure    bool   `json:"allowInsecure"`
+}
+
+func (o *OrderSelf) Trans2pb() *pb.ReqOrderSelf {
+	return &pb.ReqOrderSelf{
+		ConfigID:         o.ConfigID,
+		OrderName:        o.OrderName,
+		Url:              o.URL,
+		KeepAliveTime:    o.KeepAliveTime,
+		KeepAliveTimeout: o.KeepAliveTimeout,
+		KeepAlivePermit:  o.KeepAlivePermit,
+		FailFast:         o.FailFast,
+		AllowInsecure:    o.AllowInsecure,
+	}
 }
 
 type OrderConfig struct {

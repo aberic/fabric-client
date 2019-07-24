@@ -15,6 +15,10 @@
 
 package service
 
+import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+)
+
 type CertificateAuthority struct {
 	ConfigID                string `json:"configID"` // ConfigID 配置唯一ID
 	CertName                string `json:"certName"`
@@ -27,6 +31,20 @@ type CertificateAuthority struct {
 	EnrollSecret            string `json:"enrollSecret"`
 }
 
+func (c *CertificateAuthority) Trans2pb() *pb.ReqCertificateAuthority {
+	return &pb.ReqCertificateAuthority{
+		ConfigID:                c.ConfigID,
+		CertName:                c.CertName,
+		Url:                     c.URL,
+		TlsCACertPath:           c.TLSCACertPath,
+		TlsCACertClientKeyPath:  c.TLSCACertClientKeyPath,
+		TlsCACertClientCertPath: c.TLSCACertClientCertPath,
+		CaName:                  c.CAName,
+		EnrollId:                c.EnrollId,
+		EnrollSecret:            c.EnrollSecret,
+	}
+}
+
 type CertificateAuthoritySelf struct {
 	ConfigID     string `json:"configID"` // ConfigID 配置唯一ID
 	LeagueName   string `json:"leagueName"`
@@ -35,4 +53,16 @@ type CertificateAuthoritySelf struct {
 	CAName       string `json:"caName"`
 	EnrollId     string `json:"enrollId"`
 	EnrollSecret string `json:"enrollSecret"`
+}
+
+func (c *CertificateAuthoritySelf) Trans2pb() *pb.ReqCertificateAuthoritySelf {
+	return &pb.ReqCertificateAuthoritySelf{
+		ConfigID:     c.ConfigID,
+		LeagueName:   c.LeagueName,
+		CertName:     c.CertName,
+		Url:          c.URL,
+		CaName:       c.CAName,
+		EnrollId:     c.EnrollId,
+		EnrollSecret: c.EnrollSecret,
+	}
 }

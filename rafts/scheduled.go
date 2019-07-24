@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package raft
+package rafts
 
 import (
 	"github.com/ennoo/rivet/utils/log"
@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	timeout = 3000 // Raft心跳超时ms
+	timeout = 1500 // Raft心跳超时ms
 )
 
 type scheduled struct {
@@ -72,7 +72,7 @@ Loop:
 func (s *scheduled) task() {
 	s.checkCron.Stop()
 	err := s.checkCron.AddFunc(strings.Join([]string{"*/3 * * * * ?"}, ""), func() {
-		if s.raft.role.role() == roleFollower && time.Now().UnixNano()/1e6-s.time > timeout { // 如果自身是follower节点
+		if s.raft.role.role() == RoleFollower && time.Now().UnixNano()/1e6-s.time > timeout { // 如果自身是follower节点
 			log.Self.Debug("raft", log.Int32("Term", s.raft.term), log.String("task", "follower timeout"))
 			s.raft.role.candidate()
 		}
@@ -93,7 +93,7 @@ func (s *scheduled) tickerStart() {
 		for {
 			select {
 			case <-s.ticker.C:
-				if s.raft.role.role() == roleLeader { // 如果相等，则说明自身即为 Leader 节点
+				if s.raft.role.role() == RoleLeader { // 如果相等，则说明自身即为 Leader 节点
 					s.raft.role.work()
 				}
 			case <-s.tickerEnd:

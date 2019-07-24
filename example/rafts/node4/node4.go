@@ -29,25 +29,16 @@ import (
 )
 
 func main() {
-	// 仅测试用
-	//_ = os.Setenv(BrokerID, "1")
-	//_ = os.Setenv(nodeAddr, "127.0.0.1")
-	//_ = os.Setenv(cluster, "1=127.0.0.1:19865:19877,2=127.0.0.1:19866:19878,3=127.0.0.1:19867:19879,"+
-	//	"4=127.0.0.1:19868:19880,5=127.0.0.1:19869:19881,6=127.0.0.1:19870:19882,7=127.0.0.1:19871:19883")
-	pbRafts.NewRaft("debug", "./logs/node4", &pbRafts.Node{Id: "4", Url: "127.0.0.1:19880"}, []*pbRafts.Node{
-		{Id: "1", Url: "127.0.0.1:19877"},
-		{Id: "2", Url: "127.0.0.1:19878"},
-		{Id: "3", Url: "127.0.0.1:19879"},
-	})
+	pbRafts.NewRaft()
 
 	go httpListener()
 	grpcListener()
 }
 
 func httpListener() {
-	rivet.Initialize(false, false, false, true)
-	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs/node4"), "node1", &log.Config{
-		Level:      log.DebugLevel,
+	rivet.Initialize(false, false, false, false)
+	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs/node4"), "node4", &log.Config{
+		Level:      log.InfoLevel,
 		MaxSize:    128,
 		MaxBackups: 30,
 		MaxAge:     30,
@@ -83,7 +74,7 @@ func grpcListener() {
 	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
 	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
 	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
-	pbRafts.RegisterRaftServer(rpcServer, &pbRafts.RaftsServer{})
+	pbRafts.RegisterRaftServer(rpcServer, &pbRafts.Server{})
 
 	//  启动grpc服务
 	if err = rpcServer.Serve(listener); nil != err {

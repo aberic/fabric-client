@@ -15,6 +15,10 @@
 
 package service
 
+import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+)
+
 type ChannelPeer struct {
 	ConfigID       string `json:"configID"` // ConfigID 配置唯一ID
 	ChannelName    string `json:"channelName"`
@@ -23,6 +27,18 @@ type ChannelPeer struct {
 	ChainCodeQuery bool   `json:"chainCodeQuery"`
 	LedgerQuery    bool   `json:"ledgerQuery"`
 	EventSource    bool   `json:"eventSource"`
+}
+
+func (c *ChannelPeer) Trans2pb() *pb.ReqChannelPeer {
+	return &pb.ReqChannelPeer{
+		ConfigID:       c.ConfigID,
+		ChannelName:    c.ChannelName,
+		PeerName:       c.PeerName,
+		EndorsingPeer:  c.EndorsingPeer,
+		ChainCodeQuery: c.ChainCodeQuery,
+		LedgerQuery:    c.LedgerQuery,
+		EventSource:    c.EventSource,
+	}
 }
 
 type ChannelPolicyQuery struct {
@@ -36,6 +52,19 @@ type ChannelPolicyQuery struct {
 	BackOffFactor  float32 `json:"backOffFactor"`
 }
 
+func (c *ChannelPolicyQuery) Trans2pb() *pb.ReqChannelPolicyQuery {
+	return &pb.ReqChannelPolicyQuery{
+		ConfigID:       c.ConfigID,
+		ChannelName:    c.ChannelName,
+		InitialBackOff: c.InitialBackOff,
+		MaxBackOff:     c.MaxBackOff,
+		MinResponses:   c.MinResponses,
+		MaxTargets:     c.MaxTargets,
+		Attempts:       c.Attempts,
+		BackOffFactor:  c.BackOffFactor,
+	}
+}
+
 type ChannelPolicyDiscovery struct {
 	ConfigID       string `json:"configID"` // ConfigID 配置唯一ID
 	ChannelName    string
@@ -46,6 +75,18 @@ type ChannelPolicyDiscovery struct {
 	BackOffFactor  float32
 }
 
+func (c *ChannelPolicyDiscovery) Trans2pb() *pb.ReqChannelPolicyDiscovery {
+	return &pb.ReqChannelPolicyDiscovery{
+		ConfigID:       c.ConfigID,
+		ChannelName:    c.ChannelName,
+		InitialBackOff: c.InitialBackOff,
+		MaxBackOff:     c.MaxBackOff,
+		MaxTargets:     c.MaxTargets,
+		Attempts:       c.Attempts,
+		BackOffFactor:  c.BackOffFactor,
+	}
+}
+
 type ChannelPolicyEvent struct {
 	ConfigID                         string `json:"configID"` // ConfigID 配置唯一ID
 	ChannelName                      string `json:"channelName"`
@@ -54,6 +95,18 @@ type ChannelPolicyEvent struct {
 	PeerMonitorPeriod                string `json:"peerMonitorPeriod"`
 	BlockHeightLagThreshold          int64  `json:"blockHeightLagThreshold"`
 	ReconnectBlockHeightLagThreshold int64  `json:"reconnectBlockHeightLagThreshold"`
+}
+
+func (c *ChannelPolicyEvent) Trans2pb() *pb.ReqChannelPolicyEvent {
+	return &pb.ReqChannelPolicyEvent{
+		ConfigID:                         c.ConfigID,
+		ChannelName:                      c.ChannelName,
+		ResolverStrategy:                 c.ResolverStrategy,
+		Balance:                          c.Balance,
+		PeerMonitorPeriod:                c.PeerMonitorPeriod,
+		BlockHeightLagThreshold:          c.BlockHeightLagThreshold,
+		ReconnectBlockHeightLagThreshold: c.ReconnectBlockHeightLagThreshold,
+	}
 }
 
 type ChannelCreate struct {

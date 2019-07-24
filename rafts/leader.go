@@ -12,11 +12,12 @@
  * limitations under the License.
  */
 
-package raft
+package rafts
 
 import (
 	"context"
 	"github.com/ennoo/fabric-client/grpc/proto/utils"
+	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/panjf2000/ants"
 	"google.golang.org/grpc"
@@ -67,7 +68,7 @@ func (l *leader) release() {
 }
 
 func (l *leader) role() int {
-	return roleLeader
+	return RoleLeader
 }
 
 func (l *leader) work() {
@@ -111,7 +112,7 @@ func (l *leader) heartbeat(i interface{}) {
 
 // sendHeartBeats 遍历发送心跳
 func (l *leader) sendHeartbeats() {
-	configStr, err := yaml.Marshal(l.raft.persistence.configs)
+	configStr, err := yaml.Marshal(service.Configs)
 	if nil != err {
 		return
 	}

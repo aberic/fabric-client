@@ -15,6 +15,10 @@
 
 package service
 
+import (
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+)
+
 type Peer struct {
 	ConfigID              string `json:"configID"` // ConfigID 配置唯一ID
 	PeerName              string `json:"peerName"`
@@ -29,6 +33,22 @@ type Peer struct {
 	AllowInsecure         bool   `json:"allowInsecure"`
 }
 
+func (p *Peer) Trans2pb() *pb.ReqPeer {
+	return &pb.ReqPeer{
+		ConfigID:              p.ConfigID,
+		PeerName:              p.PeerName,
+		Url:                   p.URL,
+		EventUrl:              p.EventUrl,
+		SslTargetNameOverride: p.SSLTargetNameOverride,
+		KeepAliveTime:         p.KeepAliveTime,
+		KeepAliveTimeout:      p.KeepAliveTimeout,
+		TlsCACerts:            p.TLSCACerts,
+		KeepAlivePermit:       p.KeepAlivePermit,
+		FailFast:              p.FailFast,
+		AllowInsecure:         p.AllowInsecure,
+	}
+}
+
 type PeerSelf struct {
 	ConfigID         string `json:"configID"` // ConfigID 配置唯一ID
 	LeagueName       string `json:"leagueName"`
@@ -40,4 +60,19 @@ type PeerSelf struct {
 	KeepAlivePermit  bool   `json:"keepAlivePermit"`
 	FailFast         bool   `json:"failFast"`
 	AllowInsecure    bool   `json:"allowInsecure"`
+}
+
+func (p *PeerSelf) Trans2pb() *pb.ReqPeerSelf {
+	return &pb.ReqPeerSelf{
+		ConfigID:         p.ConfigID,
+		LeagueName:       p.LeagueName,
+		PeerName:         p.PeerName,
+		Url:              p.URL,
+		EventUrl:         p.EventUrl,
+		KeepAliveTime:    p.KeepAliveTime,
+		KeepAliveTimeout: p.KeepAliveTimeout,
+		KeepAlivePermit:  p.KeepAlivePermit,
+		FailFast:         p.FailFast,
+		AllowInsecure:    p.AllowInsecure,
+	}
 }

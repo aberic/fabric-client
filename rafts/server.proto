@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package raft;
+package rafts;
 
 // node 节点信息
 message node {
