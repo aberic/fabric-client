@@ -39,11 +39,11 @@ func GenerateYml(generate *pb.Generate) error {
 		cryptoGenYmlPath string
 		configTxYmlPath  string
 	)
-	if cryptoGenData, err = generateCryptoGenYml(generate.LedgerName, generate.OrderCount, generate.PeerCount,
+	if cryptoGenData, err = generateCryptoGenYml(generate.LedgerName, generate.OrderCount, generate.OrgCount,
 		generate.TemplateCount, generate.UserCount); nil != err {
 		goto ERR
 	}
-	if configTxData, err = generateConfigTXYml(generate.LedgerName, generate.OrderCount, generate.PeerCount, generate.BatchTimeout,
+	if configTxData, err = generateConfigTXYml(generate.LedgerName, generate.OrderCount, generate.OrgCount, generate.BatchTimeout,
 		generate.MaxMessageCount); nil != err {
 		goto ERR
 	}

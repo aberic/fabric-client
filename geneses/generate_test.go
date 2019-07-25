@@ -24,7 +24,7 @@ func TestGenerateYmlTrue(t *testing.T) {
 	if err := GenerateYml(&pb.Generate{
 		LedgerName:      "league",
 		OrderCount:      10,
-		PeerCount:       10,
+		OrgCount:        10,
 		TemplateCount:   10,
 		UserCount:       10,
 		BatchTimeout:    5,
@@ -41,7 +41,7 @@ func TestGenerateYmlFalse(t *testing.T) {
 	if err := GenerateYml(&pb.Generate{
 		LedgerName:      "league",
 		OrderCount:      10,
-		PeerCount:       10,
+		OrgCount:        10,
 		TemplateCount:   10,
 		UserCount:       10,
 		BatchTimeout:    5,
@@ -66,7 +66,7 @@ func TestGenerateYmlErrParamsExceptionConfig(t *testing.T) {
 	if err := GenerateYml(&pb.Generate{
 		LedgerName:    "league",
 		OrderCount:    10,
-		PeerCount:     10,
+		OrgCount:      10,
 		TemplateCount: 10,
 		UserCount:     10,
 		Force:         false,
@@ -78,7 +78,7 @@ func TestGenerateYmlErrParamsExceptionConfig(t *testing.T) {
 }
 
 func TestGenerateCryptoFilesTrue(t *testing.T) {
-	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: "league", Version: "1.4", Force: true}); nil != err {
+	if line, strs, err := GenerateCryptoFiles(&pb.Crypto{LedgerName: "league", Version: pb.Version_V14, Force: true}); nil != err {
 		t.Skip(err)
 	} else {
 		t.Log("line = ", line, " | strs = ", strs)
