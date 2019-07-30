@@ -16,24 +16,33 @@ package chains
 
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
+	"github.com/ennoo/rivet/utils/log"
+	"gopkg.in/yaml.v3"
 	"testing"
 )
 
 const (
 	rootPath    = "/data"
-	configID    = "test"
+	configID    = "7ac2ffedd58aa9219038386511b2b801"
 	channelName = "mychannel"
 	peerName    = "peer0"
 )
 
 func TestGetConfig(t *testing.T) {
-	t.Log(GetConfig("127.0.0.1:19879", &pb.ReqConfig{
+	i, err := GetConfig("localhost:19877", &pb.ReqConfig{
 		ConfigID: configID,
-	}))
+	})
+	t.Log(err)
+	t.Log(i)
+	configData, err := yaml.Marshal(i)
+	if err != nil {
+		t.Log("client", log.Error(err))
+	}
+	t.Log(string(configData))
 }
 
 func TestInitClient(t *testing.T) {
-	t.Log(InitClient("127.0.0.1:19878", &pb.ReqClient{
+	t.Log(InitClient("10.10.203.51:32262", &pb.ReqClient{
 		ConfigID:     configID,
 		Tls:          false,
 		Organization: "Org1",

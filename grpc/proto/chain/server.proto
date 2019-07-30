@@ -64,6 +64,8 @@ service Ledger {
 service LedgerConfig {
     rpc GetConfig (ReqConfig) returns (ResultConfig) {
     }
+    rpc InitConfig (ReqInit) returns (Result) {
+    }
     rpc InitClient (ReqClient) returns (Result) {
     }
     rpc InitClientSelf (ReqClientSelf) returns (Result) {

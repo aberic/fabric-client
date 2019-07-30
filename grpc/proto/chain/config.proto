@@ -252,9 +252,21 @@ message CertificateAuthorityRegistrar {
 }
 
 
-
 message ReqConfig {
     string configID = 1;
+}
+
+message ReqInit {
+    ReqClientSelf client = 1;
+    repeated ReqChannelPeer channelPeer = 2;
+    repeated ReqChannelPolicyQuery channelPolicyQuery = 3;
+    repeated ReqChannelPolicyDiscovery channelPolicyDiscovery = 4;
+    repeated ReqChannelPolicyEvent channelPolicyEvent = 5;
+    ReqOrganizationsOrderSelf organizationsOrder = 6;
+    ReqOrganizationsOrgSelf organizationsOrg = 7;
+    repeated ReqOrderSelf order = 8;
+    repeated ReqPeerSelf peer = 9;
+    repeated ReqCertificateAuthoritySelf certificateAuthority = 10;
 }
 
 message ReqClient {

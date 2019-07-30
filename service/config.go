@@ -17,6 +17,8 @@ package service
 
 import (
 	"github.com/ennoo/fabric-client/config"
+	configer "github.com/ennoo/fabric-client/config"
+	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
@@ -42,7 +44,47 @@ func GetBytes(configID string) []byte {
 	return confData
 }
 
-func InitClient(client *Client) error {
+func InitConfig(in *pb.ReqInit) error {
+	if nil == Configs[in.Client.ConfigID] {
+		Configs[in.Client.ConfigID] = &config.Config{}
+	}
+	_ = InitClientSelf(in.Client)
+	for _, peer := range in.ChannelPeer {
+		_ = AddOrSetPeerForChannel(peer)
+	}
+	for _, query := range in.ChannelPolicyQuery {
+		_ = AddOrSetQueryChannelPolicyForChannel(query)
+	}
+	for _, discovery := range in.ChannelPolicyDiscovery {
+		_ = AddOrSetDiscoveryPolicyForChannel(discovery)
+	}
+	for _, event := range in.ChannelPolicyEvent {
+		_ = AddOrSetEventServicePolicyForChannel(event)
+	}
+	_ = AddOrSetOrdererForOrganizationsSelf(in.OrganizationsOrder)
+	_ = AddOrSetOrgForOrganizationsSelf(in.OrganizationsOrg)
+	for _, order := range in.Order {
+		_ = AddOrSetOrdererSelf(order)
+	}
+	for _, peer := range in.Peer {
+		_ = AddOrSetPeerSelf(peer)
+	}
+	for _, cert := range in.CertificateAuthority {
+		_ = AddOrSetCertificateAuthoritySelf(cert)
+	}
+	return nil
+}
+
+func InitClient(in *pb.ReqClient) error {
+	client := &Client{
+		ConfigID:     in.ConfigID,
+		TlS:          in.Tls,
+		Organization: in.Organization,
+		Level:        in.Level,
+		CryptoConfig: in.CryptoConfig,
+		KeyPath:      in.KeyPath,
+		CertPath:     in.CertPath,
+	}
 	if nil == Configs[client.ConfigID] {
 		Configs[client.ConfigID] = &config.Config{}
 	}
@@ -50,7 +92,15 @@ func InitClient(client *Client) error {
 		client.KeyPath, client.CertPath)
 }
 
-func InitClientSelf(client *ClientSelf) error {
+func InitClientSelf(in *pb.ReqClientSelf) error {
+	client := &ClientSelf{
+		ConfigID:     in.ConfigID,
+		TlS:          in.Tls,
+		LeagueName:   in.LeagueName,
+		UserName:     in.UserName,
+		Organization: in.Organization,
+		Level:        in.Level,
+	}
 	if nil == Configs[client.ConfigID] {
 		Configs[client.ConfigID] = &config.Config{}
 	}
@@ -58,7 +108,65 @@ func InitClientSelf(client *ClientSelf) error {
 		client.Level)
 }
 
-func InitClientCustom(clientCustom *ClientCustom) error {
+func InitClientCustom(in *pb.ReqClientCustom) error {
+	clientCustom := &ClientCustom{
+		ConfigID: in.ConfigID,
+		Client: &Client{
+			ConfigID:     in.ConfigID,
+			TlS:          in.Client.Tls,
+			Organization: in.Client.Organization,
+			Level:        in.Client.Level,
+			CryptoConfig: in.Client.CryptoConfig,
+			KeyPath:      in.Client.KeyPath,
+			CertPath:     in.Client.CertPath,
+		},
+		Peer: &configer.ClientPeer{
+			Timeout: &configer.ClientPeerTimeout{
+				Connection: in.Peer.Timeout.Connection,
+				Response:   in.Peer.Timeout.Response,
+				Discovery: &configer.ClientPeerTimeoutDiscovery{
+					GreyListExpiry: in.Peer.Timeout.Discovery.GreyListExpiry,
+				},
+			},
+		},
+		EventService: &configer.ClientEventService{
+			Timeout: &configer.ClientEventServiceTimeout{
+				RegistrationResponse: in.EventService.Timeout.RegistrationResponse,
+			},
+		},
+		Order: &configer.ClientOrder{
+			Timeout: &configer.ClientOrderTimeout{
+				Connection: in.Order.Timeout.Connection,
+				Response:   in.Order.Timeout.Response,
+			},
+		},
+		Global: &configer.ClientGlobal{
+			Timeout: &configer.ClientGlobalTimeout{
+				Query:   in.Global.Timeout.Query,
+				Execute: in.Global.Timeout.Execute,
+				Resmgmt: in.Global.Timeout.Resmgmt,
+			},
+			Cache: &configer.ClientGlobalCache{
+				ConnectionIdle:    in.Global.Cache.ConnectionIdle,
+				EventServiceIdle:  in.Global.Cache.EventServiceIdle,
+				ChannelMembership: in.Global.Cache.ChannelMembership,
+				ChannelConfig:     in.Global.Cache.ChannelConfig,
+				Discovery:         in.Global.Cache.Discovery,
+				Selection:         in.Global.Cache.Selection,
+			},
+		},
+		BCCSP: &configer.ClientBCCSP{
+			Security: &configer.ClientBCCSPSecurity{
+				Enabled: in.BCCSP.Security.Enabled,
+				Default: &configer.ClientBCCSPSecurityDefault{
+					Provider: in.BCCSP.Security.Default.Provider,
+				},
+				HashAlgorithm: in.BCCSP.Security.HashAlgorithm,
+				SoftVerify:    in.BCCSP.Security.SoftVerify,
+				Level:         in.BCCSP.Security.Level,
+			},
+		},
+	}
 	if nil == Configs[clientCustom.ConfigID] {
 		Configs[clientCustom.ConfigID] = &config.Config{}
 	}
@@ -68,7 +176,16 @@ func InitClientCustom(clientCustom *ClientCustom) error {
 		clientCustom.Global, clientCustom.BCCSP)
 }
 
-func AddOrSetPeerForChannel(channelPeer *ChannelPeer) error {
+func AddOrSetPeerForChannel(in *pb.ReqChannelPeer) error {
+	channelPeer := &ChannelPeer{
+		ConfigID:       in.ConfigID,
+		ChannelName:    in.ChannelName,
+		PeerName:       in.PeerName,
+		EndorsingPeer:  in.EndorsingPeer,
+		ChainCodeQuery: in.ChainCodeQuery,
+		LedgerQuery:    in.LedgerQuery,
+		EventSource:    in.EventSource,
+	}
 	if nil == Configs[channelPeer.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -77,7 +194,17 @@ func AddOrSetPeerForChannel(channelPeer *ChannelPeer) error {
 	return nil
 }
 
-func AddOrSetQueryChannelPolicyForChannel(query *ChannelPolicyQuery) error {
+func AddOrSetQueryChannelPolicyForChannel(in *pb.ReqChannelPolicyQuery) error {
+	query := &ChannelPolicyQuery{
+		ConfigID:       in.ConfigID,
+		ChannelName:    in.ChannelName,
+		InitialBackOff: in.InitialBackOff,
+		MaxBackOff:     in.MaxBackOff,
+		MaxTargets:     in.MaxTargets,
+		MinResponses:   in.MinResponses,
+		Attempts:       in.Attempts,
+		BackOffFactor:  in.BackOffFactor,
+	}
 	if nil == Configs[query.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -86,7 +213,16 @@ func AddOrSetQueryChannelPolicyForChannel(query *ChannelPolicyQuery) error {
 	return nil
 }
 
-func AddOrSetDiscoveryPolicyForChannel(discovery *ChannelPolicyDiscovery) error {
+func AddOrSetDiscoveryPolicyForChannel(in *pb.ReqChannelPolicyDiscovery) error {
+	discovery := &ChannelPolicyDiscovery{
+		ConfigID:       in.ConfigID,
+		ChannelName:    in.ChannelName,
+		InitialBackOff: in.InitialBackOff,
+		MaxBackOff:     in.MaxBackOff,
+		MaxTargets:     in.MaxTargets,
+		Attempts:       in.Attempts,
+		BackOffFactor:  in.BackOffFactor,
+	}
 	if nil == Configs[discovery.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -95,7 +231,16 @@ func AddOrSetDiscoveryPolicyForChannel(discovery *ChannelPolicyDiscovery) error 
 	return nil
 }
 
-func AddOrSetEventServicePolicyForChannel(event *ChannelPolicyEvent) error {
+func AddOrSetEventServicePolicyForChannel(in *pb.ReqChannelPolicyEvent) error {
+	event := &ChannelPolicyEvent{
+		ConfigID:                         in.ConfigID,
+		ChannelName:                      in.ChannelName,
+		ReconnectBlockHeightLagThreshold: in.ReconnectBlockHeightLagThreshold,
+		ResolverStrategy:                 in.ResolverStrategy,
+		BlockHeightLagThreshold:          in.BlockHeightLagThreshold,
+		Balance:                          in.Balance,
+		PeerMonitorPeriod:                in.PeerMonitorPeriod,
+	}
 	if nil == Configs[event.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -104,7 +249,13 @@ func AddOrSetEventServicePolicyForChannel(event *ChannelPolicyEvent) error {
 	return nil
 }
 
-func AddOrSetOrdererForOrganizations(order *OrganizationsOrder) error {
+func AddOrSetOrdererForOrganizations(in *pb.ReqOrganizationsOrder) error {
+	order := &OrganizationsOrder{
+		ConfigID:   in.ConfigID,
+		MspID:      in.MspID,
+		CryptoPath: in.CryptoPath,
+		Users:      in.Users,
+	}
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -112,7 +263,11 @@ func AddOrSetOrdererForOrganizations(order *OrganizationsOrder) error {
 	return nil
 }
 
-func AddOrSetOrdererForOrganizationsSelf(order *OrganizationsOrderSelf) error {
+func AddOrSetOrdererForOrganizationsSelf(in *pb.ReqOrganizationsOrderSelf) error {
+	order := &OrganizationsOrderSelf{
+		ConfigID:   in.ConfigID,
+		LeagueName: in.LeagueName,
+	}
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -120,7 +275,16 @@ func AddOrSetOrdererForOrganizationsSelf(order *OrganizationsOrderSelf) error {
 	return nil
 }
 
-func AddOrSetOrgForOrganizations(org *OrganizationsOrg) error {
+func AddOrSetOrgForOrganizations(in *pb.ReqOrganizationsOrg) error {
+	org := &OrganizationsOrg{
+		ConfigID:               in.ConfigID,
+		MspID:                  in.MspID,
+		CryptoPath:             in.CryptoPath,
+		OrgName:                in.OrgName,
+		Users:                  in.Users,
+		Peers:                  in.Peers,
+		CertificateAuthorities: in.CertificateAuthorities,
+	}
 	if nil == Configs[org.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -129,7 +293,13 @@ func AddOrSetOrgForOrganizations(org *OrganizationsOrg) error {
 	return nil
 }
 
-func AddOrSetOrgForOrganizationsSelf(org *OrganizationsOrgSelf) error {
+func AddOrSetOrgForOrganizationsSelf(in *pb.ReqOrganizationsOrgSelf) error {
+	org := &OrganizationsOrgSelf{
+		ConfigID:               in.ConfigID,
+		LeagueName:             in.LeagueName,
+		Peers:                  in.Peers,
+		CertificateAuthorities: in.CertificateAuthorities,
+	}
 	if nil == Configs[org.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -137,7 +307,19 @@ func AddOrSetOrgForOrganizationsSelf(org *OrganizationsOrgSelf) error {
 	return nil
 }
 
-func AddOrSetOrderer(order *Order) error {
+func AddOrSetOrderer(in *pb.ReqOrder) error {
+	order := &Order{
+		ConfigID:              in.ConfigID,
+		OrderName:             in.OrderName,
+		URL:                   in.Url,
+		TLSCACerts:            in.TlsCACerts,
+		SSLTargetNameOverride: in.SslTargetNameOverride,
+		KeepAliveTime:         in.KeepAliveTime,
+		KeepAliveTimeout:      in.KeepAliveTimeout,
+		KeepAlivePermit:       in.KeepAlivePermit,
+		FailFast:              in.FailFast,
+		AllowInsecure:         in.AllowInsecure,
+	}
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -146,7 +328,18 @@ func AddOrSetOrderer(order *Order) error {
 	return nil
 }
 
-func AddOrSetOrdererSelf(order *OrderSelf) error {
+func AddOrSetOrdererSelf(in *pb.ReqOrderSelf) error {
+	order := &OrderSelf{
+		ConfigID:         in.ConfigID,
+		OrderName:        in.OrderName,
+		URL:              in.Url,
+		LeagueName:       in.LeagueName,
+		KeepAliveTime:    in.KeepAliveTime,
+		KeepAliveTimeout: in.KeepAliveTimeout,
+		KeepAlivePermit:  in.KeepAlivePermit,
+		FailFast:         in.FailFast,
+		AllowInsecure:    in.AllowInsecure,
+	}
 	if nil == Configs[order.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -155,26 +348,62 @@ func AddOrSetOrdererSelf(order *OrderSelf) error {
 	return nil
 }
 
-func AddOrSetPeer(peer *Peer) error {
-	if nil == Configs[peer.ConfigID] {
+func AddOrSetPeer(in *pb.ReqPeer) error {
+	peerUU := &Peer{
+		ConfigID:              in.ConfigID,
+		PeerName:              in.PeerName,
+		URL:                   in.Url,
+		EventUrl:              in.EventUrl,
+		TLSCACerts:            in.TlsCACerts,
+		SSLTargetNameOverride: in.SslTargetNameOverride,
+		KeepAliveTime:         in.KeepAliveTime,
+		KeepAliveTimeout:      in.KeepAliveTimeout,
+		KeepAlivePermit:       in.KeepAlivePermit,
+		FailFast:              in.FailFast,
+		AllowInsecure:         in.AllowInsecure,
+	}
+	if nil == Configs[peerUU.ConfigID] {
 		return errors.New("config client is not init")
 	}
-	Configs[peer.ConfigID].AddOrSetPeer(peer.PeerName, peer.URL, peer.EventUrl, peer.SSLTargetNameOverride,
-		peer.KeepAliveTime, peer.KeepAliveTimeout, peer.TLSCACerts, peer.KeepAlivePermit, peer.FailFast,
-		peer.AllowInsecure)
+	Configs[peerUU.ConfigID].AddOrSetPeer(peerUU.PeerName, peerUU.URL, peerUU.EventUrl, peerUU.SSLTargetNameOverride,
+		peerUU.KeepAliveTime, peerUU.KeepAliveTimeout, peerUU.TLSCACerts, peerUU.KeepAlivePermit, peerUU.FailFast,
+		peerUU.AllowInsecure)
 	return nil
 }
 
-func AddOrSetPeerSelf(peer *PeerSelf) error {
-	if nil == Configs[peer.ConfigID] {
+func AddOrSetPeerSelf(in *pb.ReqPeerSelf) error {
+	peerSelf := &PeerSelf{
+		ConfigID:         in.ConfigID,
+		PeerName:         in.PeerName,
+		URL:              in.Url,
+		EventUrl:         in.EventUrl,
+		LeagueName:       in.LeagueName,
+		KeepAliveTime:    in.KeepAliveTime,
+		KeepAliveTimeout: in.KeepAliveTimeout,
+		KeepAlivePermit:  in.KeepAlivePermit,
+		FailFast:         in.FailFast,
+		AllowInsecure:    in.AllowInsecure,
+	}
+	if nil == Configs[peerSelf.ConfigID] {
 		return errors.New("config client is not init")
 	}
-	Configs[peer.ConfigID].AddOrSetSelfPeer(peer.LeagueName, peer.PeerName, peer.URL, peer.EventUrl, peer.KeepAliveTime,
-		peer.KeepAliveTimeout, peer.KeepAlivePermit, peer.FailFast, peer.AllowInsecure)
+	Configs[peerSelf.ConfigID].AddOrSetSelfPeer(peerSelf.LeagueName, peerSelf.PeerName, peerSelf.URL, peerSelf.EventUrl, peerSelf.KeepAliveTime,
+		peerSelf.KeepAliveTimeout, peerSelf.KeepAlivePermit, peerSelf.FailFast, peerSelf.AllowInsecure)
 	return nil
 }
 
-func AddOrSetCertificateAuthority(certificateAuthority *CertificateAuthority) error {
+func AddOrSetCertificateAuthority(in *pb.ReqCertificateAuthority) error {
+	certificateAuthority := &CertificateAuthority{
+		ConfigID:                in.ConfigID,
+		CertName:                in.CertName,
+		URL:                     in.Url,
+		TLSCACertPath:           in.TlsCACertPath,
+		TLSCACertClientKeyPath:  in.TlsCACertClientKeyPath,
+		TLSCACertClientCertPath: in.TlsCACertClientCertPath,
+		CAName:                  in.CaName,
+		EnrollId:                in.EnrollId,
+		EnrollSecret:            in.EnrollSecret,
+	}
 	if nil == Configs[certificateAuthority.ConfigID] {
 		return errors.New("config client is not init")
 	}
@@ -185,7 +414,16 @@ func AddOrSetCertificateAuthority(certificateAuthority *CertificateAuthority) er
 	return nil
 }
 
-func AddOrSetCertificateAuthoritySelf(certificateAuthority *CertificateAuthoritySelf) error {
+func AddOrSetCertificateAuthoritySelf(in *pb.ReqCertificateAuthoritySelf) error {
+	certificateAuthority := &CertificateAuthoritySelf{
+		ConfigID:     in.ConfigID,
+		CertName:     in.CertName,
+		URL:          in.Url,
+		LeagueName:   in.LeagueName,
+		CAName:       in.CaName,
+		EnrollId:     in.EnrollId,
+		EnrollSecret: in.EnrollSecret,
+	}
 	if nil == Configs[certificateAuthority.ConfigID] {
 		return errors.New("config client is not init")
 	}

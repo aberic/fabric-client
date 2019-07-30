@@ -18,6 +18,7 @@ import (
 	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"
 	str "github.com/ennoo/rivet/utils/string"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -86,9 +87,9 @@ var (
 
 func init() {
 	// 仅测试用
-	//_ = os.Setenv(BrokerID, "4")
-	//_ = os.Setenv(nodeAddr, "127.0.0.1:19880")
-	//_ = os.Setenv(cluster, "1=127.0.0.1:19877,2=127.0.0.1:19878,3=127.0.0.1:19879,4=127.0.0.1:19880")
+	_ = os.Setenv(BrokerID, "1")
+	_ = os.Setenv(nodeAddr, "127.0.0.1:19880")
+	_ = os.Setenv(cluster, "1=127.0.0.1:19877,2=127.0.0.1:19878,3=127.0.0.1:19879")
 
 	self = &Node{}
 	if k8s := env.GetEnvBool(K8S); k8s {

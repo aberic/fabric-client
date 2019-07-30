@@ -20,7 +20,6 @@ import (
 	"github.com/ennoo/fabric-client/grpc/server/chains"
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
 	pbRafts "github.com/ennoo/fabric-client/rafts"
-	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"
@@ -28,14 +27,7 @@ import (
 	"net"
 )
 
-func main() {
-	go pbRafts.NewRaft()
-
-	go httpListener()
-	grpcListener()
-}
-
-func httpListener() {
+func init() {
 	rivet.Initialize(false, false, false, false)
 	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs/node1"), "node1", &log.Config{
 		Level:      log.InfoLevel,
@@ -44,16 +36,11 @@ func httpListener() {
 		MaxAge:     30,
 		Compress:   true,
 	}, false)
-	rivet.ListenAndServe(&rivet.ListenServe{
-		Engine: rivet.SetupRouter(
-			route.Config,
-			route.Channel,
-			route.Order,
-			route.ChainCode,
-			route.Ledger,
-		),
-		DefaultPort: "19865",
-	})
+}
+
+func main() {
+	go pbRafts.NewRaft()
+	grpcListener()
 }
 
 func grpcListener() {

@@ -21,7 +21,6 @@ import (
 	"github.com/ennoo/fabric-client/grpc/server/chains"
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
 	"github.com/ennoo/fabric-client/rafts"
-	"github.com/ennoo/fabric-client/route"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"
@@ -39,7 +38,6 @@ func main() {
 		log.Self.Info("raft k8s")
 		rafts.NewRaft()
 	}
-	go httpListener()
 	grpcListener()
 }
 
@@ -69,19 +67,6 @@ func init() {
 		MaxAge:     30,
 		Compress:   true,
 	}, false)
-}
-
-func httpListener() {
-	rivet.ListenAndServe(&rivet.ListenServe{
-		Engine: rivet.SetupRouter(
-			route.Config,
-			route.Channel,
-			route.Order,
-			route.ChainCode,
-			route.Ledger,
-		),
-		DefaultPort: "19865",
-	})
 }
 
 func grpcListener() {

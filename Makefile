@@ -1,8 +1,21 @@
 PKGS_WITH_OUT_EXAMPLES := $(shell go list ./... | grep -v 'examples/')
 PKGS_WITH_OUT_EXAMPLES_AND_UTILS := $(shell go list ./... | grep -v 'examples/\|utils/')
 GO_FILES := $(shell find . -name "*.go" -not -path "./vendor/*" -not -path ".git/*" -print0 | xargs -0)
+BASE_VERSION1 = 1.4
+BASEIMAGE_RELEASE=0.4.14
 
 checkLocal: vet misspell cyclo const
+
+checkTest: images
+
+images:
+	@echo "docker pull images"
+	docker pull hyperledger/fabric-zookeeper:$(BASEIMAGE_RELEASE)
+	docker pull hyperledger/fabric-kafka:$(BASEIMAGE_RELEASE)
+	docker pull hyperledger/fabric-baseos:$(BASEIMAGE_RELEASE)
+    docker pull hyperledger/fabric-orderer:$(BASE_VERSION)
+    docker pull hyperledger/fabric-peer:$(BASE_VERSION)
+    docker pull hyperledger/fabric-ccenv:$(BASE_VERSION)
 
 overalls:
 	@echo "overalls"

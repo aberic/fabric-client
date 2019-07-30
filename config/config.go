@@ -190,9 +190,9 @@ func (c *Config) AddOrSetOrderer(ordererName, url, sslTargetNameOverride, keepAl
 // url grpc://10.10.203.51:30054
 func (c *Config) AddOrSetSelfOrderer(leagueName, ordererName, url, keepAliveTime, keepAliveTimeout string,
 	keepAlivePermit, failFast, allowInsecure bool) {
-	c.initOrderers(ordererName)
 	orderTargetName := strings.Join([]string{ordererName, leagueName}, ".")
 	orderName := strings.Join([]string{orderTargetName, "7050"}, ":")
+	c.initOrderers(orderName)
 	tlsCACerts := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
 		"/ordererOrganizations/", leagueName, "/tlsca/tlsca.", leagueName, "-cert.pem"}, "")

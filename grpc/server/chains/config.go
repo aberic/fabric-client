@@ -16,7 +16,6 @@ package chains
 
 import (
 	"errors"
-	configer "github.com/ennoo/fabric-client/config"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/fabric-client/grpc/proto/utils"
 	"github.com/ennoo/fabric-client/rafts"
@@ -44,19 +43,30 @@ func (c *ConfigServer) GetConfig(ctx context.Context, in *pb.ReqConfig) (*pb.Res
 	}
 }
 
+func (c *ConfigServer) InitConfig(ctx context.Context, in *pb.ReqInit) (*pb.Result, error) {
+	if i, err := c.proxy(
+		true,
+		func() (i interface{}, e error) {
+			defer ctx.Done()
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitConfig(in)
+			return pbStr, err
+		},
+		func() (i interface{}, e error) {
+			pbStr, err := InitConfig(rafts.LeaderURL(), in)
+			return pbStr.(*pb.Result), err
+		},
+	); nil != err {
+		return nil, err
+	} else {
+		return i.(*pb.Result), nil
+	}
+}
+
 func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClient(&service.Client{
-				ConfigID:     in.ConfigID,
-				TlS:          in.Tls,
-				Organization: in.Organization,
-				Level:        in.Level,
-				CryptoConfig: in.CryptoConfig,
-				KeyPath:      in.KeyPath,
-				CertPath:     in.CertPath,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClient(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -74,14 +84,7 @@ func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf)
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientSelf(&service.ClientSelf{
-				ConfigID:     in.ConfigID,
-				TlS:          in.Tls,
-				LeagueName:   in.LeagueName,
-				UserName:     in.UserName,
-				Organization: in.Organization,
-				Level:        in.Level,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientSelf(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -99,64 +102,7 @@ func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCus
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientCustom(&service.ClientCustom{
-				ConfigID: in.ConfigID,
-				Client: &service.Client{
-					ConfigID:     in.ConfigID,
-					TlS:          in.Client.Tls,
-					Organization: in.Client.Organization,
-					Level:        in.Client.Level,
-					CryptoConfig: in.Client.CryptoConfig,
-					KeyPath:      in.Client.KeyPath,
-					CertPath:     in.Client.CertPath,
-				},
-				Peer: &configer.ClientPeer{
-					Timeout: &configer.ClientPeerTimeout{
-						Connection: in.Peer.Timeout.Connection,
-						Response:   in.Peer.Timeout.Response,
-						Discovery: &configer.ClientPeerTimeoutDiscovery{
-							GreyListExpiry: in.Peer.Timeout.Discovery.GreyListExpiry,
-						},
-					},
-				},
-				EventService: &configer.ClientEventService{
-					Timeout: &configer.ClientEventServiceTimeout{
-						RegistrationResponse: in.EventService.Timeout.RegistrationResponse,
-					},
-				},
-				Order: &configer.ClientOrder{
-					Timeout: &configer.ClientOrderTimeout{
-						Connection: in.Order.Timeout.Connection,
-						Response:   in.Order.Timeout.Response,
-					},
-				},
-				Global: &configer.ClientGlobal{
-					Timeout: &configer.ClientGlobalTimeout{
-						Query:   in.Global.Timeout.Query,
-						Execute: in.Global.Timeout.Execute,
-						Resmgmt: in.Global.Timeout.Resmgmt,
-					},
-					Cache: &configer.ClientGlobalCache{
-						ConnectionIdle:    in.Global.Cache.ConnectionIdle,
-						EventServiceIdle:  in.Global.Cache.EventServiceIdle,
-						ChannelMembership: in.Global.Cache.ChannelMembership,
-						ChannelConfig:     in.Global.Cache.ChannelConfig,
-						Discovery:         in.Global.Cache.Discovery,
-						Selection:         in.Global.Cache.Selection,
-					},
-				},
-				BCCSP: &configer.ClientBCCSP{
-					Security: &configer.ClientBCCSPSecurity{
-						Enabled: in.BCCSP.Security.Enabled,
-						Default: &configer.ClientBCCSPSecurityDefault{
-							Provider: in.BCCSP.Security.Default.Provider,
-						},
-						HashAlgorithm: in.BCCSP.Security.HashAlgorithm,
-						SoftVerify:    in.BCCSP.Security.SoftVerify,
-						Level:         in.BCCSP.Security.Level,
-					},
-				},
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientCustom(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -174,15 +120,7 @@ func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqCha
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerForChannel(&service.ChannelPeer{
-				ConfigID:       in.ConfigID,
-				ChannelName:    in.ChannelName,
-				PeerName:       in.PeerName,
-				EndorsingPeer:  in.EndorsingPeer,
-				ChainCodeQuery: in.ChainCodeQuery,
-				LedgerQuery:    in.LedgerQuery,
-				EventSource:    in.EventSource,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerForChannel(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -200,16 +138,7 @@ func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context,
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetQueryChannelPolicyForChannel(&service.ChannelPolicyQuery{
-				ConfigID:       in.ConfigID,
-				ChannelName:    in.ChannelName,
-				InitialBackOff: in.InitialBackOff,
-				MaxBackOff:     in.MaxBackOff,
-				MaxTargets:     in.MaxTargets,
-				MinResponses:   in.MinResponses,
-				Attempts:       in.Attempts,
-				BackOffFactor:  in.BackOffFactor,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetQueryChannelPolicyForChannel(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -227,15 +156,7 @@ func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetDiscoveryPolicyForChannel(&service.ChannelPolicyDiscovery{
-				ConfigID:       in.ConfigID,
-				ChannelName:    in.ChannelName,
-				InitialBackOff: in.InitialBackOff,
-				MaxBackOff:     in.MaxBackOff,
-				MaxTargets:     in.MaxTargets,
-				Attempts:       in.Attempts,
-				BackOffFactor:  in.BackOffFactor,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetDiscoveryPolicyForChannel(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -253,15 +174,7 @@ func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context,
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetEventServicePolicyForChannel(&service.ChannelPolicyEvent{
-				ConfigID:                         in.ConfigID,
-				ChannelName:                      in.ChannelName,
-				ReconnectBlockHeightLagThreshold: in.ReconnectBlockHeightLagThreshold,
-				ResolverStrategy:                 in.ResolverStrategy,
-				BlockHeightLagThreshold:          in.BlockHeightLagThreshold,
-				Balance:                          in.Balance,
-				PeerMonitorPeriod:                in.PeerMonitorPeriod,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetEventServicePolicyForChannel(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -279,12 +192,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizations(&service.OrganizationsOrder{
-				ConfigID:   in.ConfigID,
-				MspID:      in.MspID,
-				CryptoPath: in.CryptoPath,
-				Users:      in.Users,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizations(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -302,10 +210,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, 
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(&service.OrganizationsOrderSelf{
-				ConfigID:   in.ConfigID,
-				LeagueName: in.LeagueName,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -323,15 +228,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.R
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizations(&service.OrganizationsOrg{
-				ConfigID:               in.ConfigID,
-				MspID:                  in.MspID,
-				CryptoPath:             in.CryptoPath,
-				OrgName:                in.OrgName,
-				Users:                  in.Users,
-				Peers:                  in.Peers,
-				CertificateAuthorities: in.CertificateAuthorities,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizations(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -349,12 +246,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(&service.OrganizationsOrgSelf{
-				ConfigID:               in.ConfigID,
-				LeagueName:             in.LeagueName,
-				Peers:                  in.Peers,
-				CertificateAuthorities: in.CertificateAuthorities,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -372,18 +264,7 @@ func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*p
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrderer(&service.Order{
-				ConfigID:              in.ConfigID,
-				OrderName:             in.OrderName,
-				URL:                   in.Url,
-				TLSCACerts:            in.TlsCACerts,
-				SSLTargetNameOverride: in.SslTargetNameOverride,
-				KeepAliveTime:         in.KeepAliveTime,
-				KeepAliveTimeout:      in.KeepAliveTimeout,
-				KeepAlivePermit:       in.KeepAlivePermit,
-				FailFast:              in.FailFast,
-				AllowInsecure:         in.AllowInsecure,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrderer(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -401,17 +282,7 @@ func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderS
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererSelf(&service.OrderSelf{
-				ConfigID:         in.ConfigID,
-				OrderName:        in.OrderName,
-				URL:              in.Url,
-				LeagueName:       in.LeagueName,
-				KeepAliveTime:    in.KeepAliveTime,
-				KeepAliveTimeout: in.KeepAliveTimeout,
-				KeepAlivePermit:  in.KeepAlivePermit,
-				FailFast:         in.FailFast,
-				AllowInsecure:    in.AllowInsecure,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererSelf(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -429,19 +300,7 @@ func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.Re
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeer(&service.Peer{
-				ConfigID:              in.ConfigID,
-				PeerName:              in.PeerName,
-				URL:                   in.Url,
-				EventUrl:              in.EventUrl,
-				TLSCACerts:            in.TlsCACerts,
-				SSLTargetNameOverride: in.SslTargetNameOverride,
-				KeepAliveTime:         in.KeepAliveTime,
-				KeepAliveTimeout:      in.KeepAliveTimeout,
-				KeepAlivePermit:       in.KeepAlivePermit,
-				FailFast:              in.FailFast,
-				AllowInsecure:         in.AllowInsecure,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeer(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -459,18 +318,7 @@ func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf)
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerSelf(&service.PeerSelf{
-				ConfigID:         in.ConfigID,
-				PeerName:         in.PeerName,
-				URL:              in.Url,
-				EventUrl:         in.EventUrl,
-				LeagueName:       in.LeagueName,
-				KeepAliveTime:    in.KeepAliveTime,
-				KeepAliveTimeout: in.KeepAliveTimeout,
-				KeepAlivePermit:  in.KeepAlivePermit,
-				FailFast:         in.FailFast,
-				AllowInsecure:    in.AllowInsecure,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerSelf(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -488,17 +336,7 @@ func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthority(&service.CertificateAuthority{
-				ConfigID:                in.ConfigID,
-				CertName:                in.CertName,
-				URL:                     in.Url,
-				TLSCACertPath:           in.TlsCACertPath,
-				TLSCACertClientKeyPath:  in.TlsCACertClientKeyPath,
-				TLSCACertClientCertPath: in.TlsCACertClientCertPath,
-				CAName:                  in.CaName,
-				EnrollId:                in.EnrollId,
-				EnrollSecret:            in.EnrollSecret,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthority(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -516,15 +354,7 @@ func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in 
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthoritySelf(&service.CertificateAuthoritySelf{
-				ConfigID:     in.ConfigID,
-				CertName:     in.CertName,
-				URL:          in.Url,
-				LeagueName:   in.LeagueName,
-				CAName:       in.CaName,
-				EnrollId:     in.EnrollId,
-				EnrollSecret: in.EnrollSecret,
-			})
+			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthoritySelf(in)
 			return pbStr, err
 		},
 		func() (i interface{}, e error) {
@@ -549,6 +379,23 @@ func GetConfig(url string, req *pb.ReqConfig) (interface{}, error) {
 		c := pb.NewLedgerConfigClient(conn)
 		// 客户端向grpc服务端发起请求
 		if result, err = c.GetConfig(context.Background(), req); nil != err {
+			return nil, err
+		}
+		return result, nil
+	})
+}
+
+// InitConfig 初始化区块链配置信息
+func InitConfig(url string, req *pb.ReqInit) (interface{}, error) {
+	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+		var (
+			result *pb.Result
+			err    error
+		)
+		// 创建grpc客户端
+		c := pb.NewLedgerConfigClient(conn)
+		// 客户端向grpc服务端发起请求
+		if result, err = c.InitConfig(context.Background(), req); nil != err {
 			return nil, err
 		}
 		return result, nil
