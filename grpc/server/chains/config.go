@@ -47,12 +47,14 @@ func (c *ConfigServer) InitConfig(ctx context.Context, in *pb.ReqInit) (*pb.Resu
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitConfig(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitConfig(in)
 		},
 		func() (i interface{}, e error) {
-			pbStr, err := InitConfig(rafts.LeaderURL(), in)
-			return pbStr.(*pb.Result), err
+			if pbStr, err := InitConfig(rafts.LeaderURL(), in); nil != err {
+				return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
+			} else {
+				return pbStr.(*pb.Result), nil
+			}
 		},
 	); nil != err {
 		return nil, err
@@ -65,8 +67,7 @@ func (c *ConfigServer) InitClient(ctx context.Context, in *pb.ReqClient) (*pb.Re
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClient(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClient(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := InitClient(rafts.LeaderURL(), in)
@@ -83,8 +84,7 @@ func (c *ConfigServer) InitClientSelf(ctx context.Context, in *pb.ReqClientSelf)
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientSelf(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientSelf(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := InitClientSelf(rafts.LeaderURL(), in)
@@ -101,8 +101,7 @@ func (c *ConfigServer) InitClientCustom(ctx context.Context, in *pb.ReqClientCus
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientCustom(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitClientCustom(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := InitClientCustom(rafts.LeaderURL(), in)
@@ -119,8 +118,7 @@ func (c *ConfigServer) AddOrSetPeerForChannel(ctx context.Context, in *pb.ReqCha
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerForChannel(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerForChannel(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetPeerForChannel(rafts.LeaderURL(), in)
@@ -137,8 +135,7 @@ func (c *ConfigServer) AddOrSetQueryChannelPolicyForChannel(ctx context.Context,
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetQueryChannelPolicyForChannel(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetQueryChannelPolicyForChannel(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetQueryChannelPolicyForChannel(rafts.LeaderURL(), in)
@@ -155,8 +152,7 @@ func (c *ConfigServer) AddOrSetDiscoveryPolicyForChannel(ctx context.Context, in
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetDiscoveryPolicyForChannel(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetDiscoveryPolicyForChannel(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetDiscoveryPolicyForChannel(rafts.LeaderURL(), in)
@@ -173,8 +169,7 @@ func (c *ConfigServer) AddOrSetEventServicePolicyForChannel(ctx context.Context,
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetEventServicePolicyForChannel(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetEventServicePolicyForChannel(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetEventServicePolicyForChannel(rafts.LeaderURL(), in)
@@ -191,8 +186,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizations(ctx context.Context, in *
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizations(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizations(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrdererForOrganizations(rafts.LeaderURL(), in)
@@ -209,8 +203,7 @@ func (c *ConfigServer) AddOrSetOrdererForOrganizationsSelf(ctx context.Context, 
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererForOrganizationsSelf(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrdererForOrganizationsSelf(rafts.LeaderURL(), in)
@@ -227,8 +220,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizations(ctx context.Context, in *pb.R
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizations(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizations(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrgForOrganizations(rafts.LeaderURL(), in)
@@ -245,8 +237,7 @@ func (c *ConfigServer) AddOrSetOrgForOrganizationsSelf(ctx context.Context, in *
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrgForOrganizationsSelf(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrgForOrganizationsSelf(rafts.LeaderURL(), in)
@@ -263,8 +254,7 @@ func (c *ConfigServer) AddOrSetOrderer(ctx context.Context, in *pb.ReqOrder) (*p
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrderer(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrderer(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrderer(rafts.LeaderURL(), in)
@@ -281,8 +271,7 @@ func (c *ConfigServer) AddOrSetOrdererSelf(ctx context.Context, in *pb.ReqOrderS
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererSelf(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetOrdererSelf(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetOrdererSelf(rafts.LeaderURL(), in)
@@ -299,8 +288,7 @@ func (c *ConfigServer) AddOrSetPeer(ctx context.Context, in *pb.ReqPeer) (*pb.Re
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeer(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeer(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetPeer(rafts.LeaderURL(), in)
@@ -317,8 +305,7 @@ func (c *ConfigServer) AddOrSetPeerSelf(ctx context.Context, in *pb.ReqPeerSelf)
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerSelf(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetPeerSelf(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetPeerSelf(rafts.LeaderURL(), in)
@@ -335,8 +322,7 @@ func (c *ConfigServer) AddOrSetCertificateAuthority(ctx context.Context, in *pb.
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthority(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthority(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetCertificateAuthority(rafts.LeaderURL(), in)
@@ -353,8 +339,7 @@ func (c *ConfigServer) AddOrSetCertificateAuthoritySelf(ctx context.Context, in 
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthoritySelf(in)
-			return pbStr, err
+			return &pb.Result{Code: pb.Code_Success, Data: "success"}, service.AddOrSetCertificateAuthoritySelf(in)
 		},
 		func() (i interface{}, e error) {
 			pbStr, err := AddOrSetCertificateAuthoritySelf(rafts.LeaderURL(), in)

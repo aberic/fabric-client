@@ -47,6 +47,9 @@ func GetBytes(configID string) []byte {
 }
 
 func InitConfig(in *pb.ReqInit) error {
+	if nil == Configs[in.Client.ConfigID] {
+		Configs[in.Client.ConfigID] = &config.Config{}
+	}
 	defer Configs[in.Client.ConfigID].Lock.Unlock()
 	Configs[in.Client.ConfigID].Lock.Lock()
 	Configs[in.Client.ConfigID] = &config.Config{}
