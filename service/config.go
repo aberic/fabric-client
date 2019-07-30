@@ -37,6 +37,8 @@ func Get(configID string) *config.Config {
 }
 
 func GetBytes(configID string) []byte {
+	defer Configs[configID].Lock.RUnlock()
+	Configs[configID].Lock.RLock()
 	confData, err := yaml.Marshal(Configs[configID])
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
@@ -45,9 +47,9 @@ func GetBytes(configID string) []byte {
 }
 
 func InitConfig(in *pb.ReqInit) error {
-	if nil == Configs[in.Client.ConfigID] {
-		Configs[in.Client.ConfigID] = &config.Config{}
-	}
+	defer Configs[in.Client.ConfigID].Lock.Unlock()
+	Configs[in.Client.ConfigID].Lock.Lock()
+	Configs[in.Client.ConfigID] = &config.Config{}
 	_ = InitClientSelf(in.Client)
 	for _, peer := range in.ChannelPeer {
 		_ = AddOrSetPeerForChannel(peer)

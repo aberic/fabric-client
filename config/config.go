@@ -18,6 +18,7 @@ import (
 	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"strings"
+	"sync"
 )
 
 const (
@@ -32,6 +33,7 @@ type Config struct {
 	Orderers               map[string]*Orderer              `yaml:"orderers"`
 	Peers                  map[string]*Peer                 `yaml:"peers"`
 	CertificateAuthorities map[string]*CertificateAuthority `yaml:"certificateAuthorities"`
+	Lock                   sync.RWMutex
 }
 
 func (c *Config) InitClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string) error {
