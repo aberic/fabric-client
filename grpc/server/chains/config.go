@@ -47,7 +47,6 @@ func (c *ConfigServer) InitConfig(ctx context.Context, in *pb.ReqInit) (*pb.Resu
 	if i, err := c.proxy(
 		true,
 		func() (i interface{}, e error) {
-			defer ctx.Done()
 			pbStr, err := &pb.Result{Code: pb.Code_Success, Data: "success"}, service.InitConfig(in)
 			return pbStr, err
 		},
