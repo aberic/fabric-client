@@ -37,6 +37,9 @@ func Get(configID string) *config.Config {
 }
 
 func GetBytes(configID string) []byte {
+	if nil == Configs[configID] {
+		return nil
+	}
 	defer Configs[configID].Lock.RUnlock()
 	Configs[configID].Lock.RLock()
 	confData, err := yaml.Marshal(Configs[configID])
