@@ -72,7 +72,7 @@ func createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath stri
 				log.Self.Error("error should be nil. " + err.Error())
 				result.Fail("error should be nil. " + err.Error())
 			} else {
-				result.Success(txID.TransactionID)
+				result.Success(string(txID.TransactionID))
 			}
 		}
 	}
