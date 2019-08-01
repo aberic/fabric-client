@@ -626,6 +626,17 @@ func (c *Config) getPBClient() *pb.Client {
 				Level:         c.Client.BCCSP.Security.Level,
 			},
 		},
+		TlsCerts: &pb.ClientTLSCerts{
+			SystemCertPool: c.Client.TLSCerts.SystemCertPool,
+			Client: &pb.ClientTLSCertsClient{
+				Key: &pb.ClientTLSCertsClientKey{
+					Path: c.Client.TLSCerts.Client.Key.Path,
+				},
+				Cert: &pb.ClientTLSCertsClientCert{
+					Path: c.Client.TLSCerts.Client.Cert.Path,
+				},
+			},
+		},
 	}
 }
 
