@@ -1,0 +1,31 @@
+routes:
+  - Name: "test1" # 服务名称
+    InURI: "hello1" # 路由入口 URI
+    OutRemote: "http://localhost:8081" # 路由出口地址
+    Limit: # 服务限流策略
+      LimitMillisecond: 3 # 请求限定的时间段（毫秒）
+      LimitCount: 3 # 请求限定的时间段内允许的请求次数
+      LimitIntervalMillisecond: 150 # 请求允许的最小间隔时间（毫秒），0表示不限
+  - Name: "test2"
+    InURI: "hello2"
+    OutRemote: "http://localhost:8092"
+    OutURI: "rivet/shunt"
+    Limit:
+      LimitMillisecond: 3
+      LimitCount: 3
+      LimitIntervalMillisecond: 150
+shunt: # 负载均衡策略
+  - Name: "test" # 负载服务名称
+    InURI: "hello1" # 路由入口 URI
+    OutRemote: "http://localhost:8081" # 路由出口地址
+    Register: 2 # 负载均衡算法，1：随机；2：轮询；3：Hash一致性
+  - Name: "test1"
+    InURI: "hello2" # 路由入口 URI
+    OutRemote: "http://localhost:8081" # 路由出口地址
+    Register: 1
+tls:
+  server:
+    CertFile: "../examples/tls/server/server.crt"
+    KeyFile: "../examples/tls/server/server.key"
+  clients:
+    - "../examples/tls/rootCA.crt"
