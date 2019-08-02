@@ -323,108 +323,6 @@
 			"revisionTime": "2018-10-26T20:02:10Z"
 		},
 		{
-			"checksumSHA1": "vT9fLBctqCA+6QMOJJYQ4NVj/7A=",
-			"path": "github.com/ennoo/rivet",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "Bo/u0YWd+p/aiqj1qicn6nEKQhc=",
-			"path": "github.com/ennoo/rivet/bow",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "5D6wrfN/povl5zC4au6m1oKBDeU=",
-			"path": "github.com/ennoo/rivet/discovery",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "ItPNJqYCJ4CB0pL1ua5TNNBRXSc=",
-			"path": "github.com/ennoo/rivet/discovery/consul",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "IoVIulkSA6f/lMgxSWjFY0EcTNs=",
-			"path": "github.com/ennoo/rivet/keeps",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "3AAwH1h51cwYI04AZghraXDCZGk=",
-			"path": "github.com/ennoo/rivet/scheduled",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "IyqxuMHCdZYDS49JYidd1cx4o/c=",
-			"path": "github.com/ennoo/rivet/server",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "Hs8VcorO/1iCvfib1Fkic+ZDvnA=",
-			"path": "github.com/ennoo/rivet/shunt",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "zTTPj4jTIKFmfUWxcMklU7eVhOw=",
-			"path": "github.com/ennoo/rivet/trans/request",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "QnYfcpPoPt++gjcDDA1dBkroo68=",
-			"path": "github.com/ennoo/rivet/trans/response",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "SHgKZspaBoJzCb/GqzhN5rFfNz4=",
-			"path": "github.com/ennoo/rivet/utils/cmd",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "3GP18icNmrDLoKX0UqByG+WE1XA=",
-			"path": "github.com/ennoo/rivet/utils/env",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "/3bAEeb43kwWfx6JvFY1e7SGnQA=",
-			"path": "github.com/ennoo/rivet/utils/file",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "dnzIAn5iTRxlXtNLrPocsmz178g=",
-			"path": "github.com/ennoo/rivet/utils/log",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "cybmCWA9JCtZlY7WW+uxYkLkl70=",
-			"path": "github.com/ennoo/rivet/utils/slip",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "58PisfMp4Hx/QcM0stEcsWNd/Og=",
-			"path": "github.com/ennoo/rivet/utils/sql",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
-			"checksumSHA1": "NaAf/KmbG3pnZqhOYumIn9zj1J8=",
-			"path": "github.com/ennoo/rivet/utils/string",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
-		},
-		{
 			"checksumSHA1": "7NP1qUMF8Kx1y0zANxx0e+oq9Oo=",
 			"path": "github.com/fsnotify/fsnotify",
 			"revision": "ccc981bf80385c528a65fbfdd49bf2d8da22aa23",
@@ -2120,13 +2018,6 @@
 			"path": "golang.org/x/text/unicode/norm",
 			"revision": "6f44c5a2ea40ee3593d98cdcc905cc1fdaa660e2",
 			"revisionTime": "2018-10-29T18:00:05Z"
-		},
-		{
-			"checksumSHA1": "S+3OSpo8uqeKnh6rWpx/Bntnvaw=",
-			"origin": "github.com/ennoo/rivet/vendor/golang.org/x/tools/go/ssa/interp/testdata/src/errors",
-			"path": "golang.org/x/tools/go/ssa/interp/testdata/src/errors",
-			"revision": "41b18495c4d19dbce073f356f9792bb9ca34e02a",
-			"revisionTime": "2019-07-16T03:47:16Z"
 		},
 		{
 			"checksumSHA1": "MgYFT27I9gfAtSVBpGVqkCYOj3U=",

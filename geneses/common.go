@@ -92,44 +92,44 @@ func FabricConfigTXGenPath(version pb.Version) string {
 }
 
 // CryptoGenYmlPath cryptogen.yaml
-func CryptoGenYmlPath(leagueComment string) string {
-	return strings.Join([]string{dataPath, leagueComment, "config/cryptogen.yaml"}, "/")
+func CryptoGenYmlPath(ledgerName string) string {
+	return strings.Join([]string{dataPath, ledgerName, "config/cryptogen.yaml"}, "/")
 }
 
 // ConfigTxYmlPath configtx.yaml
-func ConfigTxYmlPath(leagueComment string) string {
-	return strings.Join([]string{dataPath, leagueComment, "config/configtx.yaml"}, "/")
+func ConfigTxYmlPath(ledgerName string) string {
+	return strings.Join([]string{dataPath, ledgerName, "config/configtx.yaml"}, "/")
 }
 
 // ConfPath crypto-config和channel-artifacts的上一级目录
-func ConfPath(leagueComment string) string {
-	return strings.Join([]string{dataPath, leagueComment, "config"}, "/")
+func ConfPath(ledgerName string) string {
+	return strings.Join([]string{dataPath, ledgerName, "config"}, "/")
 }
 
 // ChainCodePath code目录
-func ChainCodePath(leagueComment, chainCodeName, version string) (source, path, zipPath string) {
-	source = strings.Join([]string{ConfPath(leagueComment), "code/go"}, "/")
+func ChainCodePath(ledgerName, chainCodeName, version string) (source, path, zipPath string) {
+	source = strings.Join([]string{ConfPath(ledgerName), "code/go"}, "/")
 	path = strings.Join([]string{chainCodeName, version, chainCodeName}, "/")
 	zipPath = strings.Join([]string{source, "/src/", path, ".zip"}, "")
 	return
 }
 
 // CryptoConfigPath crypto-config目录
-func CryptoConfigPath(leagueComment string) string {
-	return strings.Join([]string{ConfPath(leagueComment), "crypto-config"}, "/")
+func CryptoConfigPath(ledgerName string) string {
+	return strings.Join([]string{ConfPath(ledgerName), "crypto-config"}, "/")
 }
 
 // ChannelArtifactsPath channel-artifacts目录
-func ChannelArtifactsPath(leagueComment string) string {
-	return strings.Join([]string{ConfPath(leagueComment), "channel-artifacts"}, "/")
+func ChannelArtifactsPath(ledgerName string) string {
+	return strings.Join([]string{ConfPath(ledgerName), "channel-artifacts"}, "/")
 }
 
 // GenesisBlockFilePath orderer.genesis.block路径
-func GenesisBlockFilePath(leagueComment string) string {
-	return strings.Join([]string{ChannelArtifactsPath(leagueComment), "orderer.genesis.block"}, "/")
+func GenesisBlockFilePath(ledgerName string) string {
+	return strings.Join([]string{ChannelArtifactsPath(ledgerName), "orderer.genesis.block"}, "/")
 }
 
 // ChannelTXFilePath 通道tx文件路径
-func ChannelTXFilePath(leagueComment, channelName string) string {
-	return strings.Join([]string{ChannelArtifactsPath(leagueComment), "/", channelName, ".tx"}, "")
+func ChannelTXFilePath(ledgerName, channelName string) string {
+	return strings.Join([]string{ChannelArtifactsPath(ledgerName), "/", channelName, ".tx"}, "")
 }

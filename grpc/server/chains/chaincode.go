@@ -22,8 +22,14 @@ import (
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/ennoo/rivet/utils/file"
+	"github.com/ennoo/rivet/utils/log"
+	str "github.com/ennoo/rivet/utils/string"
 	"golang.org/x/net/context"
 	"io"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type ChainCodeServer struct {
@@ -33,29 +39,64 @@ func (c *ChainCodeServer) UploadCC(stream pb.LedgerChainCode_UploadCCServer) err
 	var (
 		upload *pb.Upload
 		data   []byte
-		err    error
 	)
+	upload = &pb.Upload{}
 	data = make([]byte, 0)
 	for {
-		upload, err = stream.Recv()
+		uploadRecv, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Fail, ErrMsg: err.Error()})
+			return err
 		}
-		for _, b := range upload.Data {
-			data = append(data, b)
-		}
+		log.Self.Debug("code data", log.ByteString("bytes", uploadRecv.Data))
+		data = append(data, uploadRecv.Data...)
+		upload.LedgerName = uploadRecv.LedgerName
+		upload.Name = uploadRecv.Name
+		upload.Version = uploadRecv.Version
 	}
-	if nil == upload {
-		return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Fail, ErrMsg: "upload nil"})
+	if str.IsEmpty(upload.LedgerName) || str.IsEmpty(upload.Name) || str.IsEmpty(upload.Version) {
+		return errors.New("upload nil")
 	}
-	source, path, zipPath := geneses.ChainCodePath(upload.ConfigID, upload.Name, upload.Version)
+	source, path, zipPath := geneses.ChainCodePath(upload.LedgerName, upload.Name, upload.Version)
 	if err := file.CreateAndWrite(zipPath, data, true); nil != err {
-		return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Fail, ErrMsg: err.Error()})
+		return err
 	}
+	if err := file.DeCompressZip(zipPath, strings.Join([]string{source, "src", path}, "/")); nil != err {
+		return err
+	}
+	if err := os.Remove(zipPath); nil != err {
+		return err
+	}
+	lastIndex := strings.LastIndex(zipPath, "/")
+	zipParentPath := zipPath[0:lastIndex]
+	codePath := getSinglePath(zipParentPath)
+	paths := strings.Split(codePath, "/src/")
+	path = paths[len(paths)-1]
 	return stream.SendAndClose(&pb.ResultUpload{Code: pb.Code_Success, Source: source, Path: path})
+}
+
+func getSinglePath(path string) string {
+	fileInfo, _ := ioutil.ReadDir(path)
+	fileInfoLen := len(fileInfo)
+	if fileInfoLen != 1 {
+		fileNum := 0
+		var fileInfoPath string
+		for _, info := range fileInfo {
+			if !strings.HasPrefix(info.Name(), ".") {
+				fileInfoPath = info.Name()
+				fileNum++
+			}
+		}
+		if fileNum != 1 {
+			return path
+		}
+		return getSinglePath(filepath.Join(path, fileInfoPath))
+	} else if fileInfoLen == 1 && !fileInfo[0].IsDir() {
+		return path
+	}
+	return getSinglePath(filepath.Join(path, fileInfo[0].Name()))
 }
 
 func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Result, error) {
