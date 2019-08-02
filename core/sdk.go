@@ -49,7 +49,7 @@ func Create(orderOrgName, orderOrgUser, orderURL, orgName, orgUser, channelID, c
 	return createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath, sdk, resMgmtClient)
 }
 
-func Join(orderURL, orgName, orgUser, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func Join(orderURL, orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	resMgmtClient, sdk, err := resMgmtOrgClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
@@ -58,7 +58,7 @@ func Join(orderURL, orgName, orgUser, channelID string, configBytes []byte, sdkO
 		return &result
 	}
 	defer sdk.Close()
-	return joinChannel(orderURL, channelID, resMgmtClient)
+	return joinChannel(orderURL, channelID, peerName, resMgmtClient)
 }
 
 func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -286,7 +286,7 @@ func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string,
 	return queryChannelTransaction(channelID, peerName, txID, client)
 }
 
-func Install(orgName, orgUser, name, goPath, chainCodePath, version string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func Install(orgName, orgUser, peerName, name, goPath, chainCodePath, version string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
@@ -296,7 +296,7 @@ func Install(orgName, orgUser, name, goPath, chainCodePath, version string, conf
 		return &result
 	}
 	defer sdk.Close()
-	return install(name, goPath, chainCodePath, version, resMgmtClient)
+	return install(peerName, name, goPath, chainCodePath, version, resMgmtClient)
 }
 
 func OrderConfig(orgName, orgUser, channelID, orderURL string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -323,7 +323,7 @@ func Installed(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ..
 	return queryInstalled(orgName, orgUser, peerName, sdk)
 }
 
-func Instantiate(orgName, orgUser, channelID, name, path, version string, orgPolicies []string, args [][]byte,
+func Instantiate(orgName, orgUser, peerName, channelID, name, path, version string, orgPolicies []string, args [][]byte,
 	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
@@ -333,7 +333,7 @@ func Instantiate(orgName, orgUser, channelID, name, path, version string, orgPol
 		result.Fail(err.Error())
 		return &result
 	}
-	return instantiate(channelID, name, path, version, orgPolicies, args, resMgmtClient)
+	return instantiate(peerName, channelID, name, path, version, orgPolicies, args, resMgmtClient)
 }
 
 func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
@@ -348,7 +348,7 @@ func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []by
 	return queryInstantiate(orgName, orgUser, channelID, peerName, sdk)
 }
 
-func Upgrade(orgName, orgUser, channelID, name, path, version string, orgPolicies []string, args [][]byte,
+func Upgrade(orgName, orgUser, peerName, channelID, name, path, version string, orgPolicies []string, args [][]byte,
 	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
@@ -358,7 +358,7 @@ func Upgrade(orgName, orgUser, channelID, name, path, version string, orgPolicie
 		result.Fail(err.Error())
 		return &result
 	}
-	return upgrade(channelID, name, path, version, orgPolicies, args, resMgmtClient)
+	return upgrade(peerName, channelID, name, path, version, orgPolicies, args, resMgmtClient)
 }
 
 func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,

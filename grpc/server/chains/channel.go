@@ -76,7 +76,7 @@ func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.Resul
 	for _, order := range conf.Orderers {
 		orderOrgURL = order.URL
 	}
-	if res = sdk.Join(orderOrgURL, in.OrgName, in.OrgUser, in.ChannelID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.Join(orderOrgURL, in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)

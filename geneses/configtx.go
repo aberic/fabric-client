@@ -165,18 +165,18 @@ type PoliciesOrderer struct {
 
 // Profiles 配置文件输出策略
 type Profiles struct {
-	HBaaSChannel      *HBaaSChannel      `yaml:"HBaaSChannel" json:"hbaasChannel"`
-	HBaaSOrderGenesis *HBaaSOrderGenesis `yaml:"HBaaSOrderGenesis" json:"hbaasOrderGenesis"`
+	FCChannel      *FCChannel      `yaml:"FCChannel" json:"fcChannel"`
+	FCOrderGenesis *FCOrderGenesis `yaml:"FCOrderGenesis" json:"fcOrderGenesis"`
 }
 
-// HBaaSChannel 配置文件通道创世区块输出策略
-type HBaaSChannel struct {
+// FCChannel 配置文件通道创世区块输出策略
+type FCChannel struct {
 	Application *Application `yaml:"Application" json:"application"`
 	Consortium  string       `yaml:"Consortium" json:"consortium"`
 }
 
-// HBaaSOrderGenesis 配置文件联盟创世区块输出策略
-type HBaaSOrderGenesis struct {
+// FCOrderGenesis 配置文件联盟创世区块输出策略
+type FCOrderGenesis struct {
 	Capabilities *V13         `yaml:"Capabilities" json:"capabilities"`
 	Consortiums  *Consortiums `yaml:"Consortiums" json:"consortiums"`
 	Orderer      *Orderer     `yaml:"Orderer" json:"orderer"`
@@ -185,22 +185,22 @@ type HBaaSOrderGenesis struct {
 
 // Consortiums 配置指定组织集合对象
 type Consortiums struct {
-	HBaaSConsortium *HBaaSConsortium `yaml:"HBaaSConsortium" json:"hbaasConsortium"`
+	FCConsortium *FCConsortium `yaml:"FCConsortium" json:"fcConsortium"`
 }
 
 // HBaaSConsortium 配置指定组织集合
-type HBaaSConsortium struct {
+type FCConsortium struct {
 	Organizations []Organization `yaml:"Organizations" json:"organizations"`
 }
 
 // generateConfigTXYml 生成模板配置Yml文件
-func generateConfigTXYml(leagueComment string, orderCount, peerCount, batchTimeout, maxMessageCount int32) ([]byte, error) {
+func generateConfigTXYml(ledgerName string, orderCount, peerCount, batchTimeout, maxMessageCount int32) ([]byte, error) {
 	var (
 		configTx *ConfigTX
 		err      error
 		data     []byte
 	)
-	if configTx, err = generateConfigTX(leagueComment, orderCount, peerCount, batchTimeout, maxMessageCount); nil != err {
+	if configTx, err = generateConfigTX(ledgerName, orderCount, peerCount, batchTimeout, maxMessageCount); nil != err {
 		return nil, err
 	}
 	if data, err = yaml.Marshal(&configTx); err != nil {
@@ -237,28 +237,28 @@ func generateConfigTXCustom(organizations []Organization, application *Applicati
 }
 
 // generateConfigTX 生成模板配置对象
-func generateConfigTX(leagueComment string, orderCount, peerCount, batchTimeout, maxMessageCount int32) (*ConfigTX, error) {
-	if str.IsEmpty(leagueComment) || orderCount <= 0 || peerCount <= 0 || batchTimeout <= 0 || maxMessageCount <= 0 {
+func generateConfigTX(ledgerName string, orderCount, peerCount, batchTimeout, maxMessageCount int32) (*ConfigTX, error) {
+	if str.IsEmpty(ledgerName) || orderCount <= 0 || peerCount <= 0 || batchTimeout <= 0 || maxMessageCount <= 0 {
 		return nil, errors.New("config params exception")
 	}
-	cryptoConfigPath := CryptoConfigPath(leagueComment)
-	organizations := getOrganizations(leagueComment, cryptoConfigPath, peerCount)
+	cryptoConfigPath := CryptoConfigPath(ledgerName)
+	organizations := getOrganizations(ledgerName, cryptoConfigPath, peerCount)
 	application := getApplication(organizations)
 	capabilities := getCapabilities(application)
 	channel := getChannel()
-	orderer := getOrderer(organizations, leagueComment, orderCount, batchTimeout, maxMessageCount)
+	orderer := getOrderer(organizations, ledgerName, orderCount, batchTimeout, maxMessageCount)
 	profiles := getProfiles(organizations, application, orderer)
 	return generateConfigTXCustom(organizations, application, capabilities, channel, orderer, profiles), nil
 }
 
-func getOrganizations(leagueComment, cryptoGenFilesPath string, peerCount int32) []Organization {
+func getOrganizations(ledgerName, cryptoGenFilesPath string, peerCount int32) []Organization {
 	organizations := make([]Organization, peerCount+1)
 	for index := range organizations {
 		if index == 0 {
 			organizations[0] = &OrdererOrg{
 				Name:   OrdererOrgName,
 				ID:     "OrdererMSP",
-				MSPDir: strings.Join([]string{cryptoGenFilesPath, "ordererOrganizations", leagueComment, "msp"}, "/"),
+				MSPDir: strings.Join([]string{cryptoGenFilesPath, "ordererOrganizations", ledgerName, "msp"}, "/"),
 				Policies: &Policies{
 					Admins: &Policy{
 						Rule: "OR('OrdererMSP.admin')",
@@ -275,13 +275,14 @@ func getOrganizations(leagueComment, cryptoGenFilesPath string, peerCount int32)
 				},
 			}
 		} else {
-			mspName := strings.Join([]string{"Org", strconv.Itoa(index), "MSP"}, "")
-			peerHost := strings.Join([]string{"peer0.", leagueComment, "-org", strconv.Itoa(index)}, "")
-			peerLeagueComment := strings.Join([]string{leagueComment, "-org", strconv.Itoa(index)}, "")
+			name := strings.Join([]string{"Org", strconv.Itoa(index)}, "")
+			mspName := strings.Join([]string{name, "MSP"}, "")
+			peerHost := strings.Join([]string{"peer0.", ledgerName, "-org", strconv.Itoa(index)}, "")
+			peerOrg := strings.Join([]string{ledgerName, "-org", strconv.Itoa(index)}, "")
 			organizations[index] = &Org{
-				Name:     mspName,
+				Name:     name,
 				ID:       mspName,
-				MSPDir:   strings.Join([]string{cryptoGenFilesPath, "peerOrganizations", peerLeagueComment, "msp"}, "/"),
+				MSPDir:   strings.Join([]string{cryptoGenFilesPath, "peerOrganizations", peerOrg, "msp"}, "/"),
 				Policies: getPoliciesForOrg(index),
 				AnchorPeers: []*AnchorPeer{
 					{
@@ -371,10 +372,10 @@ func getChannel() *Channel {
 	}
 }
 
-func getOrderer(organizations []Organization, leagueComment string, orderCount, batchTimeout, maxMessageCount int32) *Orderer {
+func getOrderer(organizations []Organization, ledgerName string, orderCount, batchTimeout, maxMessageCount int32) *Orderer {
 	addresses := make([]string, orderCount)
 	for index := range addresses {
-		addresses[index] = strings.Join([]string{OrderPrefix, strconv.Itoa(index), ".", leagueComment, ":7050"}, "")
+		addresses[index] = strings.Join([]string{OrderPrefix, strconv.Itoa(index), ".", ledgerName, ":7050"}, "")
 	}
 	return &Orderer{
 		Addresses: addresses,
@@ -386,7 +387,7 @@ func getOrderer(organizations []Organization, leagueComment string, orderCount, 
 		BatchTimeout: strings.Join([]string{strconv.Itoa(int(batchTimeout)), "s"}, ""),
 		Capabilities: getV11(),
 		Kafka: &Kafka{
-			Brokers: getKafkaBrokers(leagueComment),
+			Brokers: getKafkaBrokers(ledgerName),
 		},
 		OrdererType:   "kafka",
 		Organizations: organizations[0:1],
@@ -411,24 +412,24 @@ func getOrderer(organizations []Organization, leagueComment string, orderCount, 
 	}
 }
 
-func getKafkaBrokers(leagueComment string) []string {
+func getKafkaBrokers(ledgerName string) []string {
 	brokers := make([]string, 7)
 	for i := 0; i < 7; i++ {
-		brokers[i] = strings.Join([]string{"kfk", strconv.Itoa(i + 1), ".", leagueComment, ":9092"}, "")
+		brokers[i] = strings.Join([]string{"kfk", strconv.Itoa(i + 1), ".", ledgerName, ":9092"}, "")
 	}
 	return brokers
 }
 
 func getProfiles(organizations []Organization, application *Application, orderer *Orderer) *Profiles {
 	profiles := &Profiles{
-		HBaaSChannel: &HBaaSChannel{
+		FCChannel: &FCChannel{
 			Application: application,
-			Consortium:  "HBaaSConsortium",
+			Consortium:  "FCConsortium",
 		},
-		HBaaSOrderGenesis: &HBaaSOrderGenesis{
+		FCOrderGenesis: &FCOrderGenesis{
 			Capabilities: getV13(),
 			Consortiums: &Consortiums{
-				HBaaSConsortium: &HBaaSConsortium{
+				FCConsortium: &FCConsortium{
 					Organizations: organizations[1:],
 				},
 			},

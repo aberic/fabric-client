@@ -55,7 +55,7 @@ func TestJoin(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := Join("grpc://10.10.203.51:30054", "Org1", "Admin", "mychannel2", confData)
+	result := Join("grpc://10.10.203.51:30054", "Org1", "Admin", "mychannel2", "peer0", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -252,7 +252,7 @@ func TestInstall(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := Install("Org1", "Admin", "medical",
+	result := Install("Org1", "Admin", "peer0", "medical",
 		"/Users/aberic/Documents/path/go", "viewhigh.com/dams/chaincode/medical", "1.1",
 		confData)
 	log.Self.Debug("test install", log.Reflect("result", result))
@@ -274,7 +274,7 @@ func TestInstantiate(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := Instantiate("Org1", "Admin", "mychannel", "medical",
+	result := Instantiate("Org1", "Admin", "peer0", "mychannel", "medical",
 		"viewhigh.com/dams/chaincode/medical", "1.0", []string{"Org1MSP", "Org2MSP", "Org3MSP"},
 		[][]byte{[]byte("init"), []byte("A"), []byte("10000"), []byte("B"), []byte("10000")}, confData)
 	log.Self.Debug("test instantiate", log.Reflect("result", result))
@@ -286,7 +286,7 @@ func TestUpgrade(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := Upgrade("Org1", "Admin", "mychannel", "medical",
+	result := Upgrade("Org1", "Admin", "peer0", "mychannel", "medical",
 		"viewhigh.com/dams/chaincode/medical", "1.1", []string{"Org1MSP", "Org2MSP", "Org3MSP"},
 		[][]byte{[]byte("init"), []byte("A"), []byte("10000"), []byte("B"), []byte("10000")}, confData)
 	log.Self.Debug("test upgrade", log.Reflect("result", result))

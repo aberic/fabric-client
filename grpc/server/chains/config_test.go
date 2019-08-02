@@ -29,7 +29,7 @@ const (
 )
 
 func TestGetConfig(t *testing.T) {
-	i, err := GetConfig("localhost:19877", &pb.ReqConfig{
+	i, err := GetConfig("10.10.203.51:31247", &pb.ReqConfig{
 		ConfigID: configID,
 	})
 	t.Log(err)

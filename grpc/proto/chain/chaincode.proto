@@ -35,6 +35,7 @@ message Install {
     string source = 5;
     string path = 6;
     string version = 7;
+    string peerName = 8;
 }
 
 message Installed {
@@ -54,6 +55,7 @@ message Instantiate {
     string version = 7;
     repeated string orgPolicies = 8;
     repeated bytes args = 9;
+    string peerName = 10;
 }
 
 message Instantiated {
@@ -74,6 +76,7 @@ message Upgrade {
     string version = 7;
     repeated string orgPolicies = 8;
     repeated bytes args = 9;
+    string peerName = 10;
 }
 
 message Invoke {

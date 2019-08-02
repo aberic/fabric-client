@@ -80,12 +80,13 @@ func createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath stri
 }
 
 // ordererUrl "orderer.example.com"
-func joinChannel(orderURL, channelID string, client *resmgmt.Client) *response.Result {
+func joinChannel(orderURL, channelID, peerName string, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
 	// Org peers join channel
 	if err := client.JoinChannel(
 		channelID,
 		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+		resmgmt.WithTargetEndpoints(peerName),
 		resmgmt.WithOrdererEndpoint(orderURL)); err != nil {
 		log.Self.Error("Org peers failed to JoinChannel: " + err.Error())
 		result.Fail("Org peers failed to JoinChannel: " + err.Error())

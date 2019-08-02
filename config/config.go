@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	OrderOrgKey = "ordererorg"
+	OrderOrgKey = "OrdererOrg"
 )
 
 type Config struct {
@@ -152,7 +152,7 @@ func (c *Config) AddOrSetOrgForOrganizations(orgName, mspid, cryptoPath string, 
 func (c *Config) AddOrSetSelfOrgForOrganizations(leagueName string, peers, certificateAuthorities []string) {
 	c.initOrganizations()
 	orgName, userName := c.getOrgAndUserName()
-	mspid := strings.Join([]string{"Org", strings.Split(orgName, "-org")[1], "MSP"}, "")
+	mspid := strings.Join([]string{orgName, "MSP"}, "")
 	cryptoPath := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
 		"/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/msp"}, "")

@@ -103,7 +103,7 @@ func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Re
 	var (
 		res *response.Result
 	)
-	if res = sdk.Install(in.OrgName, in.OrgUser, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.Install(in.OrgName, in.OrgUser, in.PeerName, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -136,7 +136,7 @@ func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate)
 	var (
 		res *response.Result
 	)
-	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
+	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
@@ -170,7 +170,7 @@ func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Re
 	var (
 		res *response.Result
 	)
-	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
+	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}

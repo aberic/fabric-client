@@ -29,7 +29,7 @@ import (
 )
 
 // install 安装智能合约
-func install(name, goPath, chainCodePath, version string, client *resmgmt.Client) *response.Result {
+func install(peerName, name, goPath, chainCodePath, version string, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
 	ccPkg, err := gopackager.NewCCPackage(chainCodePath, goPath)
 	if err != nil {
@@ -39,7 +39,7 @@ func install(name, goPath, chainCodePath, version string, client *resmgmt.Client
 	}
 	// Install example cc to org peers
 	installCCReq := resmgmt.InstallCCRequest{Name: name, Path: chainCodePath, Version: version, Package: ccPkg}
-	respList, err := client.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+	respList, err := client.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithTargetEndpoints(peerName))
 	if err != nil {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
@@ -88,7 +88,7 @@ func queryInstalled(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *r
 }
 
 // args [][]byte{[]byte(coll1), []byte("key"), []byte("value")}
-func instantiate(channelID, name, path, version string, orgPolicies []string, args [][]byte, client *resmgmt.Client) *response.Result {
+func instantiate(peerName, channelID, name, path, version string, orgPolicies []string, args [][]byte, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
 	ccPolicy := cauthdsl.SignedByAnyMember(orgPolicies)
 	// Org resource manager will instantiate 'example_cc' on channel
@@ -96,6 +96,7 @@ func instantiate(channelID, name, path, version string, orgPolicies []string, ar
 		channelID,
 		resmgmt.InstantiateCCRequest{Name: name, Path: path, Version: version, Args: args, Policy: ccPolicy},
 		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+		resmgmt.WithTargetEndpoints(peerName),
 	)
 	if err != nil {
 		log.Self.Error(err.Error())
@@ -134,7 +135,7 @@ func queryInstantiate(orgName, orgUser, channelID, peerName string, sdk *fabsdk.
 }
 
 // args [][]byte{[]byte(coll1), []byte("key"), []byte("value")}
-func upgrade(channelID, name, path, version string, orgPolicies []string, args [][]byte, client *resmgmt.Client) *response.Result {
+func upgrade(peerName, channelID, name, path, version string, orgPolicies []string, args [][]byte, client *resmgmt.Client) *response.Result {
 	result := response.Result{}
 	ccPolicy := cauthdsl.SignedByAnyMember(orgPolicies)
 	// Org resource manager will instantiate 'example_cc' on channel
@@ -142,6 +143,7 @@ func upgrade(channelID, name, path, version string, orgPolicies []string, args [
 		channelID,
 		resmgmt.UpgradeCCRequest{Name: name, Path: path, Version: version, Args: args, Policy: ccPolicy},
 		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+		resmgmt.WithTargetEndpoints(peerName),
 	)
 	if err != nil {
 		log.Self.Error(err.Error())

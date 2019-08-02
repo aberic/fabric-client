@@ -17,6 +17,7 @@ message ChannelJoin {
     string orgName = 2;
     string orgUser = 3;
     string channelID = 4;
+    string peerName = 5;
 }
 
 message ChannelList {
