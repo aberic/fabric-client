@@ -153,10 +153,11 @@ func (c *Config) AddOrSetSelfOrgForOrganizations(leagueName string, peers, certi
 	c.initOrganizations()
 	orgName, userName := c.getOrgAndUserName()
 	mspid := strings.Join([]string{orgName, "MSP"}, "")
+	peerOrg := strings.Join([]string{leagueName, strings.ToLower(orgName)}, "-")
 	cryptoPath := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
-		"/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/msp"}, "")
-	userCertPath := strings.Join([]string{cryptoPath, "/signcerts/", userName, "@", orgName, "-cert.pem"}, "")
+		"/peerOrganizations/", peerOrg, "/users/", userName, "@", peerOrg, "/msp"}, "")
+	userCertPath := strings.Join([]string{cryptoPath, "/signcerts/", userName, "@", peerOrg, "-cert.pem"}, "")
 	c.Organizations[orgName] = &Organization{
 		MspID:                  mspid,
 		CryptoPath:             cryptoPath,
@@ -244,9 +245,10 @@ func (c *Config) AddOrSetPeer(peerName, url, eventUrl, sslTargetNameOverride, ke
 func (c *Config) AddOrSetSelfPeer(leagueName, peerName, url, eventUrl, keepAliveTime, keepAliveTimeout string,
 	keepAlivePermit, failFast, allowInsecure bool) {
 	orgName, _ := c.getOrgAndUserName()
+	peerOrg := strings.Join([]string{leagueName, strings.ToLower(orgName)}, "-")
 	tlsCACerts := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
-		"/peerOrganizations/", orgName, "/tlsca/tlsca.", orgName, "-cert.pem"}, "")
+		"/peerOrganizations/", peerOrg, "/tlsca/tlsca.", peerOrg, "-cert.pem"}, "")
 	c.initPeers(peerName)
 	c.Peers[peerName] = &Peer{
 		URL:      url,
@@ -294,15 +296,16 @@ func (c *Config) AddOrSetCertificateAuthority(certName, url, tlsCACertPath, tlsC
 // url https://10.10.203.51:30059
 func (c *Config) AddOrSetSelfCertificateAuthority(leagueName, certName, url, caName, enrollId, enrollSecret string) {
 	orgName, _ := c.getOrgAndUserName()
+	peerOrg := strings.Join([]string{leagueName, strings.ToLower(orgName)}, "-")
 	tlsCACerts := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
-		"/peerOrganizations/", orgName, "/tlsca/tlsca.", orgName, "-cert.pem"}, "")
+		"/peerOrganizations/", peerOrg, "/tlsca/tlsca.", peerOrg, "-cert.pem"}, "")
 	tlsCACertClientKey := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
-		"/peerOrganizations/", orgName, "/users/Admin@", orgName, "/tls/client.key"}, "")
+		"/peerOrganizations/", peerOrg, "/users/Admin@", peerOrg, "/tls/client.key"}, "")
 	tlsCACertClientCert := strings.Join([]string{
 		geneses.CryptoConfigPath(leagueName),
-		"/peerOrganizations/", orgName, "/users/Admin@", orgName, "/tls/client.crt"}, "")
+		"/peerOrganizations/", peerOrg, "/users/Admin@", peerOrg, "/tls/client.crt"}, "")
 	c.initCertificateAuthorities(certName)
 	c.CertificateAuthorities[certName] = &CertificateAuthority{
 		URL: url,
