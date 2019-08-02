@@ -188,7 +188,7 @@ type Consortiums struct {
 	FCConsortium *FCConsortium `yaml:"FCConsortium" json:"fcConsortium"`
 }
 
-// HBaaSConsortium 配置指定组织集合
+// FCConsortium 配置指定组织集合
 type FCConsortium struct {
 	Organizations []Organization `yaml:"Organizations" json:"organizations"`
 }

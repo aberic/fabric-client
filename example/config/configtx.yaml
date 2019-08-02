@@ -140,13 +140,13 @@ Organizations:
   - *id006
   - *id007
 Profiles:
-  HBaaSChannel:
+  FCConsortium:
     Application: *id008
-    Consortium: HBaaSConsortium
-  HBaaSOrdererGenesis:
+    Consortium: FCConsortium
+  FCOrdererGenesis:
     Capabilities: *id002
     Consortiums:
-      HBaaSConsortium:
+      FCConsortium:
         Organizations:
           - *id005
           - *id006

@@ -96,7 +96,7 @@ spec:
     spec:
       containers:
         - name: fabric-client
-          image: 10.0.60.34:80/hbaas/ennoo/fabric-client:1.0
+          image: aberic/fabric-client:latest
           imagePullPolicy: IfNotPresent
           resources:
             requests:
