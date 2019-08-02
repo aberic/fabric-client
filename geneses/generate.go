@@ -162,7 +162,7 @@ func GenerateGenesisBlock(crypto *pb.Crypto) (int, []string, error) {
 		return 0, nil, errors.New("version not support")
 	}
 	return utils.ExecCommandTail(fabricConfigTXGenPath, "--configPath", confPath, "--profile",
-		"HBaaSOrderGenesis", "--outputBlock", genesisBlockFilePath)
+		"FCOrderGenesis", "--outputBlock", genesisBlockFilePath)
 }
 
 // GenerateChannelTX 生成区块链创世区块
@@ -198,5 +198,5 @@ func GenerateChannelTX(channelTX *pb.ChannelTX) (int, []string, error) {
 		return 0, nil, errors.New("version not support")
 	}
 	return utils.ExecCommandTail(fabricConfigTXGenPath, "--configPath", confPath, "--profile",
-		"HBaaSChannel", "--outputCreateChannelTx", channelTXFilePath, "-channelID", channelTX.ChannelName)
+		"FCChannel", "--outputCreateChannelTx", channelTXFilePath, "-channelID", channelTX.ChannelName)
 }
