@@ -23,13 +23,13 @@ import (
 
 const (
 	rootPath    = "/data"
-	configID    = "7ac2ffedd58aa9219038386511b2b801"
+	configID    = "cd88b03cf90d603234c79ae907fcc8ff"
 	channelName = "mychannel"
 	peerName    = "peer0"
 )
 
 func TestGetConfig(t *testing.T) {
-	i, err := GetConfig("10.10.203.51:31247", &pb.ReqConfig{
+	i, err := GetConfig("127.0.0.1:19877", &pb.ReqConfig{
 		ConfigID: configID,
 	})
 	t.Log(err)

@@ -154,10 +154,11 @@ type ClientGlobalCache struct {
 
 func (c *Client) initSelfClient(tls bool, leagueName, orgName, userName, level string) error {
 	cryptoConfig := geneses.CryptoConfigPath(leagueName)
+	domain := strings.Join([]string{leagueName, strings.ToLower(orgName)}, "-")
 	keyPath := strings.Join([]string{
-		cryptoConfig, "/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/tls/client.key"}, "")
+		cryptoConfig, "/peerOrganizations/", domain, "/users/", userName, "@", domain, "/tls/client.key"}, "")
 	certPath := strings.Join([]string{
-		cryptoConfig, "/peerOrganizations/", orgName, "/users/", userName, "@", orgName, "/tls/client.crt"}, "")
+		cryptoConfig, "/peerOrganizations/", domain, "/users/", userName, "@", domain, "/tls/client.crt"}, "")
 	return c.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
 }
 
