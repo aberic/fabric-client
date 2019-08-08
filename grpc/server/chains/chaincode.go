@@ -116,16 +116,18 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 	)
 	if res = sdk.Installed(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
+		log.Self.Info("InstalledCC", log.Reflect("chainCodeInfoArr", chainCodeInfoArr))
 		chainCodes := chainCodeInfoArr.ChainCodes
+		log.Self.Info("InstalledCC", log.Reflect("chainCodes", chainCodes))
 		data := make([]*pb.ChainCodeInfo, len(chainCodes))
-		for index := range chainCodes {
-			data[index].Name = chainCodes[index].Name
-			data[index].Version = chainCodes[index].Name
-			data[index].Path = chainCodes[index].Name
-			data[index].Input = chainCodes[index].Name
-			data[index].Escc = chainCodes[index].Name
-			data[index].Vscc = chainCodes[index].Name
-			data[index].Id = chainCodes[index].Id
+		for index, code := range chainCodes {
+			data[index].Name = code.Name
+			data[index].Version = code.Version
+			data[index].Path = code.Path
+			data[index].Input = code.Input
+			data[index].Escc = code.Escc
+			data[index].Vscc = code.Vscc
+			data[index].Id = code.Id
 		}
 		return &pb.ResultCCList{Code: pb.Code_Success, List: &pb.CCList{Data: data}}, nil
 	}
@@ -150,16 +152,18 @@ func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiate
 	)
 	if res = sdk.Instantiated(in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
+		log.Self.Info("InstantiatedCC", log.Reflect("chainCodeInfoArr", chainCodeInfoArr))
 		chainCodes := chainCodeInfoArr.ChainCodes
+		log.Self.Info("InstantiatedCC", log.Reflect("chainCodes", chainCodes))
 		data := make([]*pb.ChainCodeInfo, len(chainCodes))
-		for index := range chainCodes {
-			data[index].Name = chainCodes[index].Name
-			data[index].Version = chainCodes[index].Name
-			data[index].Path = chainCodes[index].Name
-			data[index].Input = chainCodes[index].Name
-			data[index].Escc = chainCodes[index].Name
-			data[index].Vscc = chainCodes[index].Name
-			data[index].Id = chainCodes[index].Id
+		for index, code := range chainCodes {
+			data[index].Name = code.Name
+			data[index].Version = code.Version
+			data[index].Path = code.Path
+			data[index].Input = code.Input
+			data[index].Escc = code.Escc
+			data[index].Vscc = code.Vscc
+			data[index].Id = code.Id
 		}
 		return &pb.ResultCCList{Code: pb.Code_Success, List: &pb.CCList{Data: data}}, nil
 	}
