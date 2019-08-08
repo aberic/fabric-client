@@ -121,6 +121,7 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 		log.Self.Info("InstalledCC", log.Reflect("chainCodes", chainCodes))
 		data := make([]*pb.ChainCodeInfo, len(chainCodes))
 		for index, code := range chainCodes {
+			data[index] = &pb.ChainCodeInfo{}
 			data[index].Name = code.Name
 			data[index].Version = code.Version
 			data[index].Path = code.Path
@@ -157,6 +158,7 @@ func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiate
 		log.Self.Info("InstantiatedCC", log.Reflect("chainCodes", chainCodes))
 		data := make([]*pb.ChainCodeInfo, len(chainCodes))
 		for index, code := range chainCodes {
+			data[index] = &pb.ChainCodeInfo{}
 			data[index].Name = code.Name
 			data[index].Version = code.Version
 			data[index].Path = code.Path
