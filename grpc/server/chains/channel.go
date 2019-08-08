@@ -85,8 +85,12 @@ func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.Resul
 func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.ResultArr, error) {
 	var (
 		res        *response.Result
+		conf       *config.Config
 		channelArr *sdk.ChannelArr
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Channels(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		channelArr = res.Data.(*sdk.ChannelArr)
 		channels := channelArr.Channels
