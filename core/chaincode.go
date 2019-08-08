@@ -124,7 +124,7 @@ func queryInstantiate(orgName, orgUser, channelID, peerName string, sdk *fabsdk.
 				log.Self.Error("Failed to query instantiate: " + err.Error())
 				result.Fail("Failed to query instantiate: " + err.Error())
 			} else {
-				result.Success(qiResponse.Chaincodes)
+				result.Success(&ChainCodeInfoArr{qiResponse.Chaincodes})
 			}
 		} else {
 			log.Self.Error("orgResMgmt error should be nil. ")
