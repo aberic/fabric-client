@@ -109,6 +109,7 @@ func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Re
 		return nil, errors.New("config client is not exist")
 	}
 	if res = sdk.Install(in.OrgName, in.OrgUser, in.PeerName, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		log.Self.Info("InstallCC", log.String("success", res.Data.(string)))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -154,6 +155,7 @@ func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate)
 	}
 	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		log.Self.Info("InstantiateCC", log.String("success", res.Data.(string)))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -199,6 +201,7 @@ func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Re
 	}
 	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		log.Self.Info("UpgradeCC", log.String("success", res.Data.(string)))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -214,6 +217,7 @@ func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Resu
 	}
 	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		log.Self.Debug("InvokeCC", log.String("success", res.Data.(string)))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -229,6 +233,7 @@ func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync)
 	}
 	if res = sdk.InvokeAsync(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Callback, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		log.Self.Debug("InvokeCCAsync", log.String("success", res.Data.(string)))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -244,6 +249,7 @@ func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.Result
 	}
 	if res = sdk.Query(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+		log.Self.Debug("QueryCC", log.String("success", res.Data.(string)))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
