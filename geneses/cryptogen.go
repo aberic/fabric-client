@@ -43,11 +43,12 @@ type Hostname struct {
 
 // Peer 节点配置
 type Peer struct {
-	Name     string    `yaml:"Name" json:"name"`
-	Domain   string    `yaml:"Domain" json:"domain"`
-	CA       *CA       `yaml:"CA" json:"ca"`
-	Template *Template `yaml:"Template" json:"template"`
-	Users    *Users    `yaml:"Users" json:"users"`
+	Name          string    `yaml:"Name" json:"name"`
+	Domain        string    `yaml:"Domain" json:"domain"`
+	CA            *CA       `yaml:"CA" json:"ca"`
+	Template      *Template `yaml:"Template" json:"template"`
+	Users         *Users    `yaml:"Users" json:"users"`
+	EnableNodeOUs bool      `yaml:"EnableNodeOUs" json:"enableNodeOUs"`
 }
 
 // Template 模板属性配置
@@ -98,8 +99,8 @@ func generateCryptoGenCustomYml(ordererOrgs []*Order, peerOrgs []*Peer) ([]byte,
 }
 
 // generateCryptoGen 生成联盟证书文件对象
-func generateCryptoGen(leagueComment string, orderCount, peerCount, templateCount, userCount int32) (*CryptoGen, error) {
-	if str.IsEmpty(leagueComment) || orderCount <= 0 || peerCount <= 0 {
+func generateCryptoGen(ledgerName string, orderCount, peerCount, templateCount, userCount int32) (*CryptoGen, error) {
+	if str.IsEmpty(ledgerName) || orderCount <= 0 || peerCount <= 0 {
 		return nil, errors.New("crypto params exception")
 	}
 	ca := &CA{
@@ -114,7 +115,7 @@ func generateCryptoGen(leagueComment string, orderCount, peerCount, templateCoun
 	ordererOrgs := []*Order{
 		{
 			Name:   "Orderer",
-			Domain: leagueComment,
+			Domain: ledgerName,
 			CA:     ca,
 			Specs:  hostnames,
 		},
@@ -123,7 +124,7 @@ func generateCryptoGen(leagueComment string, orderCount, peerCount, templateCoun
 	for index := range peerOrgs {
 		peerOrgs[index] = &Peer{
 			Name:   strings.Join([]string{"Org", strconv.Itoa(index + 1)}, ""),
-			Domain: strings.Join([]string{leagueComment, "-org", strconv.Itoa(index + 1)}, ""),
+			Domain: strings.Join([]string{ledgerName, "-org", strconv.Itoa(index + 1)}, ""),
 			CA:     ca,
 			Template: &Template{
 				Count: templateCount,
@@ -131,6 +132,7 @@ func generateCryptoGen(leagueComment string, orderCount, peerCount, templateCoun
 			Users: &Users{
 				Count: userCount,
 			},
+			EnableNodeOUs: true,
 		}
 	}
 	return generateCryptoGenCustom(ordererOrgs, peerOrgs)
