@@ -102,7 +102,7 @@ func instantiate(peerName, channelID, name, path, version string, orgPolicies []
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 	} else {
-		result.Success(resp.TransactionID)
+		result.Success(string(resp.TransactionID))
 	}
 	return &result
 }
@@ -149,7 +149,7 @@ func upgrade(peerName, channelID, name, path, version string, orgPolicies []stri
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 	} else {
-		result.Success(resp.TransactionID)
+		result.Success(string(resp.TransactionID))
 	}
 	return &result
 }
@@ -168,7 +168,7 @@ func invoke(chaincodeID, fcn string, args [][]byte, client *channel.Client, targ
 		result.Fail(err.Error())
 	} else {
 		result.Success(string(resp.Payload))
-		result.Msg = string(resp.TransactionID)
+		result.Msg = string(string(resp.TransactionID))
 	}
 	return &result
 }
@@ -187,7 +187,7 @@ func query(chaincodeID, fcn string, args [][]byte, client *channel.Client, targe
 		result.Fail(err.Error())
 	} else {
 		result.Success(string(resp.Payload))
-		result.Msg = string(resp.TransactionID)
+		result.Msg = string(string(resp.TransactionID))
 	}
 	return &result
 }
