@@ -16,6 +16,7 @@ package chains
 
 import (
 	"errors"
+	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/core"
 	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
@@ -101,8 +102,12 @@ func getSinglePath(path string) string {
 
 func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Result, error) {
 	var (
-		res *response.Result
+		res  *response.Result
+		conf *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Install(in.OrgName, in.OrgUser, in.PeerName, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
@@ -113,7 +118,11 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 	var (
 		res              *response.Result
 		chainCodeInfoArr *sdk.ChainCodeInfoArr
+		conf             *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Installed(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
 		log.Self.Info("InstalledCC", log.Reflect("chainCodeInfoArr", chainCodeInfoArr))
@@ -137,8 +146,12 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 
 func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate) (*pb.Result, error) {
 	var (
-		res *response.Result
+		res  *response.Result
+		conf *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
@@ -150,7 +163,11 @@ func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiate
 	var (
 		res              *response.Result
 		chainCodeInfoArr *sdk.ChainCodeInfoArr
+		conf             *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Instantiated(in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
 		log.Self.Info("InstantiatedCC", log.Reflect("chainCodeInfoArr", chainCodeInfoArr))
@@ -174,8 +191,12 @@ func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiate
 
 func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Result, error) {
 	var (
-		res *response.Result
+		res  *response.Result
+		conf *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
 		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
@@ -185,8 +206,12 @@ func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Re
 
 func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Result, error) {
 	var (
-		res *response.Result
+		res  *response.Result
+		conf *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
@@ -196,8 +221,12 @@ func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Resu
 
 func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync) (*pb.Result, error) {
 	var (
-		res *response.Result
+		res  *response.Result
+		conf *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.InvokeAsync(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Callback, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
@@ -207,8 +236,12 @@ func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync)
 
 func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.Result, error) {
 	var (
-		res *response.Result
+		res  *response.Result
+		conf *config.Config
 	)
+	if conf = service.Configs[in.ConfigID]; nil == conf {
+		return nil, errors.New("config client is not exist")
+	}
 	if res = sdk.Query(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
 		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
