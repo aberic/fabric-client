@@ -252,6 +252,10 @@ message CertificateAuthorityRegistrar {
 }
 
 
+message ReqConfigList {
+    int32 list = 1;
+}
+
 message ReqConfig {
     string configID = 1;
 }

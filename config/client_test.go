@@ -32,7 +32,7 @@ func TestNewClient(t *testing.T) {
 
 func TGetClient() *Client {
 	client := Client{}
-	_ = client.initClient(true, "Org1", "debug",
+	client.initClient(true, "Org1", "debug",
 		"/crypto-config",
 		"/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key",
 		"/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt")

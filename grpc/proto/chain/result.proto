@@ -46,6 +46,12 @@ message ResultConfig {
     string errMsg = 3;
 }
 
+message ResultConfigList {
+    Code code = 1;
+    repeated string configIDs = 2;
+    string errMsg = 3;
+}
+
 message ResultUpload {
     Code code = 1;
     string source = 2;

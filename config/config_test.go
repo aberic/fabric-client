@@ -55,7 +55,7 @@ func TestSubString(t *testing.T) {
 
 func TGetConfig() *Config {
 	config := Config{}
-	_ = config.InitClient(true, "Org1", "debug",
+	config.InitClient(true, "Org1", "debug",
 		"Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/fabric/example/config/crypto-config",
 		"/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key",
 		"/crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt")

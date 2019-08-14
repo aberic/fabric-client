@@ -152,18 +152,18 @@ type ClientGlobalCache struct {
 	Selection         string `yaml:"selection"`
 }
 
-func (c *Client) initSelfClient(tls bool, leagueName, orgName, userName, level string) error {
+func (c *Client) initSelfClient(tls bool, leagueName, orgName, userName, level string) {
 	cryptoConfig := geneses.CryptoConfigPath(leagueName)
 	domain := strings.Join([]string{leagueName, strings.ToLower(orgName)}, "-")
 	keyPath := strings.Join([]string{
 		cryptoConfig, "/peerOrganizations/", domain, "/users/", userName, "@", domain, "/tls/client.key"}, "")
 	certPath := strings.Join([]string{
 		cryptoConfig, "/peerOrganizations/", domain, "/users/", userName, "@", domain, "/tls/client.crt"}, "")
-	return c.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
+	c.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
 }
 
-func (c *Client) initClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string) error {
-	return c.initCustomClient(
+func (c *Client) initClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string) {
+	c.initCustomClient(
 		tls, organization, level, cryptoConfig, keyPath, certPath,
 		&ClientPeer{
 			Timeout: &ClientPeerTimeout{
@@ -212,7 +212,7 @@ func (c *Client) initClient(tls bool, organization, level, cryptoConfig, keyPath
 }
 
 func (c *Client) initCustomClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string,
-	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) error {
+	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) {
 	c.Organization = organization
 	c.Logging = &ClientLogging{Level: level}
 	c.Peer = peer
@@ -232,5 +232,4 @@ func (c *Client) initCustomClient(tls bool, organization, level, cryptoConfig, k
 			Cert: &ClientTLSCertsClientCert{Path: certPath},
 		},
 	}
-	return nil
 }

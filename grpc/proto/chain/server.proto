@@ -62,42 +62,10 @@ service Ledger {
 }
 
 service LedgerConfig {
+    rpc ListConfig (ReqConfigList) returns (ResultConfigList) {
+    }
     rpc GetConfig (ReqConfig) returns (ResultConfig) {
     }
     rpc InitConfig (ReqInit) returns (Result) {
-    }
-    rpc InitClient (ReqClient) returns (Result) {
-    }
-    rpc InitClientSelf (ReqClientSelf) returns (Result) {
-    }
-    rpc InitClientCustom (ReqClientCustom) returns (Result) {
-    }
-    rpc AddOrSetPeerForChannel (ReqChannelPeer) returns (Result) {
-    }
-    rpc AddOrSetQueryChannelPolicyForChannel (ReqChannelPolicyQuery) returns (Result) {
-    }
-    rpc AddOrSetDiscoveryPolicyForChannel (ReqChannelPolicyDiscovery) returns (Result) {
-    }
-    rpc AddOrSetEventServicePolicyForChannel (ReqChannelPolicyEvent) returns (Result) {
-    }
-    rpc AddOrSetOrdererForOrganizations (ReqOrganizationsOrder) returns (Result) {
-    }
-    rpc AddOrSetOrdererForOrganizationsSelf (ReqOrganizationsOrderSelf) returns (Result) {
-    }
-    rpc AddOrSetOrgForOrganizations (ReqOrganizationsOrg) returns (Result) {
-    }
-    rpc AddOrSetOrgForOrganizationsSelf (ReqOrganizationsOrgSelf) returns (Result) {
-    }
-    rpc AddOrSetOrderer (ReqOrder) returns (Result) {
-    }
-    rpc AddOrSetOrdererSelf (ReqOrderSelf) returns (Result) {
-    }
-    rpc AddOrSetPeer (ReqPeer) returns (Result) {
-    }
-    rpc AddOrSetPeerSelf (ReqPeerSelf) returns (Result) {
-    }
-    rpc AddOrSetCertificateAuthority (ReqCertificateAuthority) returns (Result) {
-    }
-    rpc AddOrSetCertificateAuthoritySelf (ReqCertificateAuthoritySelf) returns (Result) {
     }
 }

@@ -18,7 +18,6 @@ import (
 	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"strings"
-	"sync"
 )
 
 const (
@@ -33,23 +32,22 @@ type Config struct {
 	Orderers               map[string]*Orderer              `yaml:"orderers"`
 	Peers                  map[string]*Peer                 `yaml:"peers"`
 	CertificateAuthorities map[string]*CertificateAuthority `yaml:"certificateAuthorities"`
-	Lock                   sync.RWMutex
 }
 
-func (c *Config) InitClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string) error {
+func (c *Config) InitClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string) {
 	c.initClient()
-	return c.Client.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
+	c.Client.initClient(tls, orgName, level, cryptoConfig, keyPath, certPath)
 }
 
-func (c *Config) InitSelfClient(tls bool, leagueName, orgName, userName, level string) error {
+func (c *Config) InitSelfClient(tls bool, leagueName, orgName, userName, level string) {
 	c.initClient()
-	return c.Client.initSelfClient(tls, leagueName, orgName, userName, level)
+	c.Client.initSelfClient(tls, leagueName, orgName, userName, level)
 }
 
 func (c *Config) InitCustomClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string,
-	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) error {
+	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) {
 	c.initClient()
-	return c.Client.initCustomClient(tls, orgName, level, cryptoConfig, keyPath, certPath, peer, eventService,
+	c.Client.initCustomClient(tls, orgName, level, cryptoConfig, keyPath, certPath, peer, eventService,
 		order, global, bccsp)
 }
 
