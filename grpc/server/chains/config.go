@@ -74,6 +74,23 @@ func (c *ConfigServer) InitConfig(ctx context.Context, in *pb.ReqInit) (*pb.Resu
 	}
 }
 
+// ListConfig 获取区块链配置信息ID集合
+func ListConfig(url string, req *pb.ReqConfigList) (interface{}, error) {
+	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {
+		var (
+			result *pb.ResultConfigList
+			err    error
+		)
+		// 创建grpc客户端
+		c := pb.NewLedgerConfigClient(conn)
+		// 客户端向grpc服务端发起请求
+		if result, err = c.ListConfig(context.Background(), req); nil != err {
+			return nil, err
+		}
+		return result, nil
+	})
+}
+
 // GetConfig 获取区块链配置信息
 func GetConfig(url string, req *pb.ReqConfig) (interface{}, error) {
 	return utils.RPC(url, func(conn *grpc.ClientConn) (interface{}, error) {

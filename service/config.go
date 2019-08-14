@@ -77,8 +77,5 @@ func InitConfig(in *pb.ReqInit) {
 	for _, cert := range in.CertificateAuthority {
 		conf.AddOrSetSelfCertificateAuthority(cert.LeagueName, cert.CertName, cert.Url, cert.CaName, cert.EnrollId, cert.EnrollSecret)
 	}
-	if nil == Configs[in.Client.ConfigID] {
-		Configs[in.Client.ConfigID] = &config.Config{}
-	}
 	Configs[in.Client.ConfigID] = conf
 }
