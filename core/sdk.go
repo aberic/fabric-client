@@ -24,11 +24,15 @@ import (
 	"github.com/ennoo/rivet/trans/response"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/ennoo/rivet/utils/string"
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	mspctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 	"net/http"
 	"strings"
 )
@@ -36,38 +40,32 @@ import (
 // setupAndRun enables testing an end-to-end scenario against the supplied SDK options
 // the createChannel flag will be used to either create a channel and the example CC or not(ie run the tests with existing ch and CC)
 func Create(orderOrgName, orderOrgUser, orderURL, orgName, orgUser, channelID, channelConfigPath string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) (txID string, err error) {
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, sdk, err := resMgmtOrdererClient(orderOrgName, orderOrgUser, configBytes, sdkOpts...)
 	if err != nil {
-		result.Fail(err.Error())
-		return &result
+		return "", err
 	}
 	defer sdk.Close()
 	return createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath, sdk, resMgmtClient)
 }
 
-func Join(orderURL, orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func Join(orderURL, orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) error {
 	resMgmtClient, sdk, err := resMgmtOrgClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
 		log.Self.Error(err.Error())
-		result.Fail(err.Error())
-		return &result
+		return err
 	}
 	defer sdk.Close()
 	return joinChannel(orderURL, channelID, peerName, resMgmtClient)
 }
 
-func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]*peer.ChannelInfo, error) {
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
 		log.Self.Error(err.Error())
-		result.Fail(err.Error())
-		return &result
+		return nil, err
 	}
 	defer sdk.Close()
 	return queryChannels(orgName, orgUser, peerName, sdk)
@@ -419,6 +417,22 @@ func QueryCollectionsConfig(chaincodeID, orgName, orgUser, channelID, peerName s
 	return queryCollectionsConfig(orgName, orgUser, peerName, channelID, chaincodeID, sdk)
 }
 
+func DiscoveryChannelPeers(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]fab.Peer, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return discoveryChannelPeers(channelID, orgName, orgUser, sdk)
+}
+
+func DiscoveryLocalPeers(orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]fab.Peer, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return discoveryLocalPeers(orgName, orgUser, sdk)
+}
+
 func DiscoveryClientPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
 	sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
@@ -465,6 +479,195 @@ func DiscoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainC
 		return &result
 	}
 	return discoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID, sdk)
+}
+
+func CAInfo(orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.GetCAInfoResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return caInfo(orgName, sdk)
+}
+
+func Enroll(orgName, enrollmentID string, configBytes []byte, opts []msp.EnrollmentOption, sdkOpts ...fabsdk.Option) error {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return err
+	}
+	defer sdk.Close()
+	return enroll(orgName, enrollmentID, sdk, opts...)
+}
+
+func Reenroll(orgName, enrollmentID string, configBytes []byte, opts []msp.EnrollmentOption, sdkOpts ...fabsdk.Option) error {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return err
+	}
+	defer sdk.Close()
+	return reenroll(orgName, enrollmentID, sdk, opts...)
+}
+
+func Register(orgName string, registerReq *msp.RegistrationRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (string, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return "", err
+	}
+	defer sdk.Close()
+	return register(orgName, registerReq, sdk)
+}
+
+func AddAffiliation(orgName string, affReq *msp.AffiliationRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return addAffiliation(orgName, affReq, sdk)
+}
+
+func RemoveAffiliation(orgName string, affReq *msp.AffiliationRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return removeAffiliation(orgName, affReq, sdk)
+}
+
+func ModifyAffiliation(orgName string, affReq *msp.ModifyAffiliationRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return modifyAffiliation(orgName, affReq, sdk)
+}
+
+func GetAllAffiliations(orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getAllAffiliations(orgName, sdk)
+}
+
+func GetAllAffiliationsByCaName(orgName, caName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getAllAffiliationsByCaName(orgName, caName, sdk)
+}
+
+func GetAffiliation(affiliation, orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getAffiliation(affiliation, orgName, sdk)
+}
+
+func GetAffiliationByCaName(affiliation, orgName, caName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.AffiliationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getAffiliationByCaName(affiliation, orgName, caName, sdk)
+}
+
+func GetAllIdentities(orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getAllIdentities(orgName, sdk)
+}
+
+func GetAllIdentitiesByCaName(orgName, caName string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getAllIdentitiesByCaName(orgName, caName, sdk)
+}
+
+func CreateIdentity(orgName string, req *msp.IdentityRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return createIdentity(orgName, req, sdk)
+}
+
+func ModifyIdentity(orgName string, req *msp.IdentityRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return modifyIdentity(orgName, req, sdk)
+}
+
+func GetIdentity(id, orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getIdentity(id, orgName, sdk)
+}
+
+func GetIdentityByCaName(id, caName, orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getIdentityByCaName(id, caName, orgName, sdk)
+}
+
+func RemoveIdentity(orgName string, req *msp.RemoveIdentityRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.IdentityResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return removeIdentity(orgName, req, sdk)
+}
+
+func CreateSigningIdentity(orgName string, configBytes []byte, opts []mspctx.SigningIdentityOption, sdkOpts ...fabsdk.Option) (mspctx.SigningIdentity, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return createSigningIdentity(orgName, sdk, opts...)
+}
+
+func GetSigningIdentity(id, orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (mspctx.SigningIdentity, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return getSigningIdentity(id, orgName, sdk)
+}
+
+func Revoke(orgName string, req *msp.RevocationRequest, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.RevocationResponse, error) {
+	sdk, err := sdk(configBytes, sdkOpts...)
+	if err != nil {
+		return nil, err
+	}
+	defer sdk.Close()
+	return revoke(orgName, req, sdk)
 }
 
 func sdk(configBytes []byte, sdkOpts ...fabsdk.Option) (*fabsdk.FabricSDK, error) {
@@ -541,8 +744,8 @@ func get(configID, channelID string) (orgName, orgUser string, err error) {
 		return
 	}
 
-	for name, peer := range channel.Peers {
-		if !peer.LedgerQuery {
+	for name, chPeer := range channel.Peers {
+		if !chPeer.LedgerQuery {
 			continue
 		}
 		peerName = name

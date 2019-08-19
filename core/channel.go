@@ -30,6 +30,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/comm"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	peer2 "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -52,48 +53,43 @@ func channelClient(orgName, orgUser, channelID string, sdk *fabsdk.FabricSDK) *c
 
 // channelConfigPath mychannel.tx
 func createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath string, sdk *fabsdk.FabricSDK,
-	client *resmgmt.Client) *response.Result {
-	result := response.Result{}
-	mspClient, err := mspclient.New(sdk.Context(), mspclient.WithOrg(orgName))
+	client *resmgmt.Client) (txID string, err error) {
+	var (
+		mspClient     *mspclient.Client
+		adminIdentity msp.SigningIdentity
+		scResp        resmgmt.SaveChannelResponse
+	)
+	mspClient, err = mspclient.New(sdk.Context(), mspclient.WithOrg(orgName))
 	if err != nil {
-		log.Self.Error(err.Error())
-		result.Fail(err.Error())
-	} else {
-		adminIdentity, err := mspClient.GetSigningIdentity(orgUser)
-		if err != nil {
-			log.Self.Error(err.Error())
-			result.Fail(err.Error())
-		} else {
-			req := resmgmt.SaveChannelRequest{ChannelID: channelID,
-				ChannelConfigPath: channelConfigPath,
-				SigningIdentities: []msp.SigningIdentity{adminIdentity}}
-			txID, err := client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orderURL))
-			if err != nil {
-				log.Self.Error("error should be nil. " + err.Error())
-				result.Fail("error should be nil. " + err.Error())
-			} else {
-				result.Success(string(txID.TransactionID))
-			}
-		}
+		return
 	}
-	return &result
+	adminIdentity, err = mspClient.GetSigningIdentity(orgUser)
+	if err != nil {
+		return
+	}
+	req := resmgmt.SaveChannelRequest{ChannelID: channelID,
+		ChannelConfigPath: channelConfigPath,
+		SigningIdentities: []msp.SigningIdentity{adminIdentity}}
+	scResp, err = client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orderURL))
+	if err != nil {
+		log.Self.Error("error should be nil.", log.Error(err))
+		return "", errors.Errorf("error should be nil. %v", err)
+	}
+	return string(scResp.TransactionID), nil
 }
 
 // ordererUrl "orderer.example.com"
-func joinChannel(orderURL, channelID, peerName string, client *resmgmt.Client) *response.Result {
-	result := response.Result{}
+func joinChannel(orderURL, channelID, peerName string, client *resmgmt.Client) error {
 	// Org peers join channel
 	if err := client.JoinChannel(
 		channelID,
 		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
 		resmgmt.WithTargetEndpoints(peerName),
 		resmgmt.WithOrdererEndpoint(orderURL)); err != nil {
-		log.Self.Error("Org peers failed to JoinChannel: " + err.Error())
-		result.Fail("Org peers failed to JoinChannel: " + err.Error())
-	} else {
-		result.Success("success")
+		log.Self.Error("Org peers failed to JoinChannel.", log.Error(err))
+		return errors.Errorf("Org peers failed to JoinChannel:  %v", err)
 	}
-	return &result
+	return nil
 }
 
 type ChannelArr struct {
@@ -101,34 +97,32 @@ type ChannelArr struct {
 }
 
 // peer 参见peer.go PeerChannel
-func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
+func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) ([]*peer2.ChannelInfo, error) {
 	//prepare context
 	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
 		log.Self.Error("Failed to query channels: " + err.Error())
-		result.Fail("Failed to query channels: " + err.Error())
+		return nil, errors.Errorf("Failed to query channels:  %v", err)
 	} else {
 		if nil != orgResMgmt {
 			qcResponse, err := orgResMgmt.QueryChannels(resmgmt.WithTargetEndpoints(peerName))
 			if err != nil {
 				log.Self.Error("Failed to query channels: peer cannot be nil", log.Error(err))
-				result.Fail("Failed to query channels: peer cannot be nil")
+				return nil, errors.Errorf("Failed to query channels: peer cannot be nil.  %v", err)
 			}
 			if nil == qcResponse {
 				log.Self.Error("qcResponse error should be nil. ")
-				result.Fail("qcResponse error should be nil. ")
+				return nil, errors.Errorf("qcResponse error should be nil. ")
 			} else {
-				result.Success(&ChannelArr{qcResponse.Channels})
+				return qcResponse.Channels, nil
 			}
 		} else {
 			log.Self.Error("orgResMgmt error should be nil. ")
-			result.Fail("orgResMgmt error should be nil. ")
+			return nil, errors.Errorf("orgResMgmt error should be nil. ")
 		}
 	}
-	return &result
 }
 
 func queryChannelInfo(channelID, peerName string, client ctx.Client) *response.Result {

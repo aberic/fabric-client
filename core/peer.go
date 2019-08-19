@@ -17,14 +17,66 @@ package sdk
 
 import (
 	"github.com/ennoo/rivet/trans/response"
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	pc "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/pkg/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/comm"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/discovery"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	fabdiscovery "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/discovery"
+	"github.com/pkg/errors"
 	"time"
 )
+
+func discoveryChannelPeers(channelID, orgName, orgUser string, sdk *fabsdk.FabricSDK) ([]fab.Peer, error) {
+	mspClient, err := msp.New(sdk.Context(), msp.WithOrg(orgName))
+	if err != nil {
+		return nil, errors.Errorf("error creating MSP client: %s", err)
+	}
+	user, err := mspClient.GetSigningIdentity(orgUser)
+	if err != nil {
+		return nil, errors.Errorf("GetSigningIdentity returned error: %v", err)
+	}
+	clientContext := sdk.Context(fabsdk.WithIdentity(user))
+	channelProvider := func() (*context.Channel, error) {
+		return context.NewChannel(clientContext, channelID)
+	}
+	chContext, err := channelProvider()
+	if err != nil {
+		return nil, err
+	}
+	discoveryDo, err := chContext.ChannelService().Discovery()
+	if err != nil {
+		return nil, err
+	}
+	peers, err := discoveryDo.GetPeers()
+	if err != nil {
+		return nil, err
+	}
+	return peers, nil
+}
+
+func discoveryLocalPeers(orgName, orgUser string, sdk *fabsdk.FabricSDK) ([]fab.Peer, error) {
+	mspClient, err := msp.New(sdk.Context(), msp.WithOrg(orgName))
+	if err != nil {
+		return nil, errors.Errorf("error creating MSP client: %s", err)
+	}
+	user, err := mspClient.GetSigningIdentity(orgUser)
+	if err != nil {
+		return nil, errors.Errorf("GetSigningIdentity returned error: %v", err)
+	}
+	clientContext := sdk.Context(fabsdk.WithIdentity(user))
+	localContext, err := context.NewLocal(clientContext)
+	if err != nil {
+		return nil, err
+	}
+	peers, err := localContext.LocalDiscoveryService().GetPeers()
+	if err != nil {
+		return nil, err
+	}
+	return peers, nil
+}
 
 func discoveryClientPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
 	result := response.Result{}

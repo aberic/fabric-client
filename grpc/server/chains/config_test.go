@@ -23,10 +23,18 @@ import (
 
 const (
 	rootPath    = "/data"
-	configID    = "7ac2ffedd58aa9219038386511b2b801"
+	configID    = "753f50e9b44edd7e255e7f80273eb1c9" // 5ee9c4a2c05968c87b1772b212eaa946 753f50e9b44edd7e255e7f80273eb1c9
 	channelName = "mychannel"
 	peerName    = "peer0"
 )
+
+func TestListConfig(t *testing.T) {
+	i, err := ListConfig("10.10.203.51:31247", &pb.ReqConfigList{
+		List: 1,
+	})
+	t.Log(err)
+	t.Log(i)
+}
 
 func TestGetConfig(t *testing.T) {
 	i, err := GetConfig("10.10.203.51:31247", &pb.ReqConfig{

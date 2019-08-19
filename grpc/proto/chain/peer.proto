@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_package = "io.ennoo.fabric-client.grpc.proto.chain";
+option java_outer_classname = "PeerProto";
+option go_package = "grpc/proto/chain";
+
+package chain;
+
+message ReqChannelPeers {
+    string configID = 1;
+    string channelID = 2;
+    string orgName = 3;
+    string orgUser = 4;
+}
+
+message ReqLocalPeers {
+    string configID = 1;
+    string orgName = 2;
+    string orgUser = 3;
+}
+
+message DiscoveryPeer {
+    string mspID = 1;
+    string url = 2;
+}

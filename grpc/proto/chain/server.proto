@@ -7,10 +7,55 @@ option go_package = "grpc/proto/chain";
 package chain;
 
 import "grpc/proto/chain/result.proto";
+import "grpc/proto/chain/ca.proto";
 import "grpc/proto/chain/channel.proto";
 import "grpc/proto/chain/chaincode.proto";
+import "grpc/proto/chain/peer.proto";
 import "grpc/proto/chain/ledger.proto";
 import "grpc/proto/chain/config.proto";
+
+service LedgerCA {
+    rpc Enroll (ReqEnroll) returns (Result) {
+    }
+    rpc Reenroll (ReqReenroll) returns (Result) {
+    }
+    rpc Register (ReqRegister) returns (Result) {
+    }
+    rpc AddAffiliation (ReqAddAffiliation) returns (ResultAffiliation) {
+    }
+    rpc RemoveAffiliation (ReqRemoveAffiliation) returns (ResultAffiliation) {
+    }
+    rpc ModifyAffiliation (ReqModifyAffiliation) returns (ResultAffiliation) {
+    }
+    rpc GetAllAffiliations (ReqGetAllAffiliations) returns (ResultAffiliation) {
+    }
+    rpc GetAllAffiliationsByCaName (ReqGetAllAffiliationsByCaName) returns (ResultAffiliation) {
+    }
+    rpc GetAffiliation (ReqGetAffiliation) returns (ResultAffiliation) {
+    }
+    rpc GetAffiliationByCaName (ReqGetAffiliationByCaName) returns (ResultAffiliation) {
+    }
+    rpc GetAllIdentities (ReqGetAllIdentities) returns (ResultIdentityResponses) {
+    }
+    rpc GetAllIdentitiesByCaName (ReqGetAllIdentitiesByCaName) returns (ResultIdentityResponses) {
+    }
+    rpc CreateIdentity (ReqCreateIdentity) returns (ResultIdentityResponse) {
+    }
+    rpc ModifyIdentity (ReqModifyIdentity) returns (ResultIdentityResponse) {
+    }
+    rpc GetIdentity (ReqGetIdentity) returns (ResultIdentityResponse) {
+    }
+    rpc GetIdentityByCaName (ReqGetIdentityByCaName) returns (ResultIdentityResponse) {
+    }
+    rpc RemoveIdentity (ReqRemoveIdentity) returns (ResultIdentityResponse) {
+    }
+    rpc CreateSigningIdentity (ReqCreateSigningIdentity) returns (ResultSigningIdentityResponse) {
+    }
+    rpc GetSigningIdentity (ReqGetSigningIdentity) returns (ResultSigningIdentityResponse) {
+    }
+    rpc Revoke (ReqRevoke) returns (ResultRevocationResponse) {
+    }
+}
 
 service LedgerChannel {
     rpc Create (ChannelCreate) returns (Result) {
@@ -39,6 +84,13 @@ service LedgerChainCode {
     rpc InvokeCCAsync (InvokeAsync) returns (Result) {
     }
     rpc QueryCC (Query) returns (Result) {
+    }
+}
+
+service LedgerPeer {
+    rpc LocalPeers (ReqLocalPeers) returns (ResultPeers) {
+    }
+    rpc ChannelPeers (ReqChannelPeers) returns (ResultPeers) {
     }
 }
 

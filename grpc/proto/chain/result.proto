@@ -6,9 +6,11 @@ option go_package = "grpc/proto/chain";
 
 package chain;
 
+import "grpc/proto/chain/ca.proto";
 import "grpc/proto/chain/chaincode.proto";
 import "grpc/proto/chain/ledger.proto";
 import "grpc/proto/chain/config.proto";
+import "grpc/proto/chain/peer.proto";
 
 message Result {
     Code code = 1;
@@ -57,6 +59,42 @@ message ResultUpload {
     string source = 2;
     string path = 3;
     string errMsg = 4;
+}
+
+message ResultPeers {
+    Code code = 1;
+    repeated DiscoveryPeer peer = 2;
+    string errMsg = 3;
+}
+
+message ResultAffiliation {
+    Code code = 1;
+    AffiliationResponse resp = 2;
+    string errMsg = 3;
+}
+
+message ResultIdentityResponses {
+    Code code = 1;
+    repeated IdentityResponse resp = 2;
+    string errMsg = 3;
+}
+
+message ResultIdentityResponse {
+    Code code = 1;
+    IdentityResponse resp = 2;
+    string errMsg = 3;
+}
+
+message ResultSigningIdentityResponse {
+    Code code = 1;
+    SigningIdentityResponse resp = 2;
+    string errMsg = 3;
+}
+
+message ResultRevocationResponse {
+    Code code = 1;
+    RevocationResponse resp = 2;
+    string errMsg = 3;
 }
 
 enum Code {

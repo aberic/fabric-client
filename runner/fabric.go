@@ -83,8 +83,10 @@ func grpcListener() {
 
 	//  注册我们自定义的helloworld服务
 	pb.RegisterLedgerConfigServer(rpcServer, &chains.ConfigServer{})
+	pb.RegisterLedgerCAServer(rpcServer, &chains.CAServer{})
 	pb.RegisterLedgerChannelServer(rpcServer, &chains.ChannelServer{})
 	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
+	pb.RegisterLedgerPeerServer(rpcServer, &chains.PeerServer{})
 	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
 	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
 	rafts.RegisterRaftServer(rpcServer, &rafts.Server{})

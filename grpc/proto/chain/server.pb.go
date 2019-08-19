@@ -25,44 +25,68 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 func init() { proto.RegisterFile("grpc/proto/chain/server.proto", fileDescriptor_3248a815c2f630c6) }
 
 var fileDescriptor_3248a815c2f630c6 = []byte{
-	// 589 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0x75, 0x45, 0x08, 0xcd, 0xb4, 0x69, 0xa3, 0x4d, 0xa1, 0xc5, 0x7c, 0x08, 0xf9, 0x42, 0x05,
-	0xad, 0x23, 0x05, 0xc4, 0x89, 0x1e, 0x9a, 0x05, 0x51, 0xa3, 0x22, 0xd1, 0x96, 0x5e, 0xb8, 0xb9,
-	0xce, 0x24, 0x59, 0xd5, 0xda, 0x0d, 0x6b, 0xb7, 0x22, 0x3f, 0x86, 0x3f, 0xc1, 0xaf, 0x81, 0x7f,
-	0x83, 0xf6, 0x23, 0x89, 0xed, 0x75, 0x90, 0x7a, 0xdc, 0xf7, 0xde, 0xbc, 0xd9, 0x79, 0xf1, 0x4e,
-	0xe0, 0xd9, 0x58, 0x4e, 0x93, 0xde, 0x54, 0x8a, 0x5c, 0xf4, 0x92, 0x49, 0xcc, 0x78, 0x2f, 0x43,
-	0x79, 0x8b, 0x32, 0xd4, 0x10, 0xb9, 0xaf, 0x31, 0xdf, 0x55, 0x49, 0xcc, 0x6e, 0xd2, 0xdc, 0xa8,
-	0xfc, 0xe7, 0x0e, 0x9d, 0x4c, 0x62, 0xce, 0x31, 0xb5, 0xfc, 0x8b, 0x3a, 0x9e, 0xf1, 0x44, 0x0c,
-	0xd1, 0x2a, 0xdc, 0x06, 0x29, 0x0e, 0xc7, 0xf3, 0x6b, 0xd4, 0xd0, 0x89, 0xe0, 0x23, 0x36, 0x36,
-	0x74, 0xff, 0xd7, 0x1a, 0xb4, 0x4f, 0xb5, 0x9e, 0x9a, 0xbe, 0xa4, 0x07, 0x4d, 0x2a, 0x31, 0xce,
-	0x91, 0xec, 0x84, 0xba, 0x20, 0xb4, 0x8c, 0x41, 0xfd, 0xb6, 0x45, 0xcf, 0xf5, 0x18, 0x81, 0x47,
-	0x5e, 0x43, 0xe3, 0xb3, 0x60, 0x9c, 0x90, 0xb2, 0x5c, 0x61, 0xae, 0x38, 0x84, 0xc6, 0x29, 0xcb,
-	0xf2, 0xaa, 0x58, 0x61, 0x7e, 0xa7, 0x24, 0x3e, 0x96, 0x32, 0xf0, 0xfa, 0x7f, 0xef, 0xc1, 0xf6,
-	0xe2, 0x7e, 0x8c, 0x53, 0x31, 0x44, 0xd2, 0x87, 0xf5, 0xcb, 0x69, 0x2a, 0xe2, 0x21, 0xa5, 0x64,
-	0xde, 0xc0, 0x00, 0x7e, 0xb7, 0x64, 0x61, 0xc0, 0xc0, 0xdb, 0x5f, 0x23, 0x07, 0xd0, 0x8a, 0x78,
-	0x96, 0xc7, 0x69, 0x4a, 0x29, 0xd9, 0xb2, 0x2a, 0x8b, 0xb8, 0xb7, 0x7c, 0x07, 0x1b, 0x96, 0x43,
-	0xd5, 0xa4, 0x53, 0xd6, 0x63, 0xb5, 0x0f, 0xa5, 0xea, 0xfe, 0x81, 0x47, 0xde, 0x42, 0x5b, 0x6b,
-	0x78, 0xce, 0xe2, 0x1c, 0x29, 0x5d, 0x8c, 0x59, 0x40, 0xdd, 0x6e, 0xef, 0x61, 0xab, 0xc0, 0xab,
-	0x86, 0x5d, 0xb7, 0x6c, 0x65, 0xcf, 0x03, 0x68, 0x5d, 0x4e, 0xc7, 0x32, 0x1e, 0x62, 0x61, 0x32,
-	0x8b, 0xb8, 0xbd, 0x5e, 0xc1, 0x7a, 0xc4, 0x6f, 0xc5, 0x35, 0x16, 0xb2, 0x33, 0x80, 0xab, 0xd5,
-	0xd3, 0x18, 0xed, 0x71, 0x36, 0xe3, 0x49, 0x61, 0x1a, 0x85, 0x6a, 0xcc, 0xad, 0xda, 0x87, 0x07,
-	0x67, 0x37, 0x28, 0x67, 0x94, 0x92, 0x4d, 0xcb, 0xe9, 0xb3, 0xa3, 0xec, 0xff, 0x69, 0x40, 0xd3,
-	0xfc, 0xb6, 0xe4, 0x08, 0xb6, 0xb5, 0xc8, 0x1c, 0x23, 0x3e, 0x12, 0x8b, 0x51, 0xce, 0xf1, 0x87,
-	0x3a, 0xfb, 0x7b, 0xe5, 0xf1, 0xcd, 0x77, 0xa3, 0x98, 0xc0, 0x23, 0x11, 0xec, 0x15, 0xca, 0x07,
-	0xa9, 0x48, 0xae, 0x07, 0xb3, 0x13, 0x64, 0xe3, 0x49, 0x4e, 0x76, 0x97, 0x3e, 0x25, 0xc2, 0x27,
-	0x25, 0x43, 0xcd, 0x05, 0x1e, 0xf9, 0x08, 0x8f, 0x6a, 0xac, 0xe2, 0x6c, 0x42, 0x1e, 0xba, 0x46,
-	0x71, 0x36, 0xb9, 0x8b, 0xcd, 0xb7, 0x9f, 0xd1, 0x87, 0x1a, 0x1b, 0x05, 0xaf, 0xb4, 0xe9, 0x56,
-	0x72, 0xb9, 0x98, 0xe2, 0xf2, 0x87, 0xb0, 0xd9, 0x28, 0xec, 0xbf, 0xf9, 0x9c, 0xc1, 0xd3, 0x55,
-	0xf9, 0x68, 0xbf, 0x27, 0x2b, 0x32, 0xd2, 0xc6, 0xf5, 0x37, 0xfb, 0x02, 0x7e, 0x7d, 0x4e, 0xda,
-	0xf0, 0x71, 0x6d, 0x56, 0x77, 0xb5, 0x53, 0xc1, 0xac, 0xb0, 0x9b, 0x53, 0xf5, 0x76, 0xfd, 0xdf,
-	0x6b, 0xb0, 0x69, 0xd7, 0x86, 0xde, 0x76, 0xe4, 0x08, 0x40, 0xbd, 0x17, 0x7b, 0xda, 0x59, 0xfa,
-	0x19, 0x44, 0xef, 0x9f, 0xdd, 0x72, 0x82, 0x0b, 0x42, 0x3f, 0x85, 0xd6, 0x27, 0x9c, 0x57, 0x77,
-	0xaa, 0xd5, 0xd5, 0xa7, 0xa9, 0xc1, 0xc0, 0x23, 0x87, 0x00, 0x11, 0x67, 0xf3, 0xb2, 0xd2, 0x07,
-	0xcd, 0x72, 0xe7, 0x3d, 0x0c, 0x4e, 0xe0, 0x25, 0x13, 0x21, 0x72, 0x2e, 0x44, 0x38, 0x8a, 0xaf,
-	0x24, 0x4b, 0x0e, 0x93, 0x94, 0x21, 0xcf, 0x43, 0xb5, 0xc3, 0xcd, 0xc2, 0x36, 0x35, 0x83, 0x8d,
-	0x0b, 0xfd, 0x57, 0xf3, 0x55, 0x41, 0xdf, 0x3b, 0xd5, 0x15, 0x7f, 0xd5, 0xd4, 0x87, 0x37, 0xff,
-	0x02, 0x00, 0x00, 0xff, 0xff, 0xdd, 0x94, 0x52, 0x2c, 0xa3, 0x06, 0x00, 0x00,
+	// 964 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x57, 0xcd, 0x6e, 0xdb, 0x46,
+	0x10, 0x96, 0x51, 0xd7, 0xb5, 0xc7, 0xb6, 0xa2, 0xae, 0x1b, 0xc7, 0xa1, 0xe3, 0x24, 0x20, 0x02,
+	0x34, 0x68, 0x12, 0x09, 0x50, 0x8b, 0xa2, 0x87, 0xfa, 0x20, 0xb1, 0x89, 0xa3, 0xd6, 0x09, 0x1c,
+	0xb9, 0xee, 0x21, 0x87, 0x22, 0x0c, 0x39, 0x92, 0x17, 0x61, 0x76, 0x65, 0x92, 0x31, 0xaa, 0x73,
+	0xfb, 0x1a, 0x7d, 0x89, 0x3e, 0x4d, 0xfb, 0x36, 0xc5, 0xfe, 0x90, 0xda, 0xe5, 0x92, 0xb2, 0x93,
+	0xe3, 0x7e, 0xdf, 0x37, 0xdf, 0xce, 0x0c, 0x77, 0x96, 0x24, 0x1c, 0x4c, 0xd3, 0x59, 0xd4, 0x9b,
+	0xa5, 0x3c, 0xe7, 0xbd, 0xe8, 0x3c, 0xa4, 0xac, 0x97, 0x61, 0x7a, 0x89, 0x69, 0x57, 0x42, 0xe4,
+	0x73, 0x89, 0x79, 0xae, 0x2a, 0xc5, 0xec, 0x43, 0x92, 0x2b, 0x95, 0x77, 0xdb, 0xa1, 0xa3, 0x50,
+	0x53, 0x77, 0x5d, 0xea, 0x3c, 0x64, 0x0c, 0x13, 0xcd, 0xdf, 0xaf, 0xe3, 0x29, 0x8b, 0x78, 0x8c,
+	0x5a, 0xb1, 0xef, 0x28, 0x66, 0x58, 0xe4, 0x57, 0x93, 0x58, 0x82, 0xf1, 0x74, 0x09, 0x1d, 0x71,
+	0x36, 0xa1, 0x53, 0x45, 0xf7, 0xff, 0xdc, 0x82, 0xf5, 0x63, 0xa9, 0x0f, 0x06, 0xe4, 0x11, 0xac,
+	0x3d, 0x65, 0x29, 0x4f, 0x12, 0xd2, 0xe9, 0x4a, 0x6d, 0x77, 0x8c, 0x17, 0x0a, 0xf1, 0xb6, 0x4b,
+	0x44, 0x54, 0xed, 0xb7, 0x48, 0x0f, 0xd6, 0xc7, 0x88, 0x4a, 0x4e, 0x16, 0xf2, 0x02, 0x6b, 0x08,
+	0x98, 0xd2, 0x2c, 0xc7, 0xd4, 0x0e, 0x50, 0x98, 0x1b, 0xf0, 0x0c, 0xda, 0x83, 0x38, 0x1e, 0x4c,
+	0x26, 0x34, 0xa1, 0x61, 0x4e, 0x39, 0x23, 0x7b, 0x8b, 0x30, 0x9b, 0xf1, 0xf6, 0xac, 0x60, 0x83,
+	0xf1, 0x5b, 0xe4, 0x18, 0xbe, 0x1c, 0xe3, 0x7b, 0x7e, 0x89, 0xa6, 0xd5, 0xbe, 0x99, 0x41, 0x85,
+	0xbc, 0xca, 0xed, 0x05, 0x8f, 0xe9, 0x64, 0xde, 0xe0, 0xe6, 0x90, 0x4b, 0xdd, 0x5e, 0x02, 0x39,
+	0xc2, 0x7c, 0x90, 0x24, 0x06, 0x9c, 0x91, 0x3b, 0x0b, 0x3b, 0x97, 0x5d, 0xea, 0xf7, 0x3b, 0x78,
+	0x6e, 0xc4, 0x70, 0x1e, 0x84, 0x2f, 0xc3, 0xf7, 0x48, 0x1e, 0x2c, 0xf3, 0x2d, 0x54, 0x4b, 0xfd,
+	0x9f, 0x41, 0x5b, 0x44, 0xd6, 0x3f, 0x13, 0x9b, 0x59, 0xea, 0xf3, 0x1b, 0xec, 0xda, 0xea, 0x32,
+	0xc7, 0xfb, 0x4d, 0x7e, 0xd7, 0xca, 0xef, 0x04, 0x3a, 0xaa, 0xb2, 0x51, 0x8c, 0x2c, 0xa7, 0x39,
+	0xc5, 0x8c, 0x78, 0xd5, 0xaa, 0x17, 0x9c, 0x77, 0xd7, 0xf2, 0xd2, 0xc4, 0x7c, 0x8c, 0xd9, 0x8c,
+	0xb3, 0x0c, 0x33, 0xbf, 0x45, 0xde, 0xc0, 0x5e, 0x35, 0xaa, 0xcc, 0xd5, 0x6f, 0x76, 0x2e, 0xb3,
+	0xbd, 0x7a, 0x87, 0x5f, 0xa0, 0x1d, 0xa4, 0x18, 0xe6, 0x58, 0x90, 0x66, 0x4f, 0x6d, 0xc6, 0x3b,
+	0x58, 0xea, 0xa6, 0xcc, 0xd4, 0x09, 0xac, 0x33, 0xb3, 0x99, 0xab, 0xcd, 0x9e, 0xc2, 0xe6, 0x11,
+	0x96, 0x04, 0xb9, 0x69, 0x95, 0x7b, 0x7d, 0x9b, 0x33, 0xd8, 0x31, 0xf4, 0x65, 0xf7, 0x0e, 0x6a,
+	0xed, 0xca, 0xc6, 0x5d, 0xa7, 0x54, 0x35, 0xba, 0x75, 0xa5, 0xda, 0xcc, 0xd5, 0x66, 0x6f, 0xe0,
+	0xa6, 0x6a, 0xf5, 0x29, 0x9d, 0x32, 0xca, 0xa6, 0xa5, 0xe7, 0xbd, 0xea, 0xb3, 0xa8, 0x08, 0xbc,
+	0x07, 0x96, 0x75, 0x85, 0x35, 0x76, 0x78, 0x2d, 0x47, 0xbd, 0x6a, 0x6f, 0x8f, 0xfa, 0xa7, 0x7a,
+	0x1f, 0xc2, 0xda, 0x18, 0x2f, 0xf9, 0x3b, 0x34, 0x6f, 0x6e, 0x85, 0x78, 0xf7, 0x2c, 0x0f, 0x01,
+	0x46, 0x72, 0x5a, 0x16, 0xe1, 0xfd, 0xbf, 0x57, 0x60, 0x5b, 0xbf, 0x05, 0xd4, 0xab, 0x89, 0xf4,
+	0x60, 0x4d, 0x55, 0x4b, 0xbe, 0xd2, 0xe1, 0x9a, 0x51, 0xa8, 0x7b, 0x59, 0x3f, 0x82, 0xd5, 0x9f,
+	0x39, 0x65, 0xe5, 0xcd, 0xae, 0xe5, 0x02, 0x73, 0xc5, 0x5d, 0x58, 0x3d, 0xa6, 0x59, 0x5e, 0x15,
+	0x0b, 0xcc, 0xeb, 0xd8, 0xd3, 0x9d, 0xa6, 0x7e, 0xab, 0xff, 0xdf, 0x67, 0x70, 0xa3, 0xcc, 0x8f,
+	0xb2, 0x80, 0xc7, 0x48, 0xfa, 0xb0, 0x7e, 0x36, 0x4b, 0x78, 0x18, 0x07, 0x01, 0x29, 0x36, 0x50,
+	0x80, 0xb7, 0x63, 0x59, 0x28, 0xd0, 0x6f, 0x3d, 0x5c, 0x21, 0x8f, 0x61, 0x63, 0xc4, 0xb2, 0x3c,
+	0x4c, 0x92, 0x20, 0x20, 0x6d, 0xad, 0xd2, 0x88, 0x9b, 0xe5, 0xf7, 0xb0, 0xa9, 0x39, 0x14, 0x9b,
+	0x74, 0x6c, 0x3d, 0x56, 0xf7, 0x09, 0x02, 0x91, 0xbf, 0xdf, 0x22, 0xdf, 0xc1, 0xb6, 0xd4, 0xb0,
+	0x9c, 0x86, 0x39, 0x06, 0x41, 0x59, 0xa6, 0x81, 0xba, 0xbb, 0xfd, 0x08, 0x6d, 0x83, 0x17, 0x1b,
+	0xee, 0xb8, 0x61, 0x8d, 0x7b, 0x3e, 0x86, 0x8d, 0xb3, 0xd9, 0x34, 0x0d, 0x63, 0x34, 0x2a, 0xd3,
+	0x88, 0xbb, 0xd7, 0x37, 0xb0, 0x3e, 0x62, 0xe2, 0x70, 0x18, 0xbd, 0x53, 0x80, 0xab, 0x95, 0xd5,
+	0x28, 0xed, 0x20, 0x9b, 0xb3, 0xc8, 0xa8, 0x46, 0xa0, 0x12, 0x73, 0xa3, 0x1e, 0xc2, 0x17, 0xaf,
+	0x3e, 0x60, 0x3a, 0x0f, 0x02, 0xb2, 0xa5, 0x39, 0xb9, 0x76, 0x94, 0xfd, 0xbf, 0x56, 0x00, 0xd4,
+	0xb3, 0x3d, 0x41, 0x4c, 0xc9, 0x0f, 0x00, 0xc7, 0x3c, 0x0a, 0x13, 0xb1, 0xc8, 0xca, 0xc3, 0x37,
+	0xc6, 0x8b, 0x05, 0xea, 0x11, 0xcb, 0x43, 0x62, 0xb2, 0x81, 0x5b, 0xfa, 0x1c, 0xa9, 0xd8, 0x5d,
+	0x63, 0x70, 0x0d, 0xbc, 0x3e, 0xba, 0xff, 0xef, 0x2a, 0xac, 0xa9, 0x34, 0xc8, 0x21, 0xdc, 0x90,
+	0xb9, 0xaa, 0xe5, 0x88, 0x4d, 0x78, 0xd9, 0xd1, 0x31, 0x5e, 0x88, 0x75, 0xe5, 0x15, 0xa4, 0xed,
+	0x05, 0xe3, 0xb7, 0xc8, 0x08, 0xf6, 0x8c, 0xf0, 0x61, 0xc2, 0xa3, 0x77, 0xc3, 0xf9, 0x73, 0xa4,
+	0xd3, 0xf3, 0x9c, 0xdc, 0x5a, 0xf8, 0x58, 0x44, 0x25, 0x29, 0xc9, 0xc9, 0xfb, 0x77, 0xb7, 0xc6,
+	0x2a, 0xcc, 0xce, 0xcd, 0xab, 0xd8, 0x80, 0x3f, 0xc6, 0xe6, 0xd7, 0x3f, 0x46, 0x3f, 0xd5, 0xd8,
+	0x08, 0xb8, 0xd1, 0x66, 0xa7, 0xd2, 0x97, 0xd3, 0x19, 0x46, 0xe6, 0xb7, 0x5c, 0x81, 0x2d, 0xed,
+	0xcf, 0x2b, 0xb8, 0xd3, 0xd4, 0x1f, 0xe9, 0xb7, 0xdf, 0xd0, 0x23, 0x69, 0x5c, 0x9f, 0xd9, 0x0b,
+	0xf0, 0xea, 0xfb, 0x24, 0x0d, 0x6f, 0xd7, 0xf6, 0xea, 0x63, 0xed, 0x44, 0x63, 0x1a, 0xec, 0x0a,
+	0xaa, 0xde, 0xae, 0xff, 0xcf, 0x0a, 0x6c, 0xe9, 0xdb, 0x4b, 0x7e, 0x7a, 0x93, 0x43, 0x00, 0x31,
+	0xb6, 0x7a, 0x65, 0x9c, 0x71, 0x85, 0xc8, 0x6b, 0xf0, 0x96, 0xdd, 0xc1, 0x92, 0x90, 0x13, 0xb9,
+	0x71, 0x84, 0x45, 0x74, 0xa7, 0x1a, 0x5d, 0xbd, 0x21, 0x24, 0xe8, 0xb7, 0xc8, 0x13, 0x80, 0x11,
+	0xa3, 0x45, 0x98, 0x75, 0xa0, 0x69, 0xee, 0x8c, 0xe5, 0xf0, 0x39, 0x7c, 0x4d, 0x79, 0x17, 0x19,
+	0xe3, 0xbc, 0x3b, 0x09, 0xdf, 0xa6, 0x34, 0x7a, 0x12, 0x25, 0x14, 0x59, 0xde, 0x15, 0x3f, 0x14,
+	0xea, 0xef, 0x41, 0xc5, 0x0c, 0x37, 0x4f, 0xe5, 0xff, 0xd2, 0x89, 0x80, 0x5e, 0x77, 0xaa, 0xff,
+	0x1b, 0x6f, 0xd7, 0xe4, 0xe2, 0xdb, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0xc3, 0xc9, 0x6e, 0x48,
+	0x68, 0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -72,6 +96,697 @@ var _ grpc.ClientConn
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
+
+// LedgerCAClient is the client API for LedgerCA service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type LedgerCAClient interface {
+	Enroll(ctx context.Context, in *ReqEnroll, opts ...grpc.CallOption) (*Result, error)
+	Reenroll(ctx context.Context, in *ReqReenroll, opts ...grpc.CallOption) (*Result, error)
+	Register(ctx context.Context, in *ReqRegister, opts ...grpc.CallOption) (*Result, error)
+	AddAffiliation(ctx context.Context, in *ReqAddAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	RemoveAffiliation(ctx context.Context, in *ReqRemoveAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	ModifyAffiliation(ctx context.Context, in *ReqModifyAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	GetAllAffiliations(ctx context.Context, in *ReqGetAllAffiliations, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	GetAllAffiliationsByCaName(ctx context.Context, in *ReqGetAllAffiliationsByCaName, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	GetAffiliation(ctx context.Context, in *ReqGetAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	GetAffiliationByCaName(ctx context.Context, in *ReqGetAffiliationByCaName, opts ...grpc.CallOption) (*ResultAffiliation, error)
+	GetAllIdentities(ctx context.Context, in *ReqGetAllIdentities, opts ...grpc.CallOption) (*ResultIdentityResponses, error)
+	GetAllIdentitiesByCaName(ctx context.Context, in *ReqGetAllIdentitiesByCaName, opts ...grpc.CallOption) (*ResultIdentityResponses, error)
+	CreateIdentity(ctx context.Context, in *ReqCreateIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error)
+	ModifyIdentity(ctx context.Context, in *ReqModifyIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error)
+	GetIdentity(ctx context.Context, in *ReqGetIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error)
+	GetIdentityByCaName(ctx context.Context, in *ReqGetIdentityByCaName, opts ...grpc.CallOption) (*ResultIdentityResponse, error)
+	RemoveIdentity(ctx context.Context, in *ReqRemoveIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error)
+	CreateSigningIdentity(ctx context.Context, in *ReqCreateSigningIdentity, opts ...grpc.CallOption) (*ResultSigningIdentityResponse, error)
+	GetSigningIdentity(ctx context.Context, in *ReqGetSigningIdentity, opts ...grpc.CallOption) (*ResultSigningIdentityResponse, error)
+	Revoke(ctx context.Context, in *ReqRevoke, opts ...grpc.CallOption) (*ResultRevocationResponse, error)
+}
+
+type ledgerCAClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewLedgerCAClient(cc *grpc.ClientConn) LedgerCAClient {
+	return &ledgerCAClient{cc}
+}
+
+func (c *ledgerCAClient) Enroll(ctx context.Context, in *ReqEnroll, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/Enroll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) Reenroll(ctx context.Context, in *ReqReenroll, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/Reenroll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) Register(ctx context.Context, in *ReqRegister, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) AddAffiliation(ctx context.Context, in *ReqAddAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/AddAffiliation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) RemoveAffiliation(ctx context.Context, in *ReqRemoveAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/RemoveAffiliation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) ModifyAffiliation(ctx context.Context, in *ReqModifyAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/ModifyAffiliation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetAllAffiliations(ctx context.Context, in *ReqGetAllAffiliations, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetAllAffiliations", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetAllAffiliationsByCaName(ctx context.Context, in *ReqGetAllAffiliationsByCaName, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetAllAffiliationsByCaName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetAffiliation(ctx context.Context, in *ReqGetAffiliation, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetAffiliation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetAffiliationByCaName(ctx context.Context, in *ReqGetAffiliationByCaName, opts ...grpc.CallOption) (*ResultAffiliation, error) {
+	out := new(ResultAffiliation)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetAffiliationByCaName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetAllIdentities(ctx context.Context, in *ReqGetAllIdentities, opts ...grpc.CallOption) (*ResultIdentityResponses, error) {
+	out := new(ResultIdentityResponses)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetAllIdentities", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetAllIdentitiesByCaName(ctx context.Context, in *ReqGetAllIdentitiesByCaName, opts ...grpc.CallOption) (*ResultIdentityResponses, error) {
+	out := new(ResultIdentityResponses)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetAllIdentitiesByCaName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) CreateIdentity(ctx context.Context, in *ReqCreateIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error) {
+	out := new(ResultIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/CreateIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) ModifyIdentity(ctx context.Context, in *ReqModifyIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error) {
+	out := new(ResultIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/ModifyIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetIdentity(ctx context.Context, in *ReqGetIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error) {
+	out := new(ResultIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetIdentityByCaName(ctx context.Context, in *ReqGetIdentityByCaName, opts ...grpc.CallOption) (*ResultIdentityResponse, error) {
+	out := new(ResultIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetIdentityByCaName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) RemoveIdentity(ctx context.Context, in *ReqRemoveIdentity, opts ...grpc.CallOption) (*ResultIdentityResponse, error) {
+	out := new(ResultIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/RemoveIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) CreateSigningIdentity(ctx context.Context, in *ReqCreateSigningIdentity, opts ...grpc.CallOption) (*ResultSigningIdentityResponse, error) {
+	out := new(ResultSigningIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/CreateSigningIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) GetSigningIdentity(ctx context.Context, in *ReqGetSigningIdentity, opts ...grpc.CallOption) (*ResultSigningIdentityResponse, error) {
+	out := new(ResultSigningIdentityResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/GetSigningIdentity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerCAClient) Revoke(ctx context.Context, in *ReqRevoke, opts ...grpc.CallOption) (*ResultRevocationResponse, error) {
+	out := new(ResultRevocationResponse)
+	err := c.cc.Invoke(ctx, "/chain.LedgerCA/Revoke", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// LedgerCAServer is the server API for LedgerCA service.
+type LedgerCAServer interface {
+	Enroll(context.Context, *ReqEnroll) (*Result, error)
+	Reenroll(context.Context, *ReqReenroll) (*Result, error)
+	Register(context.Context, *ReqRegister) (*Result, error)
+	AddAffiliation(context.Context, *ReqAddAffiliation) (*ResultAffiliation, error)
+	RemoveAffiliation(context.Context, *ReqRemoveAffiliation) (*ResultAffiliation, error)
+	ModifyAffiliation(context.Context, *ReqModifyAffiliation) (*ResultAffiliation, error)
+	GetAllAffiliations(context.Context, *ReqGetAllAffiliations) (*ResultAffiliation, error)
+	GetAllAffiliationsByCaName(context.Context, *ReqGetAllAffiliationsByCaName) (*ResultAffiliation, error)
+	GetAffiliation(context.Context, *ReqGetAffiliation) (*ResultAffiliation, error)
+	GetAffiliationByCaName(context.Context, *ReqGetAffiliationByCaName) (*ResultAffiliation, error)
+	GetAllIdentities(context.Context, *ReqGetAllIdentities) (*ResultIdentityResponses, error)
+	GetAllIdentitiesByCaName(context.Context, *ReqGetAllIdentitiesByCaName) (*ResultIdentityResponses, error)
+	CreateIdentity(context.Context, *ReqCreateIdentity) (*ResultIdentityResponse, error)
+	ModifyIdentity(context.Context, *ReqModifyIdentity) (*ResultIdentityResponse, error)
+	GetIdentity(context.Context, *ReqGetIdentity) (*ResultIdentityResponse, error)
+	GetIdentityByCaName(context.Context, *ReqGetIdentityByCaName) (*ResultIdentityResponse, error)
+	RemoveIdentity(context.Context, *ReqRemoveIdentity) (*ResultIdentityResponse, error)
+	CreateSigningIdentity(context.Context, *ReqCreateSigningIdentity) (*ResultSigningIdentityResponse, error)
+	GetSigningIdentity(context.Context, *ReqGetSigningIdentity) (*ResultSigningIdentityResponse, error)
+	Revoke(context.Context, *ReqRevoke) (*ResultRevocationResponse, error)
+}
+
+func RegisterLedgerCAServer(s *grpc.Server, srv LedgerCAServer) {
+	s.RegisterService(&_LedgerCA_serviceDesc, srv)
+}
+
+func _LedgerCA_Enroll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqEnroll)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).Enroll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/Enroll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).Enroll(ctx, req.(*ReqEnroll))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_Reenroll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqReenroll)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).Reenroll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/Reenroll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).Reenroll(ctx, req.(*ReqReenroll))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqRegister)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).Register(ctx, req.(*ReqRegister))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_AddAffiliation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqAddAffiliation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).AddAffiliation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/AddAffiliation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).AddAffiliation(ctx, req.(*ReqAddAffiliation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_RemoveAffiliation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqRemoveAffiliation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).RemoveAffiliation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/RemoveAffiliation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).RemoveAffiliation(ctx, req.(*ReqRemoveAffiliation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_ModifyAffiliation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqModifyAffiliation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).ModifyAffiliation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/ModifyAffiliation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).ModifyAffiliation(ctx, req.(*ReqModifyAffiliation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetAllAffiliations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetAllAffiliations)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetAllAffiliations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetAllAffiliations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetAllAffiliations(ctx, req.(*ReqGetAllAffiliations))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetAllAffiliationsByCaName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetAllAffiliationsByCaName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetAllAffiliationsByCaName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetAllAffiliationsByCaName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetAllAffiliationsByCaName(ctx, req.(*ReqGetAllAffiliationsByCaName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetAffiliation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetAffiliation)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetAffiliation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetAffiliation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetAffiliation(ctx, req.(*ReqGetAffiliation))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetAffiliationByCaName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetAffiliationByCaName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetAffiliationByCaName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetAffiliationByCaName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetAffiliationByCaName(ctx, req.(*ReqGetAffiliationByCaName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetAllIdentities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetAllIdentities)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetAllIdentities(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetAllIdentities",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetAllIdentities(ctx, req.(*ReqGetAllIdentities))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetAllIdentitiesByCaName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetAllIdentitiesByCaName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetAllIdentitiesByCaName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetAllIdentitiesByCaName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetAllIdentitiesByCaName(ctx, req.(*ReqGetAllIdentitiesByCaName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_CreateIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqCreateIdentity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).CreateIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/CreateIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).CreateIdentity(ctx, req.(*ReqCreateIdentity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_ModifyIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqModifyIdentity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).ModifyIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/ModifyIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).ModifyIdentity(ctx, req.(*ReqModifyIdentity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetIdentity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetIdentity(ctx, req.(*ReqGetIdentity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetIdentityByCaName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetIdentityByCaName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetIdentityByCaName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetIdentityByCaName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetIdentityByCaName(ctx, req.(*ReqGetIdentityByCaName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_RemoveIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqRemoveIdentity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).RemoveIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/RemoveIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).RemoveIdentity(ctx, req.(*ReqRemoveIdentity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_CreateSigningIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqCreateSigningIdentity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).CreateSigningIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/CreateSigningIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).CreateSigningIdentity(ctx, req.(*ReqCreateSigningIdentity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_GetSigningIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqGetSigningIdentity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).GetSigningIdentity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/GetSigningIdentity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).GetSigningIdentity(ctx, req.(*ReqGetSigningIdentity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerCA_Revoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqRevoke)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerCAServer).Revoke(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerCA/Revoke",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerCAServer).Revoke(ctx, req.(*ReqRevoke))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _LedgerCA_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "chain.LedgerCA",
+	HandlerType: (*LedgerCAServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Enroll",
+			Handler:    _LedgerCA_Enroll_Handler,
+		},
+		{
+			MethodName: "Reenroll",
+			Handler:    _LedgerCA_Reenroll_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _LedgerCA_Register_Handler,
+		},
+		{
+			MethodName: "AddAffiliation",
+			Handler:    _LedgerCA_AddAffiliation_Handler,
+		},
+		{
+			MethodName: "RemoveAffiliation",
+			Handler:    _LedgerCA_RemoveAffiliation_Handler,
+		},
+		{
+			MethodName: "ModifyAffiliation",
+			Handler:    _LedgerCA_ModifyAffiliation_Handler,
+		},
+		{
+			MethodName: "GetAllAffiliations",
+			Handler:    _LedgerCA_GetAllAffiliations_Handler,
+		},
+		{
+			MethodName: "GetAllAffiliationsByCaName",
+			Handler:    _LedgerCA_GetAllAffiliationsByCaName_Handler,
+		},
+		{
+			MethodName: "GetAffiliation",
+			Handler:    _LedgerCA_GetAffiliation_Handler,
+		},
+		{
+			MethodName: "GetAffiliationByCaName",
+			Handler:    _LedgerCA_GetAffiliationByCaName_Handler,
+		},
+		{
+			MethodName: "GetAllIdentities",
+			Handler:    _LedgerCA_GetAllIdentities_Handler,
+		},
+		{
+			MethodName: "GetAllIdentitiesByCaName",
+			Handler:    _LedgerCA_GetAllIdentitiesByCaName_Handler,
+		},
+		{
+			MethodName: "CreateIdentity",
+			Handler:    _LedgerCA_CreateIdentity_Handler,
+		},
+		{
+			MethodName: "ModifyIdentity",
+			Handler:    _LedgerCA_ModifyIdentity_Handler,
+		},
+		{
+			MethodName: "GetIdentity",
+			Handler:    _LedgerCA_GetIdentity_Handler,
+		},
+		{
+			MethodName: "GetIdentityByCaName",
+			Handler:    _LedgerCA_GetIdentityByCaName_Handler,
+		},
+		{
+			MethodName: "RemoveIdentity",
+			Handler:    _LedgerCA_RemoveIdentity_Handler,
+		},
+		{
+			MethodName: "CreateSigningIdentity",
+			Handler:    _LedgerCA_CreateSigningIdentity_Handler,
+		},
+		{
+			MethodName: "GetSigningIdentity",
+			Handler:    _LedgerCA_GetSigningIdentity_Handler,
+		},
+		{
+			MethodName: "Revoke",
+			Handler:    _LedgerCA_Revoke_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "grpc/proto/chain/server.proto",
+}
 
 // LedgerChannelClient is the client API for LedgerChannel service.
 //
@@ -563,6 +1278,103 @@ var _LedgerChainCode_serviceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
+	Metadata: "grpc/proto/chain/server.proto",
+}
+
+// LedgerPeerClient is the client API for LedgerPeer service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type LedgerPeerClient interface {
+	LocalPeers(ctx context.Context, in *ReqLocalPeers, opts ...grpc.CallOption) (*ResultPeers, error)
+	ChannelPeers(ctx context.Context, in *ReqChannelPeers, opts ...grpc.CallOption) (*ResultPeers, error)
+}
+
+type ledgerPeerClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewLedgerPeerClient(cc *grpc.ClientConn) LedgerPeerClient {
+	return &ledgerPeerClient{cc}
+}
+
+func (c *ledgerPeerClient) LocalPeers(ctx context.Context, in *ReqLocalPeers, opts ...grpc.CallOption) (*ResultPeers, error) {
+	out := new(ResultPeers)
+	err := c.cc.Invoke(ctx, "/chain.LedgerPeer/LocalPeers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ledgerPeerClient) ChannelPeers(ctx context.Context, in *ReqChannelPeers, opts ...grpc.CallOption) (*ResultPeers, error) {
+	out := new(ResultPeers)
+	err := c.cc.Invoke(ctx, "/chain.LedgerPeer/ChannelPeers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// LedgerPeerServer is the server API for LedgerPeer service.
+type LedgerPeerServer interface {
+	LocalPeers(context.Context, *ReqLocalPeers) (*ResultPeers, error)
+	ChannelPeers(context.Context, *ReqChannelPeers) (*ResultPeers, error)
+}
+
+func RegisterLedgerPeerServer(s *grpc.Server, srv LedgerPeerServer) {
+	s.RegisterService(&_LedgerPeer_serviceDesc, srv)
+}
+
+func _LedgerPeer_LocalPeers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqLocalPeers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerPeerServer).LocalPeers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerPeer/LocalPeers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerPeerServer).LocalPeers(ctx, req.(*ReqLocalPeers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LedgerPeer_ChannelPeers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReqChannelPeers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LedgerPeerServer).ChannelPeers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/chain.LedgerPeer/ChannelPeers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LedgerPeerServer).ChannelPeers(ctx, req.(*ReqChannelPeers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _LedgerPeer_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "chain.LedgerPeer",
+	HandlerType: (*LedgerPeerServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "LocalPeers",
+			Handler:    _LedgerPeer_LocalPeers_Handler,
+		},
+		{
+			MethodName: "ChannelPeers",
+			Handler:    _LedgerPeer_ChannelPeers_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "grpc/proto/chain/server.proto",
 }
 

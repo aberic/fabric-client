@@ -1,0 +1,308 @@
+syntax = "proto3";
+
+option java_package = "io.ennoo.fabric-client.grpc.proto.chain";
+option java_outer_classname = "CaProto";
+option go_package = "grpc/proto/chain";
+
+package chain;
+
+message ReqCaInfo {
+    string orgName = 1;
+}
+
+message ReqEnroll {
+    string configID = 1;
+    string orgName = 2;
+    string enrollmentID = 3;
+    string secret = 4;
+    string type = 5; // default x509
+    string profile = 6;
+    string label = 7;
+    repeated AttributeRequest attributeRequests = 8;
+}
+
+message ReqReenroll {
+    string configID = 1;
+    string orgName = 2;
+    string enrollmentID = 3;
+    string secret = 4;
+    string type = 5; // default x509
+    string profile = 6;
+    string label = 7;
+    repeated AttributeRequest attributeRequests = 8;
+}
+
+// AttributeRequest is a request for an attribute.
+message AttributeRequest {
+    string configID = 1;
+    string name = 2;
+    string optional = 3;
+}
+
+// RegistrationRequest defines the attributes required to register a user with the CA
+message ReqRegister {
+    string configID = 1;
+    string orgName = 2;
+    RegistrationRequest registrationRequest = 3;
+}
+
+// RegistrationRequest defines the attributes required to register a user with the CA
+message RegistrationRequest {
+    // Name is the unique name of the identity
+    string name = 1;
+    // Type of identity being registered (e.g. "peer, app, user")
+    string type = 2;
+    // MaxEnrollments is the number of times the secret can  be reused to enroll.
+    // if omitted, this defaults to max_enrollments configured on the server
+    int32 maxEnrollments = 3;
+    // The identity's affiliation e.g. org1.department1
+    string affiliation = 4;
+    // Optional attributes associated with this identity
+    repeated Attribute attributes = 5;
+    // CAName is the name of the CA to connect to
+    string caName = 6;
+    // Secret is an optional password.  If not specified,
+    // a random secret is generated.  In both cases, the secret
+    // is returned from registration.
+    string secret = 7;
+}
+
+// Attribute defines additional attributes that may be passed along during registration
+message Attribute {
+    string name = 1;
+    string value = 2;
+    bool eCert = 3;
+}
+
+message ReqAddAffiliation {
+    string configID = 1;
+    string orgName = 2;
+    AffiliationRequest affiliationRequest = 3;
+}
+
+message ReqRemoveAffiliation {
+    string configID = 1;
+    string orgName = 2;
+    AffiliationRequest affiliationRequest = 3;
+}
+
+message ReqModifyAffiliation {
+    string configID = 1;
+    string orgName = 2;
+    ModifyAffiliationRequest modifyAffiliationRequest = 3;
+}
+
+message AffiliationRequest {
+    string name = 1; // Name of the affiliation
+    string caName = 2; // Name of the CA
+    bool force = 3; // Creates parent affiliations if they do not exist
+}
+
+message ModifyAffiliationRequest {
+    string newName = 1; // New name of the affiliation
+    AffiliationRequest affiliationRequest = 2;
+}
+
+message ReqGetAffiliation {
+    string configID = 1;
+    string orgName = 2;
+    string affiliation = 3;
+}
+
+message ReqGetAffiliationByCaName {
+    string configID = 1;
+    string orgName = 2;
+    string affiliation = 3;
+    string caName = 4;
+}
+
+message ReqGetAllAffiliations {
+    string configID = 1;
+    string orgName = 2;
+}
+
+message ReqGetAllAffiliationsByCaName {
+    string configID = 1;
+    string orgName = 2;
+    string caName = 3;
+}
+
+// AffiliationResponse contains the response for get, add, modify, and remove an affiliation
+message AffiliationResponse {
+    string caName = 1;
+    AffiliationInfo affiliationInfo = 2;
+}
+
+// AffiliationInfo contains the affiliation name, child affiliation info, and identities
+// associated with this affiliation.
+message AffiliationInfo {
+    string name = 1;
+    repeated AffiliationInfo affiliationInfos = 2;
+    repeated IdentityInfo identityInfos = 3;
+}
+
+message IdentityInfo {
+    string id = 1;
+    string type = 2;
+    string affiliation = 3;
+    repeated Attribute attributes = 4;
+    int32 maxEnrollments = 5;
+}
+
+message ReqCreateIdentity {
+    string configID = 1;
+    string orgName = 2;
+    IdentityRequest identityRequest = 3;
+}
+
+message ReqModifyIdentity {
+    string configID = 1;
+    string orgName = 2;
+    IdentityRequest identityRequest = 3;
+}
+
+message IdentityRequest {
+    string id = 1; // The enrollment ID which uniquely identifies an identity (required)
+    string affiliation = 2; // The identity's affiliation (required)
+    repeated Attribute attributes = 3; // Array of attributes to assign to the user
+    string type = 4; // Type of identity being registered (e.g. 'peer, app, user'). Default is 'user'.
+    int32 MaxEnrollments = 5; // The maximum number of times the secret can be reused to enroll (default CA's Max Enrollment)
+    string secret = 6; // The enrollment secret. If not provided, a random secret is generated.
+    string caName = 7; // Name of the CA to send the request to within the Fabric CA server (optional)
+}
+
+message ReqRemoveIdentity {
+    string configID = 1;
+    string orgName = 2;
+    RemoveIdentityRequest removeIdentityRequest = 3;
+}
+
+message RemoveIdentityRequest {
+    string id = 1; // The enrollment ID which uniquely identifies an identity
+    bool force = 2; // Force delete
+    string caName = 3; // Name of the CA to send the request to within the Fabric CA server (optional)
+}
+
+message ReqGetIdentity {
+    string configID = 1;
+    string orgName = 2;
+    string id = 3; // The enrollment ID which uniquely identifies an identity
+}
+
+message ReqGetIdentityByCaName {
+    string configID = 1;
+    string orgName = 2;
+    string id = 3; // The enrollment ID which uniquely identifies an identity
+    string caName = 4;
+}
+
+message ReqGetAllIdentities {
+    string configID = 1;
+    string orgName = 2;
+}
+
+message ReqGetAllIdentitiesByCaName {
+    string configID = 1;
+    string orgName = 2;
+    string caName = 3;
+}
+
+// IdentityResponse is the response from the any read/add/modify/remove identity call
+message IdentityResponse {
+    string id = 1; // The enrollment ID which uniquely identifies an identity (required)
+    string affiliation = 2; // The identity's affiliation (required)
+    repeated Attribute attributes = 3; // Array of attributes to assign to the user
+    string type = 4; // Type of identity being registered (e.g. 'peer, app, user'). Default is 'user'.
+    int32 MaxEnrollments = 5; // The maximum number of times the secret can be reused to enroll (default CA's Max Enrollment)
+    string secret = 6; // The enrollment secret. If not provided, a random secret is generated.
+    string caName = 7; // Name of the CA to send the request to within the Fabric CA server (optional)
+}
+
+message ReqCreateSigningIdentity {
+    string configID = 1;
+    string orgName = 2;
+    bytes privateKey = 3;
+    bytes cert = 4;
+}
+
+message ReqGetSigningIdentity {
+    string configID = 1;
+    string orgName = 2;
+    string id = 3; // The enrollment ID which uniquely identifies an identity
+}
+
+// SigningIdentity is an extension of Identity to cover signing capabilities.
+message SigningIdentityResponse {
+    // Identifier returns the identifier of that identity
+    Identifier identifier = 1;
+    // EnrollmentCertificate Returns the underlying ECert representing this user’s identity.
+    bytes enrollmentCertificate = 2;
+    PrivateKey privateKey = 3;
+    // GetPublicVersion returns the public parts of this identity
+    PublicVersion publicVersion = 4;
+}
+
+// PrivateKey returns the crypto suite representation of the private key
+message PrivateKey {
+    // SKI returns the subject key identifier of this key.
+    bytes ski = 1;
+    // Symmetric returns true if this key is a symmetric key,
+    // false is this key is asymmetric
+    bool symmetric = 2;
+    // Private returns true if this key is a private key,
+    // false otherwise.
+    bool private = 3;
+}
+
+// GetPublicVersion returns the public parts of this identity
+message PublicVersion {
+    // Identifier returns the identifier of that identity
+    Identifier identifier = 1;
+    // EnrollmentCertificate Returns the underlying ECert representing this user’s identity.
+    bytes enrollmentCertificate = 2;
+}
+
+// Identifier returns the identifier of that identity
+message Identifier {
+    // The identifier of the associated membership service provider
+    string id = 1;
+    // The identifier for an identity within a provider
+    string mspID = 2;
+}
+
+message ReqRevoke {
+    string configID = 1;
+    string orgName = 2;
+    RevocationRequest revocationRequest = 3;
+}
+
+// RevocationRequest defines the attributes required to revoke credentials with the CA
+message RevocationRequest {
+    // Name of the identity whose certificates should be revoked
+    // If this field is omitted, then Serial and AKI must be specified.
+    string name = 1;
+    // Serial number of the certificate to be revoked
+    // If this is omitted, then Name must be specified
+    string serial = 2;
+    // AKI (Authority Key Identifier) of the certificate to be revoked
+    string aki = 3;
+    // Reason is the reason for revocation. See https://godoc.org/golang.org/x/crypto/ocsp
+    // for valid values. The default value is 0 (ocsp.Unspecified).
+    string reason = 4;
+    // CAName is the name of the CA to connect to
+    string caName = 5;
+}
+
+// RevocationResponse represents response from the server for a revocation request
+message RevocationResponse {
+    // RevokedCerts is an array of certificates that were revoked
+    repeated RevokedCert revokedCerts = 1;
+    // CRL is PEM-encoded certificate revocation list (CRL) that contains all unexpired revoked certificates
+    bytes crl = 2;
+}
+
+// RevokedCert represents a revoked certificate
+message RevokedCert {
+    string serial = 1; // Serial number of the revoked certificate
+    string aki = 2; // AKI of the revoked certificate
+}

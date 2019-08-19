@@ -15,14 +15,13 @@
 package chains
 
 import (
-	"errors"
 	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/core"
 	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	genesis "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/fabric-client/service"
-	"github.com/ennoo/rivet/trans/response"
+	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 	"golang.org/x/net/context"
 )
 
@@ -31,13 +30,14 @@ type ChannelServer struct {
 
 func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.Result, error) {
 	var (
-		res         *response.Result
 		conf        *config.Config
 		orderOrgURL string
 		orgName     string
+		txID        string
+		err         error
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
-		return nil, errors.New("config client is not exist")
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
 	}
 	for _, order := range conf.Orderers {
 		orderOrgURL = order.URL
@@ -48,57 +48,55 @@ func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.R
 		}
 		orgName = name
 	}
-	if _, _, err := geneses.GenerateChannelTX(
+	if _, _, err = geneses.GenerateChannelTX(
 		&genesis.ChannelTX{
 			LedgerName:  in.LeagueName,
 			ChannelName: in.ChannelID,
 			Force:       true,
 		}); nil != err {
-		return nil, err
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
 	}
 	channelTXFilePath := geneses.ChannelTXFilePath(in.LeagueName, in.ChannelID)
-	if res = sdk.Create(geneses.OrdererOrgName, "Admin", orderOrgURL, orgName, "Admin",
-		in.ChannelID, channelTXFilePath, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
+	if txID, err = sdk.Create(geneses.OrdererOrgName, "Admin", orderOrgURL, orgName, "Admin",
+		in.ChannelID, channelTXFilePath, service.GetBytes(in.ConfigID)); nil != err {
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
 	}
-	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Success, Data: txID}, nil
 }
 
 func (c *ChannelServer) Join(ctx context.Context, in *pb.ChannelJoin) (*pb.Result, error) {
 	var (
-		res         *response.Result
 		conf        *config.Config
 		orderOrgURL string
+		err         error
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
-		return nil, errors.New("config client is not exist")
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
 	}
 	for _, order := range conf.Orderers {
 		orderOrgURL = order.URL
 	}
-	if res = sdk.Join(orderOrgURL, in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
+	if err = sdk.Join(orderOrgURL, in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); nil != err {
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
 	}
-	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
+	return &pb.Result{Code: pb.Code_Success, Data: "success"}, nil
 }
 
 func (c *ChannelServer) List(ctx context.Context, in *pb.ChannelList) (*pb.ResultArr, error) {
 	var (
-		res        *response.Result
-		conf       *config.Config
-		channelArr *sdk.ChannelArr
+		conf *config.Config
+		chs  []*peer.ChannelInfo
+		err  error
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
-		return nil, errors.New("config client is not exist")
+		return &pb.ResultArr{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
 	}
-	if res = sdk.Channels(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		channelArr = res.Data.(*sdk.ChannelArr)
-		channels := channelArr.Channels
-		data := make([]string, len(channels))
-		for index := range channels {
-			data[index] = channels[index].ChannelId
-		}
-		return &pb.ResultArr{Code: pb.Code_Success, Data: data}, nil
+	if chs, err = sdk.Channels(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); nil != err {
+		return &pb.ResultArr{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
 	}
-	return &pb.ResultArr{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
+	data := make([]string, len(chs))
+	for index := range chs {
+		data[index] = chs[index].ChannelId
+	}
+	return &pb.ResultArr{Code: pb.Code_Success, Data: data}, nil
 }
