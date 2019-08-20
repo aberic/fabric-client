@@ -15,6 +15,7 @@
 package chains
 
 import (
+	"errors"
 	"github.com/ennoo/fabric-client/config"
 	sdk "github.com/ennoo/fabric-client/core"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
@@ -33,14 +34,14 @@ func (ca *CAServer) Enroll(ctx context.Context, req *pb.ReqEnroll) (*pb.Result, 
 		err  error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if str.IsEmpty(req.Secret) {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "secret is nil"}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "secret is nil"}, errors.New("secret is nil")
 	}
 	if err = sdk.Enroll(req.OrgName, req.EnrollmentID, service.GetBytes(req.ConfigID),
 		optionEnroll(req.Secret, req.Type, req.Profile, req.Label)); nil != err {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return &pb.Result{Code: pb.Code_Success}, nil
 }
@@ -51,14 +52,14 @@ func (ca *CAServer) Reenroll(ctx context.Context, req *pb.ReqReenroll) (*pb.Resu
 		err  error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if str.IsEmpty(req.Secret) {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "secret is nil"}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "secret is nil"}, errors.New("secret is nil")
 	}
 	if err = sdk.Reenroll(req.OrgName, req.EnrollmentID, service.GetBytes(req.ConfigID),
 		optionEnroll(req.Secret, req.Type, req.Profile, req.Label)); nil != err {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return &pb.Result{Code: pb.Code_Success}, nil
 }
@@ -70,7 +71,7 @@ func (ca *CAServer) Register(ctx context.Context, req *pb.ReqRegister) (*pb.Resu
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	attrs := make([]msp.Attribute, len(req.RegistrationRequest.Attributes))
 	for index, attr := range req.RegistrationRequest.Attributes {
@@ -89,7 +90,7 @@ func (ca *CAServer) Register(ctx context.Context, req *pb.ReqRegister) (*pb.Resu
 		CAName:         req.RegistrationRequest.CaName,
 		Secret:         req.RegistrationRequest.Secret,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return &pb.Result{Code: pb.Code_Success, Data: result}, nil
 }
@@ -101,14 +102,14 @@ func (ca *CAServer) AddAffiliation(ctx context.Context, req *pb.ReqAddAffiliatio
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.AddAffiliation(req.OrgName, &msp.AffiliationRequest{
 		Name:   req.AffiliationRequest.Name,
 		CAName: req.AffiliationRequest.CaName,
 		Force:  req.AffiliationRequest.Force,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -120,14 +121,14 @@ func (ca *CAServer) RemoveAffiliation(ctx context.Context, req *pb.ReqRemoveAffi
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.RemoveAffiliation(req.OrgName, &msp.AffiliationRequest{
 		Name:   req.AffiliationRequest.Name,
 		CAName: req.AffiliationRequest.CaName,
 		Force:  req.AffiliationRequest.Force,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -139,7 +140,7 @@ func (ca *CAServer) ModifyAffiliation(ctx context.Context, req *pb.ReqModifyAffi
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.ModifyAffiliation(req.OrgName, &msp.ModifyAffiliationRequest{
 		NewName: req.ModifyAffiliationRequest.NewName,
@@ -149,7 +150,7 @@ func (ca *CAServer) ModifyAffiliation(ctx context.Context, req *pb.ReqModifyAffi
 			Force:  req.ModifyAffiliationRequest.AffiliationRequest.Force,
 		},
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -161,10 +162,10 @@ func (ca *CAServer) GetAllAffiliations(ctx context.Context, req *pb.ReqGetAllAff
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetAllAffiliations(req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -176,10 +177,10 @@ func (ca *CAServer) GetAllAffiliationsByCaName(ctx context.Context, req *pb.ReqG
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetAllAffiliationsByCaName(req.OrgName, req.CaName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -191,10 +192,10 @@ func (ca *CAServer) GetAffiliation(ctx context.Context, req *pb.ReqGetAffiliatio
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetAffiliation(req.Affiliation, req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -206,10 +207,10 @@ func (ca *CAServer) GetAffiliationByCaName(ctx context.Context, req *pb.ReqGetAf
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetAffiliationByCaName(req.Affiliation, req.OrgName, req.CaName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultAffiliation{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return affiliation(result), nil
 }
@@ -221,10 +222,10 @@ func (ca *CAServer) GetAllIdentities(ctx context.Context, req *pb.ReqGetAllIdent
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetAllIdentities(req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return allIdentities(result), nil
 }
@@ -236,10 +237,10 @@ func (ca *CAServer) GetAllIdentitiesByCaName(ctx context.Context, req *pb.ReqGet
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetAllIdentitiesByCaName(req.OrgName, req.CaName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponses{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return allIdentities(result), nil
 }
@@ -251,7 +252,7 @@ func (ca *CAServer) CreateIdentity(ctx context.Context, req *pb.ReqCreateIdentit
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	attrs := make([]msp.Attribute, len(req.IdentityRequest.Attributes))
 	for _, attr := range req.IdentityRequest.Attributes {
@@ -270,7 +271,7 @@ func (ca *CAServer) CreateIdentity(ctx context.Context, req *pb.ReqCreateIdentit
 		Secret:         req.IdentityRequest.Secret,
 		CAName:         req.IdentityRequest.CaName,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return identity(result), nil
 }
@@ -282,7 +283,7 @@ func (ca *CAServer) ModifyIdentity(ctx context.Context, req *pb.ReqModifyIdentit
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	attrs := make([]msp.Attribute, len(req.IdentityRequest.Attributes))
 	for _, attr := range req.IdentityRequest.Attributes {
@@ -301,7 +302,7 @@ func (ca *CAServer) ModifyIdentity(ctx context.Context, req *pb.ReqModifyIdentit
 		Secret:         req.IdentityRequest.Secret,
 		CAName:         req.IdentityRequest.CaName,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return identity(result), nil
 }
@@ -313,10 +314,10 @@ func (ca *CAServer) GetIdentity(ctx context.Context, req *pb.ReqGetIdentity) (*p
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetIdentity(req.Id, req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return identity(result), nil
 }
@@ -328,10 +329,10 @@ func (ca *CAServer) GetIdentityByCaName(ctx context.Context, req *pb.ReqGetIdent
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetIdentityByCaName(req.Id, req.CaName, req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return identity(result), nil
 }
@@ -343,14 +344,14 @@ func (ca *CAServer) RemoveIdentity(ctx context.Context, req *pb.ReqRemoveIdentit
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.RemoveIdentity(req.OrgName, &msp.RemoveIdentityRequest{
 		ID:     req.RemoveIdentityRequest.Id, // The enrollment ID which uniquely identifies an identity (required)
 		Force:  req.RemoveIdentityRequest.Force,
 		CAName: req.RemoveIdentityRequest.CaName,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return identity(result), nil
 }
@@ -362,7 +363,7 @@ func (ca *CAServer) CreateSigningIdentity(ctx context.Context, req *pb.ReqCreate
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	var opts []mspctx.SigningIdentityOption
 	if nil != req.PrivateKey {
@@ -372,7 +373,7 @@ func (ca *CAServer) CreateSigningIdentity(ctx context.Context, req *pb.ReqCreate
 		opts = append(opts, mspctx.WithCert(req.Cert))
 	}
 	if result, err = sdk.CreateSigningIdentity(req.OrgName, service.GetBytes(req.ConfigID), opts); nil != err {
-		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return signingIdentity(result), nil
 }
@@ -384,10 +385,10 @@ func (ca *CAServer) GetSigningIdentity(ctx context.Context, req *pb.ReqGetSignin
 		err    error
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.GetSigningIdentity(req.Id, req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultSigningIdentityResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	return signingIdentity(result), nil
 }
@@ -400,7 +401,7 @@ func (ca *CAServer) Revoke(ctx context.Context, req *pb.ReqRevoke) (*pb.ResultRe
 		revokedCerts []*pb.RevokedCert
 	)
 	if conf = service.Configs[req.ConfigID]; nil == conf {
-		return &pb.ResultRevocationResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, nil
+		return &pb.ResultRevocationResponse{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
 	if result, err = sdk.Revoke(req.OrgName, &msp.RevocationRequest{
 		Name:   req.RevocationRequest.Name,
@@ -409,7 +410,7 @@ func (ca *CAServer) Revoke(ctx context.Context, req *pb.ReqRevoke) (*pb.ResultRe
 		Reason: req.RevocationRequest.Reason,
 		CAName: req.RevocationRequest.CaName,
 	}, service.GetBytes(req.ConfigID)); nil != err {
-		return &pb.ResultRevocationResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+		return &pb.ResultRevocationResponse{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
 	}
 	for _, cert := range result.RevokedCerts {
 		revokedCerts = append(revokedCerts, &pb.RevokedCert{

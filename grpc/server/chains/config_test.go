@@ -186,3 +186,20 @@ func TestGetConfig(t *testing.T) {
 //		EnrollSecret:            "adminpw",
 //	}))
 //}
+
+//func TestLocalPeers(t *testing.T) {
+//	t.Log(LocalPeers("10.10.203.51:31247", &pb.ReqLocalPeers{
+//		ConfigID: configID,
+//		OrgName:  "Org1",
+//		OrgUser:  "Admin",
+//	}))
+//}
+//
+//func TestChannelPeers(t *testing.T) {
+//	t.Log(ChannelPeers("10.10.203.51:31247", &pb.ReqChannelPeers{
+//		ConfigID:  configID,
+//		ChannelID: "cc6519b67c4177fc11",
+//		OrgName:   "Org1",
+//		OrgUser:   "Admin",
+//	}))
+//}
