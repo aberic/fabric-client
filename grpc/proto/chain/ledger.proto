@@ -10,56 +10,64 @@ import "vendor/github.com/hyperledger/fabric/protos/ledger/rwset/kvrwset/kv_rwse
 
 message ReqInfo {
     string configID = 1;
-    string channelID = 2;
+    string peerName = 2;
+    string channelID = 3;
 }
 
 message ReqBlockByHeight {
     string configID = 1;
-    string channelID = 2;
-    uint64 height = 3;
+    string peerName = 2;
+    string channelID = 3;
+    uint64 height = 4;
 }
 
 message ReqBlockByHash {
     string configID = 1;
-    string channelID = 2;
-    string hash = 3;
+    string peerName = 2;
+    string channelID = 3;
+    string hash = 4;
 }
 
 message ReqBlockByTxID {
     string configID = 1;
-    string channelID = 2;
-    string txID = 3;
+    string peerName = 2;
+    string channelID = 3;
+    string txID = 4;
 }
 
 message ReqInfoSpec {
     string configID = 1;
-    string channelID = 2;
-    string orgName = 3;
-    string orgUser = 4;
+    string peerName = 2;
+    string channelID = 3;
+    string orgName = 4;
+    string orgUser = 5;
 }
 
 message ReqBlockByHeightSpec {
     string configID = 1;
-    string channelID = 2;
-    string orgName = 3;
-    string orgUser = 4;
-    uint64 height = 5;
+    string peerName = 2;
+    string channelID = 3;
+    string orgName = 4;
+    string orgUser = 5;
+    uint64 height = 6;
 }
 
 message ReqBlockByHashSpec {
     string configID = 1;
-    string channelID = 2;
-    string orgName = 3;
-    string orgUser = 4;
-    string hash = 5;
+    string peerName = 2;
+    string channelID = 3;
+    string orgName = 4;
+    string orgUser = 5;
+    string hash = 6;
 }
 
 message ReqBlockByTxIDSpec {
     string configID = 1;
-    string channelID = 2;
-    string orgName = 3;
-    string orgUser = 4;
-    string txID = 5;
+    string peerName = 2;
+    string channelID = 3;
+    string orgName = 4;
+    string orgUser = 5;
+    string txID = 6;
 }
 
 message ChannelInfo {

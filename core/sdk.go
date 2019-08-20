@@ -71,73 +71,73 @@ func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...
 	return queryChannels(orgName, orgUser, peerName, sdk)
 }
 
-func QueryLedgerInfo(configID, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerInfo(configID, peerName, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	} else {
-		return QueryLedgerInfoSpec(channelID, orgName, orgUser, configBytes, sdkOpts...)
+		return QueryLedgerInfoSpec(peerName, channelID, orgName, orgUser, configBytes, sdkOpts...)
 	}
 }
 
-func QueryLedgerBlockByHeight(configID, channelID string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHeight(configID, peerName, channelID string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	} else {
-		return QueryLedgerBlockByHeightSpec(channelID, orgName, orgUser, height, configBytes, sdkOpts...)
+		return QueryLedgerBlockByHeightSpec(peerName, channelID, orgName, orgUser, height, configBytes, sdkOpts...)
 	}
 }
 
-func QueryLedgerBlockByHash(configID, channelID, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHash(configID, peerName, channelID, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	} else {
-		return QueryLedgerBlockByHashSpec(channelID, orgName, orgUser, hash, configBytes, sdkOpts...)
+		return QueryLedgerBlockByHashSpec(peerName, channelID, orgName, orgUser, hash, configBytes, sdkOpts...)
 	}
 }
 
-func QueryLedgerBlockByTxID(configID, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByTxID(configID, peerName, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	} else {
-		return QueryLedgerBlockByTxIDSpec(channelID, orgName, orgUser, txID, configBytes, sdkOpts...)
+		return QueryLedgerBlockByTxIDSpec(peerName, channelID, orgName, orgUser, txID, configBytes, sdkOpts...)
 	}
 }
 
-func QueryLedgerTransaction(configID, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerTransaction(configID, peerName, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	} else {
-		return QueryLedgerTransactionSpec(channelID, orgName, orgUser, txID, configBytes, sdkOpts...)
+		return QueryLedgerTransactionSpec(peerName, channelID, orgName, orgUser, txID, configBytes, sdkOpts...)
 	}
 }
 
-func QueryLedgerConfig(configID, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerConfig(configID, peerName, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
 		log.Self.Error(err.Error())
 		result.Fail(err.Error())
 		return &result
 	} else {
-		return QueryLedgerConfigSpec(channelID, orgName, orgUser, configBytes, sdkOpts...)
+		return QueryLedgerConfigSpec(peerName, channelID, orgName, orgUser, configBytes, sdkOpts...)
 	}
 }
 
-func QueryLedgerInfoSpec(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerInfoSpec(peerName, channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -146,10 +146,10 @@ func QueryLedgerInfoSpec(channelID, orgName, orgUser string, configBytes []byte,
 		return &result
 	}
 	defer sdk.Close()
-	return queryLedgerInfo(channelProvider(orgName, orgUser, channelID, sdk))
+	return queryLedgerInfo(peerName, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHeightSpec(channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHeightSpec(peerName, channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -158,10 +158,10 @@ func QueryLedgerBlockByHeightSpec(channelID, orgName, orgUser string, height uin
 		return &result
 	}
 	defer sdk.Close()
-	return queryLedgerBlockByHeight(height, channelProvider(orgName, orgUser, channelID, sdk))
+	return queryLedgerBlockByHeight(peerName, height, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHashSpec(channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByHashSpec(peerName, channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -170,10 +170,10 @@ func QueryLedgerBlockByHashSpec(channelID, orgName, orgUser, hash string, config
 		return &result
 	}
 	defer sdk.Close()
-	return queryLedgerBlockByHash(hash, channelProvider(orgName, orgUser, channelID, sdk))
+	return queryLedgerBlockByHash(peerName, hash, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByTxIDSpec(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerBlockByTxIDSpec(peerName, channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -182,10 +182,10 @@ func QueryLedgerBlockByTxIDSpec(channelID, orgName, orgUser, txID string, config
 		return &result
 	}
 	defer sdk.Close()
-	return queryLedgerBlockByTxID(txID, channelProvider(orgName, orgUser, channelID, sdk))
+	return queryLedgerBlockByTxID(peerName, txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerTransactionSpec(channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerTransactionSpec(peerName, channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -194,10 +194,10 @@ func QueryLedgerTransactionSpec(channelID, orgName, orgUser, txID string, config
 		return &result
 	}
 	defer sdk.Close()
-	return queryLedgerTransaction(txID, channelProvider(orgName, orgUser, channelID, sdk))
+	return queryLedgerTransaction(peerName, txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerConfigSpec(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
+func QueryLedgerConfigSpec(peerName, channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
 	result := response.Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
@@ -206,7 +206,7 @@ func QueryLedgerConfigSpec(channelID, orgName, orgUser string, configBytes []byt
 		return &result
 	}
 	defer sdk.Close()
-	return queryLedgerConfig(channelProvider(orgName, orgUser, channelID, sdk))
+	return queryLedgerConfig(peerName, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
 func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {

@@ -35,7 +35,7 @@ func (l *LedgerServer) QueryLedgerInfo(ctx context.Context, in *pb.ReqInfo) (*pb
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerInfo(in.ConfigID, in.ChannelID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerInfo(in.ConfigID, in.PeerName, in.ChannelID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultChannelInfo{Code: pb.Code_Success, Info: res.Data.(*pb.ChannelInfo)}, nil
 	}
 	return &pb.ResultChannelInfo{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -49,7 +49,7 @@ func (l *LedgerServer) QueryLedgerBlockByHeight(ctx context.Context, in *pb.ReqB
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerBlockByHeight(in.ConfigID, in.ChannelID, in.Height, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerBlockByHeight(in.ConfigID, in.PeerName, in.ChannelID, in.Height, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultBlock{Code: pb.Code_Success, Block: res.Data.(*pb.Block)}, nil
 	}
 	return &pb.ResultBlock{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -63,7 +63,7 @@ func (l *LedgerServer) QueryLedgerBlockByHash(ctx context.Context, in *pb.ReqBlo
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerBlockByHash(in.ConfigID, in.ChannelID, in.Hash, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerBlockByHash(in.ConfigID, in.PeerName, in.ChannelID, in.Hash, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultBlock{Code: pb.Code_Success, Block: res.Data.(*pb.Block)}, nil
 	}
 	return &pb.ResultBlock{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -77,7 +77,7 @@ func (l *LedgerServer) QueryLedgerBlockByTxID(ctx context.Context, in *pb.ReqBlo
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerBlockByTxID(in.ConfigID, in.ChannelID, in.TxID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerBlockByTxID(in.ConfigID, in.PeerName, in.ChannelID, in.TxID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultBlock{Code: pb.Code_Success, Block: res.Data.(*pb.Block)}, nil
 	}
 	return &pb.ResultBlock{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -91,7 +91,7 @@ func (l *LedgerServer) QueryLedgerInfoSpec(ctx context.Context, in *pb.ReqInfoSp
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerInfoSpec(in.ChannelID, in.OrgName, in.OrgUser, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerInfoSpec(in.PeerName, in.ChannelID, in.OrgName, in.OrgUser, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultChannelInfo{Code: pb.Code_Success, Info: res.Data.(*pb.ChannelInfo)}, nil
 	}
 	return &pb.ResultChannelInfo{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -105,7 +105,7 @@ func (l *LedgerServer) QueryLedgerBlockByHeightSpec(ctx context.Context, in *pb.
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerBlockByHeightSpec(in.ChannelID, in.OrgName, in.OrgUser, in.Height, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerBlockByHeightSpec(in.PeerName, in.ChannelID, in.OrgName, in.OrgUser, in.Height, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultBlock{Code: pb.Code_Success, Block: res.Data.(*pb.Block)}, nil
 	}
 	return &pb.ResultBlock{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -119,7 +119,7 @@ func (l *LedgerServer) QueryLedgerBlockByHashSpec(ctx context.Context, in *pb.Re
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerBlockByHashSpec(in.ChannelID, in.OrgName, in.OrgUser, in.Hash, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerBlockByHashSpec(in.PeerName, in.ChannelID, in.OrgName, in.OrgUser, in.Hash, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultBlock{Code: pb.Code_Success, Block: res.Data.(*pb.Block)}, nil
 	}
 	return &pb.ResultBlock{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -133,7 +133,7 @@ func (l *LedgerServer) QueryLedgerBlockByTxIDSpec(ctx context.Context, in *pb.Re
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.QueryLedgerBlockByTxIDSpec(in.ChannelID, in.OrgName, in.OrgUser, in.TxID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.QueryLedgerBlockByTxIDSpec(in.PeerName, in.ChannelID, in.OrgName, in.OrgUser, in.TxID, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
 		return &pb.ResultBlock{Code: pb.Code_Success, Block: res.Data.(*pb.Block)}, nil
 	}
 	return &pb.ResultBlock{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)

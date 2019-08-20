@@ -19,18 +19,26 @@ import (
 	"encoding/hex"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/rivet/trans/response"
+	str "github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 )
 
-func queryLedgerInfo(channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerInfo(peerName string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if ledgerInfo, err := client.QueryInfo(); nil != err {
+		var ledgerInfo *fab.BlockchainInfoResponse
+		if str.IsEmpty(peerName) {
+			ledgerInfo, err = client.QueryInfo()
+		} else {
+			ledgerInfo, err = client.QueryInfo(ledger.WithTargetEndpoints(peerName))
+		}
+		if nil != err {
 			result.FailErr(err)
 		} else {
 			info := &pb.ChannelInfo{
@@ -48,13 +56,19 @@ func queryLedgerInfo(channelProvider ctx.ChannelProvider) *response.Result {
 	return &result
 }
 
-func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerBlockByHeight(peerName string, height uint64, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if commonBlock, err := client.QueryBlock(height); nil != err {
+		var commonBlock *common.Block
+		if str.IsEmpty(peerName) {
+			commonBlock, err = client.QueryBlock(height)
+		} else {
+			commonBlock, err = client.QueryBlock(height, ledger.WithTargetEndpoints(peerName))
+		}
+		if nil != err {
 			result.FailErr(err)
 		} else {
 			if block, err := parseBlock(commonBlock); nil != err {
@@ -76,7 +90,7 @@ func queryLedgerBlockByHeight(height uint64, channelProvider ctx.ChannelProvider
 	return &result
 }
 
-func queryLedgerBlockByHash(hash string, channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerBlockByHash(peerName string, hash string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
@@ -85,7 +99,13 @@ func queryLedgerBlockByHash(hash string, channelProvider ctx.ChannelProvider) *r
 		if realHash, err := hex.DecodeString(hash); nil != err {
 			result.FailErr(err)
 		} else {
-			if commonBlock, err := client.QueryBlockByHash(realHash); nil != err {
+			var commonBlock *common.Block
+			if str.IsEmpty(peerName) {
+				commonBlock, err = client.QueryBlockByHash(realHash)
+			} else {
+				commonBlock, err = client.QueryBlockByHash(realHash, ledger.WithTargetEndpoints(peerName))
+			}
+			if nil != err {
 				result.FailErr(err)
 			} else {
 				if block, err := parseBlock(commonBlock); nil != err {
@@ -99,13 +119,19 @@ func queryLedgerBlockByHash(hash string, channelProvider ctx.ChannelProvider) *r
 	return &result
 }
 
-func queryLedgerBlockByTxID(txID string, channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerBlockByTxID(peerName string, txID string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if commonBlock, err := client.QueryBlockByTxID(fab.TransactionID(txID)); nil != err {
+		var commonBlock *common.Block
+		if str.IsEmpty(peerName) {
+			commonBlock, err = client.QueryBlockByTxID(fab.TransactionID(txID))
+		} else {
+			commonBlock, err = client.QueryBlockByTxID(fab.TransactionID(txID), ledger.WithTargetEndpoints(peerName))
+		}
+		if nil != err {
 			result.FailErr(err)
 		} else {
 			if block, err := parseBlock(commonBlock); nil != err {
@@ -118,13 +144,13 @@ func queryLedgerBlockByTxID(txID string, channelProvider ctx.ChannelProvider) *r
 	return &result
 }
 
-func queryLedgerTransaction(txID string, channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerTransaction(peerName string, txID string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if processedTransaction, err := client.QueryTransaction(fab.TransactionID(txID)); nil != err {
+		if processedTransaction, err := client.QueryTransaction(fab.TransactionID(txID), ledger.WithTargetEndpoints(peerName)); nil != err {
 			result.FailErr(err)
 		} else {
 			result.Success(processedTransaction)
@@ -133,13 +159,13 @@ func queryLedgerTransaction(txID string, channelProvider ctx.ChannelProvider) *r
 	return &result
 }
 
-func queryLedgerConfig(channelProvider ctx.ChannelProvider) *response.Result {
+func queryLedgerConfig(peerName string, channelProvider ctx.ChannelProvider) *response.Result {
 	result := response.Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
-		if channelCfg, err := client.QueryConfig(); nil != err {
+		if channelCfg, err := client.QueryConfig(ledger.WithTargetEndpoints(peerName)); nil != err {
 			result.FailErr(err)
 		} else {
 			result.Success(channelCfg)

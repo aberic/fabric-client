@@ -78,7 +78,7 @@ func TestQueryLedgerInfo(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerInfo("test", "cc6519b67c4177fc11", confData)
+	result := QueryLedgerInfo("test", "peer0", "cc6519b67c4177fc11", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -89,7 +89,7 @@ func TestQueryLedgerBlockByHeight(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHeight("test", "cc6519b67c4177fc11", 17, confData)
+	result := QueryLedgerBlockByHeight("test", "peer0", "cc6519b67c4177fc11", 3, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -100,7 +100,7 @@ func TestQueryLedgerBlockByHash(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHash("test", "cc6519b67c4177fc11", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", confData)
+	result := QueryLedgerBlockByHash("test", "peer0", "cc6519b67c4177fc11", "b949429f98d25bf58cb242b215aaf868662a6309489e5583663247ce522f2fc6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -111,7 +111,7 @@ func TestQueryLedgerBlockByTxID(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByTxID("test", "cc6519b67c4177fc11", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	result := QueryLedgerBlockByTxID("test", "peer0", "cc6519b67c4177fc11", "9f1090e9d1fc45f53c16394420db24b8ea2225f2e9c33717d9cf9004e31c74c4", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -122,7 +122,7 @@ func TestQueryLedgerTransaction(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerTransaction("test", "cc6519b67c4177fc11", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	result := QueryLedgerTransaction("test", "peer0", "cc6519b67c4177fc11", "9f1090e9d1fc45f53c16394420db24b8ea2225f2e9c33717d9cf9004e31c74c4", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -133,7 +133,7 @@ func TestQueryLedgerConfig(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerConfig("test", "cc6519b67c4177fc11", confData)
+	result := QueryLedgerConfig("test", "peer0", "cc6519b67c4177fc11", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -143,7 +143,7 @@ func TestQueryLedgerInfoSpec(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerInfoSpec("cc6519b67c4177fc11", "Org1", "Admin", confData)
+	result := QueryLedgerInfoSpec("peer0", "cc6519b67c4177fc11", "Org1", "Admin", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -154,7 +154,7 @@ func TestQueryLedgerBlockByHeightSpec(t *testing.T) {
 		log.Self.Debug("client", log.Error(err))
 	}
 	service.Configs["test"] = conf
-	result := QueryLedgerBlockByHeightSpec("cc6519b67c4177fc11", "Org1", "Admin", 2, confData)
+	result := QueryLedgerBlockByHeightSpec("peer0", "cc6519b67c4177fc11", "Org1", "Admin", 2, confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -164,7 +164,7 @@ func TestQueryLedgerBlockByHashSpec(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByHashSpec("cc6519b67c4177fc11", "Org1", "Admin", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
+	result := QueryLedgerBlockByHashSpec("peer0", "cc6519b67c4177fc11", "Org1", "Admin", "19dce7325781ed8dc022348ee08aa7edb274a91d4d30981b886992704a25b2d4", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -174,7 +174,7 @@ func TestQueryLedgerBlockByTxIDSpec(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerBlockByTxIDSpec("cc6519b67c4177fc11", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	result := QueryLedgerBlockByTxIDSpec("peer0", "cc6519b67c4177fc11", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -184,7 +184,7 @@ func TestQueryLedgerTransactionSpec(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerTransactionSpec("cc6519b67c4177fc11", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
+	result := QueryLedgerTransactionSpec("peer0", "cc6519b67c4177fc11", "Org1", "Admin", "b3712eef661af9dbd5b4144e8e6d5b106dd0cb4c1f68f3203749b6c73b04f2f6", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -194,7 +194,7 @@ func TestQueryLedgerConfigSpec(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := QueryLedgerConfigSpec("cc6519b67c4177fc11", "Org1", "Admin", confData)
+	result := QueryLedgerConfigSpec("peer0", "cc6519b67c4177fc11", "Org1", "Admin", confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
@@ -300,7 +300,7 @@ func TestInstantiated(t *testing.T) {
 	if err != nil {
 		log.Self.Debug("client", log.Error(err))
 	}
-	result := Instantiated("Org1", "Admin", "cc6519b67c4177fc11", "peer1", confData)
+	result := Instantiated("Org1", "Admin", "cc6519b67c4177fc11", "peer0", confData)
 	log.Self.Debug("test instantiated", log.Reflect("result", result))
 }
 
@@ -439,11 +439,11 @@ func TestEnroll(t *testing.T) {
 		t.Error("yaml", err)
 	}
 	//attrReqs := []*msp.AttributeRequest{{Name: "test", Optional: true}}
-	err = Enroll("league", "test1", confData, []msp.EnrollmentOption{
-		msp.WithSecret("test1"),
+	err = Enroll("league", "admin", confData, []msp.EnrollmentOption{
+		msp.WithSecret("adminpw"),
 		msp.WithType("x509" /*or idemix, which is not support now*/),
-		msp.WithProfile("tls"),
-		// msp.WithLabel("ForFabric"),
+		//msp.WithProfile("tls"),
+		//msp.WithLabel("ForFabric"),
 		//msp.WithAttributeRequests(attrReqs),
 	})
 	if err != nil {
@@ -693,7 +693,7 @@ func TestGetIdentity(t *testing.T) {
 	if err != nil {
 		t.Error("yaml", err)
 	}
-	identity, err := GetIdentity("test2", "league", confData)
+	identity, err := GetIdentity("test1", "league", confData)
 	if err != nil {
 		t.Error("GetIdentity", err)
 	}
@@ -865,20 +865,20 @@ func TGetConfig() *config.Config {
 		map[string]string{
 			"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
 		},
-		[]string{"peer1"},
+		[]string{"peer0", "peer1"},
 		[]string{"ca"},
 	)
 	conf.AddOrSetOrderer("orderer0.20de78630ef6a411:7050", "grpcs://10.10.203.51:30054",
 		"orderer0.20de78630ef6a411", "0s", "20s",
 		rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem",
 		false, false, false)
-	//conf.AddOrSetPeer("peer0", "grpc://10.10.203.51:30056",
-	//	"grpc://10.10.203.51:30058", "peer0",
-	//	"0s", "20s",
-	//	rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/tlsca/tlsca.20de78630ef6a411-org1-cert.pem",
-	//	false, false, false)
-	conf.AddOrSetPeer("peer1", "grpcs://10.10.203.51:30140",
-		"grpcs://10.10.203.51:30537", "peer1",
+	conf.AddOrSetPeer("peer0", "grpcs://10.10.203.51:32625",
+		"grpcs://10.10.203.51:30386", "peer0",
+		"0s", "20s",
+		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/tlsca/tlsca.20de78630ef6a411-org1-cert.pem",
+		false, false, false)
+	conf.AddOrSetPeer("peer1", "grpcs://10.10.203.51:32707",
+		"grpcs://10.10.203.51:32636", "peer1",
 		"0s", "20s",
 		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/tlsca/tlsca.20de78630ef6a411-org1-cert.pem",
 		false, false, false)
