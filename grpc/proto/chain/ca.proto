@@ -7,7 +7,23 @@ option go_package = "grpc/proto/chain";
 package chain;
 
 message ReqCaInfo {
-    string orgName = 1;
+    string configID = 1;
+    string orgName = 2;
+}
+
+// GetCAInfoResponse is the response from the GetCAInfo call
+message GetCAInfoResponse {
+    // CAName is the name of the CA
+    string caName = 1;
+    // CAChain is the PEM-encoded bytes of the fabric-ca-server's CA chain.
+    // The 1st element of the chain is the root CA cert
+    bytes caChain = 2;
+    // Idemix issuer public key of the CA
+    bytes issuerPublicKey = 3;
+    // Idemix issuer revocation public key of the CA
+    bytes issuerRevocationPublicKey = 4;
+    // Version of the server
+    string version = 5;
 }
 
 message ReqEnroll {
@@ -34,7 +50,6 @@ message ReqReenroll {
 
 // AttributeRequest is a request for an attribute.
 message AttributeRequest {
-    string configID = 1;
     string name = 2;
     string optional = 3;
 }

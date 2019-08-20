@@ -28,6 +28,27 @@ import (
 
 type CAServer struct{}
 
+func (ca *CAServer) Info(ctx context.Context, req *pb.ReqCaInfo) (*pb.ResultCAInfo, error) {
+	var (
+		conf *config.Config
+		resp *msp.GetCAInfoResponse
+		err  error
+	)
+	if conf = service.Configs[req.ConfigID]; nil == conf {
+		return &pb.ResultCAInfo{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
+	}
+	if resp, err = sdk.CAInfo(req.OrgName, service.GetBytes(req.ConfigID)); nil != err {
+		return &pb.ResultCAInfo{Code: pb.Code_Fail, ErrMsg: err.Error()}, err
+	}
+	return &pb.ResultCAInfo{Code: pb.Code_Success, Resp: &pb.GetCAInfoResponse{
+		CaName:                    resp.CAName,
+		CaChain:                   resp.CAChain,
+		IssuerRevocationPublicKey: resp.IssuerRevocationPublicKey,
+		IssuerPublicKey:           resp.IssuerPublicKey,
+		Version:                   resp.Version,
+	}}, nil
+}
+
 func (ca *CAServer) Enroll(ctx context.Context, req *pb.ReqEnroll) (*pb.Result, error) {
 	var (
 		conf *config.Config

@@ -67,6 +67,12 @@ message ResultPeers {
     string errMsg = 3;
 }
 
+message ResultCAInfo {
+    Code code = 1;
+    GetCAInfoResponse resp = 2;
+    string errMsg = 3;
+}
+
 message ResultAffiliation {
     Code code = 1;
     AffiliationResponse resp = 2;
