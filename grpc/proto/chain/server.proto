@@ -120,6 +120,8 @@ service LedgerConfig {
     }
     rpc GetConfig (ReqConfig) returns (ResultConfig) {
     }
+    rpc RecoverConfig (ReqConfigRecover) returns (Result) {
+    }
     rpc InitConfig (ReqInit) returns (Result) {
     }
 }

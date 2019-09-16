@@ -53,6 +53,11 @@ func (c *ConfigServer) GetConfig(ctx context.Context, in *pb.ReqConfig) (*pb.Res
 	}
 }
 
+func (c *ConfigServer) RecoverConfig(ctx context.Context, in *pb.ReqConfigRecover) (*pb.Result, error) {
+	service.Recover(in.ConfigIDs)
+	return &pb.Result{Code: pb.Code_Success}, nil
+}
+
 func (c *ConfigServer) InitConfig(ctx context.Context, in *pb.ReqInit) (*pb.Result, error) {
 	if i, err := c.proxy(
 		true,

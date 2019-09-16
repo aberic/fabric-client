@@ -260,6 +260,10 @@ message ReqConfig {
     string configID = 1;
 }
 
+message ReqConfigRecover {
+    repeated string configIDs = 1;
+}
+
 message ReqInit {
     ReqClientSelf client = 1;
     repeated ReqChannelPeer channelPeer = 2;

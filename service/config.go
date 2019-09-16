@@ -20,10 +20,12 @@ import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/rivet/utils/log"
 	"gopkg.in/yaml.v2"
+	"sync"
 )
 
 var (
 	Configs map[string]*config.Config
+	lock    sync.Mutex
 )
 
 func init() {
@@ -43,6 +45,22 @@ func GetBytes(configID string) []byte {
 		log.Self.Debug("client", log.Error(err))
 	}
 	return confData
+}
+
+func Recover(configIDs []string) {
+	defer lock.Unlock()
+	lock.Lock()
+	for configID := range Configs {
+		haveNo := true
+		for _, recoverID := range configIDs {
+			if configID == recoverID {
+				haveNo = false
+			}
+		}
+		if haveNo {
+			delete(Configs, configID)
+		}
+	}
 }
 
 func InitConfig(in *pb.ReqInit) {
@@ -77,5 +95,7 @@ func InitConfig(in *pb.ReqInit) {
 	for _, cert := range in.CertificateAuthority {
 		conf.AddOrSetSelfCertificateAuthority(cert.LeagueName, cert.CertName, cert.Url, cert.CaName, cert.EnrollId, cert.EnrollSecret)
 	}
+	defer lock.Unlock()
+	lock.Lock()
 	Configs[in.Client.ConfigID] = conf
 }
