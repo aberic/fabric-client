@@ -442,7 +442,7 @@ func TestEnroll(t *testing.T) {
 	err = Enroll("league", "admin", confData, []msp.EnrollmentOption{
 		msp.WithSecret("adminpw"),
 		msp.WithType("x509" /*or idemix, which is not support now*/),
-		//msp.WithProfile("tls"),
+		msp.WithProfile("tls"),
 		//msp.WithLabel("ForFabric"),
 		//msp.WithAttributeRequests(attrReqs),
 	})
@@ -819,20 +819,20 @@ func TGetCAConfig() *config.Config {
 	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-client/example"
 	conf := config.Config{}
 	conf.InitClient(false, "league", "debug",
-		"",
-		"",
-		"")
+		rootPath+"/config/crypto-config",
+		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.key",
+		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.crt")
 	conf.AddOrSetOrgForOrganizations("league", "Org1MSP",
 		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
 		map[string]string{},
 		[]string{},
 		[]string{"caRoot"},
 	)
-	conf.AddOrSetCertificateAuthority("caRoot", "http://10.10.203.51:30840",
+	conf.AddOrSetCertificateAuthority("caRoot", "https://10.10.203.51:30454",
 		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/tlsca/tlsca.20de78630ef6a411-org1-cert.pem",
 		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.key",
 		rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.crt",
-		"league", "admin", "adminpw")
+		"ca.20de78630ef6a411-org1", "admin", "adminpw")
 	return &conf
 }
 

@@ -15,6 +15,7 @@
 package rafts
 
 import (
+	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	str "github.com/ennoo/rivet/utils/string"
@@ -93,9 +94,11 @@ func (s *Server) syncConfig(hBeat *HBeat) {
 		obtainRaft().scheduled.refreshLastHeartBeatTime()
 		return
 	}
-	if err := yaml.Unmarshal(hBeat.Config, service.Configs); nil != err {
+	var cs map[string]*config.Config
+	if err := yaml.Unmarshal(hBeat.Config, cs); nil != err {
 		log.Self.Error("raft", log.Error(err))
 	} else {
+		service.RecoverConfig(cs)
 		log.Self.Debug("raft", log.String("syncConfig", "refresh time"))
 		obtainRaft().term = hBeat.Term
 		obtainRaft().persistence.leaderID = hBeat.LeaderId

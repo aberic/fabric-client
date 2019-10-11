@@ -23,7 +23,7 @@ import (
 
 const (
 	rootPath    = "/data"
-	configID    = "753f50e9b44edd7e255e7f80273eb1c9" // 5ee9c4a2c05968c87b1772b212eaa946 753f50e9b44edd7e255e7f80273eb1c9
+	configID    = "27b00872a5b9b2c91216b4601153ba50" // 5ee9c4a2c05968c87b1772b212eaa946 753f50e9b44edd7e255e7f80273eb1c9
 	channelName = "mychannel"
 	peerName    = "peer0"
 )

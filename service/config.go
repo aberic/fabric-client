@@ -63,6 +63,12 @@ func Recover(configIDs []string) {
 	}
 }
 
+func RecoverConfig(configs map[string]*config.Config) {
+	defer lock.Unlock()
+	lock.Lock()
+	Configs = configs
+}
+
 func InitConfig(in *pb.ReqInit) {
 	conf := &config.Config{}
 	conf.InitSelfClient(in.Client.Tls, in.Client.LeagueName, in.Client.Organization, in.Client.UserName, in.Client.Level)

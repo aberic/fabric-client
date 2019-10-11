@@ -112,7 +112,8 @@ func (l *leader) heartbeat(i interface{}) {
 
 // sendHeartBeats 遍历发送心跳
 func (l *leader) sendHeartbeats() {
-	configStr, err := yaml.Marshal(service.Configs)
+	var cs = service.Configs
+	configStr, err := yaml.Marshal(cs)
 	if nil != err {
 		return
 	}
