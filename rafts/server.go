@@ -95,7 +95,7 @@ func (s *Server) syncConfig(hBeat *HBeat) {
 		return
 	}
 	var cs map[string]*config.Config
-	if err := yaml.Unmarshal(hBeat.Config, cs); nil != err {
+	if err := yaml.Unmarshal(hBeat.Config, &cs); nil != err {
 		log.Self.Error("raft", log.Error(err))
 	} else {
 		service.RecoverConfig(cs)
