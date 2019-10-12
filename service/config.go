@@ -69,6 +69,16 @@ func RecoverConfig(configs map[string]*config.Config) {
 	Configs = configs
 }
 
+func GetASyncConfig() map[string]config.Config {
+	defer lock.Unlock()
+	lock.Lock()
+	var cs = make(map[string]config.Config)
+	for k, v := range Configs {
+		cs[k] = *v
+	}
+	return cs
+}
+
 func InitConfig(in *pb.ReqInit) {
 	conf := &config.Config{}
 	conf.InitSelfClient(in.Client.Tls, in.Client.LeagueName, in.Client.Organization, in.Client.UserName, in.Client.Level)

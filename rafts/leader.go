@@ -16,7 +16,6 @@ package rafts
 
 import (
 	"context"
-	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/grpc/proto/utils"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
@@ -113,11 +112,7 @@ func (l *leader) heartbeat(i interface{}) {
 
 // sendHeartBeats 遍历发送心跳
 func (l *leader) sendHeartbeats() {
-	var cs = make(map[string]config.Config)
-	for k, v := range service.Configs {
-		cs[k] = *v
-	}
-	configStr, err := yaml.Marshal(cs)
+	configStr, err := yaml.Marshal(service.GetASyncConfig())
 	if nil != err {
 		return
 	}
