@@ -18,6 +18,7 @@ import (
 	"fmt"
 	pb "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/rivet/utils/env"
+	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -91,42 +92,56 @@ func FabricConfigTXGenPath(version pb.Version) string {
 	}
 }
 
+// CryptoCAPath CryptoCAPath
+//
+// caType 0-ordererOrganizations;1-peerOrganizations
+func CryptoCAPath(ledgerName, orgName string, caType int) string {
+	var cPath string
+	switch caType {
+	default:
+		cPath = strings.Join([]string{"peerOrganizations/", orgName, ".", ledgerName}, "")
+	case 0:
+		cPath = strings.Join([]string{"ordererOrganizations/", ledgerName}, "")
+	}
+	return filepath.Join(dataPath, ledgerName, "crypto-config", cPath, "ca")
+}
+
 // CryptoGenYmlPath cryptogen.yaml
 func CryptoGenYmlPath(ledgerName string) string {
-	return strings.Join([]string{dataPath, ledgerName, "config/cryptogen.yaml"}, "/")
+	return filepath.Join(dataPath, ledgerName, "config/cryptogen.yaml")
 }
 
 // ConfigTxYmlPath configtx.yaml
 func ConfigTxYmlPath(ledgerName string) string {
-	return strings.Join([]string{dataPath, ledgerName, "config/configtx.yaml"}, "/")
+	return filepath.Join(dataPath, ledgerName, "config/configtx.yaml")
 }
 
 // ConfPath crypto-config和channel-artifacts的上一级目录
 func ConfPath(ledgerName string) string {
-	return strings.Join([]string{dataPath, ledgerName, "config"}, "/")
+	return filepath.Join(dataPath, ledgerName, "config")
 }
 
 // ChainCodePath code目录
 func ChainCodePath(ledgerName, chainCodeName, version string) (source, path, zipPath string) {
-	source = strings.Join([]string{ConfPath(ledgerName), "code/go"}, "/")
-	path = strings.Join([]string{chainCodeName, version, chainCodeName}, "/")
+	source = filepath.Join(dataPath, ledgerName, "code/go")
+	path = filepath.Join(chainCodeName, version, chainCodeName)
 	zipPath = strings.Join([]string{source, "/src/", path, ".zip"}, "")
 	return
 }
 
 // CryptoConfigPath crypto-config目录
 func CryptoConfigPath(ledgerName string) string {
-	return strings.Join([]string{ConfPath(ledgerName), "crypto-config"}, "/")
+	return filepath.Join(dataPath, ledgerName, "crypto-config")
 }
 
 // ChannelArtifactsPath channel-artifacts目录
 func ChannelArtifactsPath(ledgerName string) string {
-	return strings.Join([]string{ConfPath(ledgerName), "channel-artifacts"}, "/")
+	return filepath.Join(dataPath, ledgerName, "channel-artifacts")
 }
 
 // GenesisBlockFilePath orderer.genesis.block路径
 func GenesisBlockFilePath(ledgerName string) string {
-	return strings.Join([]string{ChannelArtifactsPath(ledgerName), "orderer.genesis.block"}, "/")
+	return filepath.Join(dataPath, ledgerName, "channel-artifacts/orderer.genesis.block")
 }
 
 // ChannelTXFilePath 通道tx文件路径

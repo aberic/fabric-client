@@ -347,46 +347,6 @@ func TestQueryCollectionsConfig(t *testing.T) {
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
 
-func TestDiscoveryClientPeers(t *testing.T) {
-	conf := TGetConfig()
-	confData, err := yaml.Marshal(&conf)
-	if err != nil {
-		log.Self.Debug("client", log.Error(err))
-	}
-	result := DiscoveryClientPeers("cc6519b67c4177fc11", "Org1", "Admin", "peer1", confData)
-	log.Self.Debug("test discovery client peers", log.Reflect("result", result))
-}
-
-func TestDiscoveryClientLocalPeers(t *testing.T) {
-	conf := TGetConfig()
-	confData, err := yaml.Marshal(&conf)
-	if err != nil {
-		log.Self.Debug("client", log.Error(err))
-	}
-	result := DiscoveryClientLocalPeers("Org1", "Admin", "peer1", confData)
-	log.Self.Debug("test discovery client local peers", log.Reflect("result", result))
-}
-
-func TestDiscoveryClientConfigPeers(t *testing.T) {
-	conf := TGetConfig()
-	confData, err := yaml.Marshal(&conf)
-	if err != nil {
-		log.Self.Debug("client", log.Error(err))
-	}
-	result := DiscoveryClientConfigPeers("cc6519b67c4177fc11", "Org1", "Admin", "peer1", confData)
-	log.Self.Debug("test discovery client config peers", log.Reflect("result", result))
-}
-
-func TestDiscoveryClientEndorsersPeers(t *testing.T) {
-	conf := TGetConfig()
-	confData, err := yaml.Marshal(&conf)
-	if err != nil {
-		log.Self.Debug("client", log.Error(err))
-	}
-	result := DiscoveryClientEndorsersPeers("cc6519b67c4177fc11", "Org1", "Admin", "peer1", "care", confData)
-	log.Self.Debug("test discovery client endorsers peers", log.Reflect("result", result))
-}
-
 func TestDiscoveryChannelPeers(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)

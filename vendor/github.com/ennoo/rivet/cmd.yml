@@ -1,0 +1,24 @@
+bow:
+  Port: 19219 # 开放端口，便于其它应用访问
+  LogPath: /data/rivet/logs # 日志文件输出路径
+  HealthCheck: true # 是否开启健康检查
+  ServerManager: true # 是否启用服务管理功能
+  LoadBalance: true # 是否启用负载均衡
+  OpenTLS: false # 是否开启 TLS
+  ConfigPath: ../config.yml # Bow 配置文件路径
+  DiscoveryInit: true # 是否启用发现服务
+  DiscoveryComponent: consul # 所启用发现服务组件名
+  DiscoveryURL: 127.0.0.1:8500 # 发现服务地址
+  DiscoveryReceiveHost: 127.0.0.1 # 发现服务收到当前注册服务的地址，端口号默认通过 PORT 获取
+
+shunt:
+  Port: 19877 # 开放端口，便于其它应用访问
+  LogPath: /data/rivet/logs # 日志文件输出路径
+  HealthCheck: true # 是否开启健康检查
+  ServerManager: true # 是否启用服务管理功能
+  OpenTLS: false # 是否开启 TLS
+  ConfigPath: ../config.yml # Bow 配置文件路径
+  DiscoveryInit: true # 是否启用发现服务
+  DiscoveryComponent: consul # 所启用发现服务组件名
+  DiscoveryURL: 127.0.0.1:8500 # 发现服务地址
+  DiscoveryReceiveHost: 127.0.0.1 # 发现服务收到当前注册服务的地址，端口号默认通过 PORT 获取

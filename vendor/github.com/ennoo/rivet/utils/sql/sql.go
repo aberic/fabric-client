@@ -40,6 +40,8 @@ type SQL struct {
 	DBName string   // dbName 数据库名称
 	// LogMode set log mode, `true` for detailed logs, `false` for no log, default, will only print error logs
 	LogModeEnable bool
+	MaxIdleConns  int
+	MaxOpenConns  int
 }
 
 // GetSQLInstance 获取 SQL 单例
@@ -61,13 +63,19 @@ func GetSQLInstance() *SQL {
 // dbName 数据库名称
 //
 // logModeEnable set log mode, `true` for detailed logs, `false` for no log, default, will only print error logs
-func (s *SQL) Connect(dbURL, dbUser, dbPass, dbName string, logModeEnable bool) error {
+//
+// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+//
+// SetMaxOpenConns sets the maximum number of open connections to the database.
+func (s *SQL) Connect(dbURL, dbUser, dbPass, dbName string, logModeEnable bool, maxIdleConns, maxOpenConns int) error {
 	if nil == s.DB {
 		s.DBUrl = env.GetEnvDefault(env.DBUrl, dbURL)
 		s.DBUser = env.GetEnvDefault(env.DBUser, dbUser)
 		s.DBPass = env.GetEnvDefault(env.DBPass, dbPass)
 		s.DBName = env.GetEnvDefault(env.DBName, dbName)
 		s.LogModeEnable = logModeEnable
+		s.MaxIdleConns = maxIdleConns
+		s.MaxOpenConns = maxOpenConns
 		log.Common.Info("init DB Manager")
 		dbValue := strings.Join([]string{s.DBUser, ":", s.DBPass, "@tcp(", s.DBUrl, ")/", s.DBName,
 			"?charset=utf8&parseTime=True&loc=Local"}, "")
@@ -80,9 +88,9 @@ func (s *SQL) Connect(dbURL, dbUser, dbPass, dbName string, logModeEnable bool) 
 		}
 		s.DB.LogMode(logModeEnable)
 		// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
-		s.DB.DB().SetMaxIdleConns(10)
+		s.DB.DB().SetMaxIdleConns(maxIdleConns)
 		// SetMaxOpenConns sets the maximum number of open connections to the database.
-		s.DB.DB().SetMaxOpenConns(100)
+		s.DB.DB().SetMaxOpenConns(maxOpenConns)
 		// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
 		s.DB.DB().SetConnMaxLifetime(time.Hour)
 		go s.dbKeepAlive(s.DB)
@@ -91,7 +99,7 @@ func (s *SQL) Connect(dbURL, dbUser, dbPass, dbName string, logModeEnable bool) 
 }
 
 func (s *SQL) reConnect() error {
-	return s.Connect(s.DBUrl, s.DBUser, s.DBPass, s.DBName, s.LogModeEnable)
+	return s.Connect(s.DBUrl, s.DBUser, s.DBPass, s.DBName, s.LogModeEnable, s.MaxIdleConns, s.MaxOpenConns)
 }
 
 // Exec 执行自定义 SQL

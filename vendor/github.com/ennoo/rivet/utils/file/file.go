@@ -172,7 +172,10 @@ func DeCompressTar(tarFile, dest string) error {
 		return err
 	}
 	defer srcFile.Close()
-	reader, err := zip.OpenReader(srcFile.Name())
+	var reader *zip.ReadCloser
+	if reader, err = zip.OpenReader(srcFile.Name()); nil != err {
+		return err
+	}
 	return deCompress(reader, dest)
 }
 

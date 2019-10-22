@@ -442,54 +442,6 @@ func DiscoveryLocalPeers(orgName, orgUser string, configBytes []byte, sdkOpts ..
 	return discoveryLocalPeers(orgName, orgUser, sdk)
 }
 
-func DiscoveryClientPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *Result {
-	result := Result{}
-	sdk, err := sdk(configBytes, sdkOpts...)
-	if err != nil {
-		gnomon.Log().Error("DiscoveryClientPeers", gnomon.Log().Err(err))
-		result.Fail(err.Error())
-		return &result
-	}
-	return discoveryClientPeers(channelID, orgName, orgUser, peerName, sdk)
-}
-
-func DiscoveryClientLocalPeers(orgName, orgUser, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *Result {
-	result := Result{}
-	sdk, err := sdk(configBytes, sdkOpts...)
-	if err != nil {
-		gnomon.Log().Error("DiscoveryClientLocalPeers", gnomon.Log().Err(err))
-		result.Fail(err.Error())
-		return &result
-	}
-	return discoveryClientLocalPeers(orgName, orgUser, peerName, sdk)
-}
-
-func DiscoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *Result {
-	result := Result{}
-	sdk, err := sdk(configBytes, sdkOpts...)
-	if err != nil {
-		gnomon.Log().Error("DiscoveryClientConfigPeers", gnomon.Log().Err(err))
-		result.Fail(err.Error())
-		return &result
-	}
-	return discoveryClientConfigPeers(channelID, orgName, orgUser, peerName, sdk)
-}
-
-func DiscoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *Result {
-	result := Result{}
-	sdk, err := sdk(configBytes, sdkOpts...)
-	if err != nil {
-		gnomon.Log().Error("DiscoveryClientEndorsersPeers", gnomon.Log().Err(err))
-		result.Fail(err.Error())
-		return &result
-	}
-	return discoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID, sdk)
-}
-
 func CAInfo(orgName string, configBytes []byte, sdkOpts ...fabsdk.Option) (*msp.GetCAInfoResponse, error) {
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {

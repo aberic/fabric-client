@@ -25,6 +25,8 @@ import (
 const (
 	// LogPath 日志文件输出路径
 	LogPath = "LOG_PATH"
+	// LOG_LEVEL 日志级别
+	LogLevel = "LOG_LEVEL"
 	// ServiceName 当前启动服务名
 	ServiceName = "SERVICE_NAME"
 	// Port 当前服务启动端口号
