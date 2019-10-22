@@ -61,7 +61,7 @@ func (l *leader) follower() {
 }
 
 func (l *leader) release() {
-	_ = l.heartBeatPool.Release()
+	l.heartBeatPool.Release()
 	if nil != l.raft.scheduled.tickerEnd {
 		l.raft.scheduled.tickerEnd <- 1
 	}
