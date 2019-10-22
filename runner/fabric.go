@@ -16,57 +16,42 @@
 package main
 
 import (
+	"github.com/aberic/gnomon"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	pbGeneses "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/fabric-client/grpc/server/chains"
 	"github.com/ennoo/fabric-client/grpc/server/geneses"
 	"github.com/ennoo/fabric-client/rafts"
-	"github.com/ennoo/rivet"
-	"github.com/ennoo/rivet/utils/env"
-	"github.com/ennoo/rivet/utils/log"
-	str "github.com/ennoo/rivet/utils/string"
 	"google.golang.org/grpc"
 	"net"
-	"strings"
+)
+
+const (
+	// LogPath 日志文件输出路径
+	LogPath = "LOG_PATH"
 )
 
 func main() {
-	if id := env.GetEnv(rafts.BrokerID); str.IsNotEmpty(id) {
-		log.Self.Info("raft self", log.String("BrokerID", id))
+	if id := gnomon.Env().Get(rafts.BrokerID); gnomon.String().IsNotEmpty(id) {
+		gnomon.Log().Info("raft self", gnomon.Log().Field("BrokerID", id))
 		rafts.NewRaft()
-	} else if k8s := env.GetEnvBool(rafts.K8S); k8s {
-		log.Self.Info("raft k8s")
+	} else if k8s := gnomon.Env().GetBool(rafts.K8S); k8s {
+		gnomon.Log().Info("raft k8s")
 		rafts.NewRaft()
 	}
 	grpcListener()
 }
 
 func init() {
-	var (
-		level    log.Level
-		logLevel string
-	)
-	rivet.Initialize(false, false, false, false)
+	logSet()
+}
 
-	logLevel = strings.ToLower(env.GetEnvDefault("LOG_LEVEL", "warn"))
-	switch logLevel {
-	case "debug":
-		level = log.DebugLevel
-	case "info":
-		level = log.InfoLevel
-	case "warn":
-		level = log.WarnLevel
-	case "error":
-		level = log.ErrorLevel
+// logSet 日志设置
+func logSet() {
+	if err := gnomon.Log().Init(gnomon.Env().GetD(LogPath, "./logs"), 50, 7, false); nil != err {
+		panic(err)
 	}
-	logPath := env.GetEnvDefault(env.LogPath, "./logs")
-	rivet.Log().Init(logPath, "fabric-client", &log.Config{
-		Level:      level,
-		MaxSize:    128,
-		MaxBackups: 30,
-		MaxAge:     30,
-		Compress:   true,
-	}, false)
+	gnomon.Log().Set(gnomon.Log().WarnLevel(), true)
 }
 
 func grpcListener() {

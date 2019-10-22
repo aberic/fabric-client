@@ -15,10 +15,9 @@
 package rafts
 
 import (
+	"github.com/aberic/gnomon"
 	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/service"
-	"github.com/ennoo/rivet/utils/log"
-	str "github.com/ennoo/rivet/utils/string"
 	"golang.org/x/net/context"
 	"gopkg.in/yaml.v3"
 )
@@ -27,7 +26,7 @@ type Server struct{}
 
 // HeartBeat 发送心跳
 func (s *Server) Heartbeat(_ context.Context, hBeat *HBeat) (hbr *HBeatReturn, err error) {
-	log.Self.Debug("raft", log.Reflect("receive heartbeat", hBeat))
+	gnomon.Log().Debug("raft", gnomon.Log().Field("receive heartbeat", hBeat))
 	hbr = &HBeatReturn{}
 	if hBeat.Term < obtainRaft().term {
 		hbr.Success = false
@@ -58,13 +57,13 @@ func (s *Server) Heartbeat(_ context.Context, hBeat *HBeat) (hbr *HBeatReturn, e
 
 // RequestVote 发起选举，索要选票
 func (s *Server) RequestVote(_ context.Context, rv *ReqVote) (rvr *ReqVoteReturn, err error) {
-	log.Self.Info("raft", log.Reflect("receive RequestVote", rv))
+	gnomon.Log().Info("raft", gnomon.Log().Field("receive RequestVote", rv))
 	rvr = &ReqVoteReturn{}
 	rvr.Term = obtainRaft().term
 	if rv.Term < obtainRaft().term {
-		log.Self.Info("raft", log.Reflect("refuse", rv),
-			log.Int32("termLocal", obtainRaft().term),
-			log.Int32("termReceive", rv.Term))
+		gnomon.Log().Info("raft", gnomon.Log().Field("refuse", rv),
+			gnomon.Log().Field("termLocal", obtainRaft().term),
+			gnomon.Log().Field("termReceive", rv.Term))
 		rvr.VoteGranted = false
 	} else if rv.Term >= obtainRaft().term {
 		rvr.VoteGranted = s.voteFor(rv)
@@ -96,10 +95,10 @@ func (s *Server) syncConfig(hBeat *HBeat) {
 	}
 	var cs map[string]*config.Config
 	if err := yaml.Unmarshal(hBeat.Config, &cs); nil != err {
-		log.Self.Error("raft", log.Error(err))
+		gnomon.Log().Error("raft", gnomon.Log().Err(err))
 	} else {
 		service.RecoverConfig(cs)
-		log.Self.Debug("raft", log.String("syncConfig", "refresh time"))
+		gnomon.Log().Debug("raft", gnomon.Log().Field("syncConfig", "refresh time"))
 		obtainRaft().term = hBeat.Term
 		obtainRaft().persistence.leaderID = hBeat.LeaderId
 		obtainRaft().persistence.version = hBeat.Version
@@ -120,13 +119,13 @@ func (s *Server) voteFor(rv *ReqVote) bool {
 		s.vote(rv)
 		return true
 	}
-	if rv.Term == obtainRaft().persistence.votedFor.term && str.IsEmpty(obtainRaft().persistence.votedFor.id) {
+	if rv.Term == obtainRaft().persistence.votedFor.term && gnomon.String().IsEmpty(obtainRaft().persistence.votedFor.id) {
 		s.vote(rv)
 		return true
 	}
-	log.Self.Info("raft", log.Reflect("refuse", rv),
-		log.Int32("termLocal", obtainRaft().term),
-		log.Int32("termReceive", rv.Term))
+	gnomon.Log().Info("raft", gnomon.Log().Field("refuse", rv),
+		gnomon.Log().Field("termLocal", obtainRaft().term),
+		gnomon.Log().Field("termReceive", rv.Term))
 	return false
 }
 
@@ -134,7 +133,7 @@ func (s *Server) vote(rv *ReqVote) {
 	obtainRaft().persistence.votedFor.id = rv.CandidateId
 	obtainRaft().persistence.votedFor.term = rv.Term
 	obtainRaft().scheduled.refreshLastHeartBeatTime()
-	log.Self.Info("raft", log.Reflect("accept", rv),
-		log.Int32("termLocal", obtainRaft().term),
-		log.Int32("termReceive", rv.Term))
+	gnomon.Log().Info("raft", gnomon.Log().Field("accept", rv),
+		gnomon.Log().Field("termLocal", obtainRaft().term),
+		gnomon.Log().Field("termReceive", rv.Term))
 }

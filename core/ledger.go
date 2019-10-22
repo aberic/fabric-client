@@ -17,23 +17,22 @@ package sdk
 
 import (
 	"encoding/hex"
+	"github.com/aberic/gnomon"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	"github.com/ennoo/rivet/trans/response"
-	str "github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 )
 
-func queryLedgerInfo(peerName string, channelProvider ctx.ChannelProvider) *response.Result {
-	result := response.Result{}
+func queryLedgerInfo(peerName string, channelProvider ctx.ChannelProvider) *Result {
+	result := Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
 		var ledgerInfo *fab.BlockchainInfoResponse
-		if str.IsEmpty(peerName) {
+		if gnomon.String().IsEmpty(peerName) {
 			ledgerInfo, err = client.QueryInfo()
 		} else {
 			ledgerInfo, err = client.QueryInfo(ledger.WithTargetEndpoints(peerName))
@@ -56,14 +55,14 @@ func queryLedgerInfo(peerName string, channelProvider ctx.ChannelProvider) *resp
 	return &result
 }
 
-func queryLedgerBlockByHeight(peerName string, height uint64, channelProvider ctx.ChannelProvider) *response.Result {
-	result := response.Result{}
+func queryLedgerBlockByHeight(peerName string, height uint64, channelProvider ctx.ChannelProvider) *Result {
+	result := Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
 		var commonBlock *common.Block
-		if str.IsEmpty(peerName) {
+		if gnomon.String().IsEmpty(peerName) {
 			commonBlock, err = client.QueryBlock(height)
 		} else {
 			commonBlock, err = client.QueryBlock(height, ledger.WithTargetEndpoints(peerName))
@@ -90,8 +89,8 @@ func queryLedgerBlockByHeight(peerName string, height uint64, channelProvider ct
 	return &result
 }
 
-func queryLedgerBlockByHash(peerName string, hash string, channelProvider ctx.ChannelProvider) *response.Result {
-	result := response.Result{}
+func queryLedgerBlockByHash(peerName string, hash string, channelProvider ctx.ChannelProvider) *Result {
+	result := Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
@@ -100,7 +99,7 @@ func queryLedgerBlockByHash(peerName string, hash string, channelProvider ctx.Ch
 			result.FailErr(err)
 		} else {
 			var commonBlock *common.Block
-			if str.IsEmpty(peerName) {
+			if gnomon.String().IsEmpty(peerName) {
 				commonBlock, err = client.QueryBlockByHash(realHash)
 			} else {
 				commonBlock, err = client.QueryBlockByHash(realHash, ledger.WithTargetEndpoints(peerName))
@@ -119,14 +118,14 @@ func queryLedgerBlockByHash(peerName string, hash string, channelProvider ctx.Ch
 	return &result
 }
 
-func queryLedgerBlockByTxID(peerName string, txID string, channelProvider ctx.ChannelProvider) *response.Result {
-	result := response.Result{}
+func queryLedgerBlockByTxID(peerName string, txID string, channelProvider ctx.ChannelProvider) *Result {
+	result := Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
 	} else {
 		var commonBlock *common.Block
-		if str.IsEmpty(peerName) {
+		if gnomon.String().IsEmpty(peerName) {
 			commonBlock, err = client.QueryBlockByTxID(fab.TransactionID(txID))
 		} else {
 			commonBlock, err = client.QueryBlockByTxID(fab.TransactionID(txID), ledger.WithTargetEndpoints(peerName))
@@ -144,8 +143,8 @@ func queryLedgerBlockByTxID(peerName string, txID string, channelProvider ctx.Ch
 	return &result
 }
 
-func queryLedgerTransaction(peerName string, txID string, channelProvider ctx.ChannelProvider) *response.Result {
-	result := response.Result{}
+func queryLedgerTransaction(peerName string, txID string, channelProvider ctx.ChannelProvider) *Result {
+	result := Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)
@@ -159,8 +158,8 @@ func queryLedgerTransaction(peerName string, txID string, channelProvider ctx.Ch
 	return &result
 }
 
-func queryLedgerConfig(peerName string, channelProvider ctx.ChannelProvider) *response.Result {
-	result := response.Result{}
+func queryLedgerConfig(peerName string, channelProvider ctx.ChannelProvider) *Result {
+	result := Result{}
 	// Ledger client
 	if client, err := ledger.New(channelProvider); nil != err {
 		result.FailErr(err)

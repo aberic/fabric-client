@@ -15,9 +15,7 @@
 package rafts
 
 import (
-	"github.com/ennoo/rivet/utils/env"
-	"github.com/ennoo/rivet/utils/log"
-	str "github.com/ennoo/rivet/utils/string"
+	"github.com/aberic/gnomon"
 	"strings"
 	"sync"
 	"time"
@@ -91,25 +89,25 @@ func init() {
 	//_ = os.Setenv(cluster, "1=127.0.0.1:19877,2=127.0.0.1:19878,3=127.0.0.1:19879")
 
 	self = &Node{}
-	if k8s := env.GetEnvBool(K8S); k8s {
-		if self.Url = env.GetEnv("HOSTNAME"); str.IsEmpty(self.Url) {
-			log.Self.Info("raft k8s fail", log.String("addr", self.Url))
+	if k8s := gnomon.Env().GetBool(K8S); k8s {
+		if self.Url = gnomon.Env().Get("HOSTNAME"); gnomon.String().IsEmpty(self.Url) {
+			gnomon.Log().Info("raft k8s fail", gnomon.Log().Field("addr", self.Url))
 			return
 		}
-		log.Self.Info("raft k8s", log.String("addr", self.Url))
+		gnomon.Log().Info("raft k8s", gnomon.Log().Field("addr", self.Url))
 		self.Id = strings.Split(self.Url, "-")[1]
-		log.Self.Info("raft k8s", log.String("id", self.Id))
+		gnomon.Log().Info("raft k8s", gnomon.Log().Field("id", self.Id))
 	} else {
-		if self.Url = env.GetEnv(nodeAddr); str.IsEmpty(self.Url) {
+		if self.Url = gnomon.Env().Get(nodeAddr); gnomon.String().IsEmpty(self.Url) {
 			return
 		}
-		if self.Id = env.GetEnv(BrokerID); str.IsEmpty(self.Id) {
-			log.Self.Error("raft", log.String("note", "broker id is not appoint"))
+		if self.Id = gnomon.Env().Get(BrokerID); gnomon.String().IsEmpty(self.Id) {
+			gnomon.Log().Error("raft", gnomon.Log().Field("note", "broker id is not appoint"))
 			return
 		}
 	}
-	nodesStr := env.GetEnv(cluster)
-	if str.IsEmpty(nodesStr) {
+	nodesStr := gnomon.Env().Get(cluster)
+	if gnomon.String().IsEmpty(nodesStr) {
 		nodes = make([]*Node, 0)
 	} else {
 		clusterArr := strings.Split(nodesStr, ",")
@@ -117,8 +115,8 @@ func init() {
 		for _, cluster := range clusterArr {
 			clusterSplit := strings.Split(cluster, "=")
 			id := clusterSplit[0]
-			if str.IsEmpty(id) {
-				log.Self.Error("raft", log.String("cluster", "broker id is nil"))
+			if gnomon.String().IsEmpty(id) {
+				gnomon.Log().Error("raft", gnomon.Log().Field("cluster", "broker id is nil"))
 				continue
 			}
 			if id == self.Id {
@@ -134,7 +132,7 @@ func init() {
 }
 
 func NewRaft() {
-	log.Self.Info("raft", log.String("new", "新建Raft"))
+	gnomon.Log().Info("raft", gnomon.Log().Field("new", "新建Raft"))
 	_ = obtainRaft()
 }
 
@@ -155,9 +153,9 @@ func (r *Raft) start() {
 
 // initRaft Raft初始化
 func (r *Raft) initRaft(self *Node, nodes []*Node) {
-	log.Self.Info("raft", log.String("initRaft", "初始化Raft"))
+	gnomon.Log().Info("raft", gnomon.Log().Field("initRaft", "初始化Raft"))
 	if nil == self || nil == nodes {
-		log.Self.Info("raft", log.String("initRaft", "未组网或参数配置有误，raft集群无法启动"))
+		gnomon.Log().Info("raft", gnomon.Log().Field("initRaft", "未组网或参数配置有误，raft集群无法启动"))
 		return
 	}
 	r.term = 0

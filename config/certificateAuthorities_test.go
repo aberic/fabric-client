@@ -16,8 +16,8 @@ package config
 
 import (
 	"fmt"
-	"github.com/ennoo/rivet/utils/log"
-	"gopkg.in/yaml.v2"
+	"github.com/aberic/gnomon"
+	"gopkg.in/yaml.v3"
 	"testing"
 )
 
@@ -26,7 +26,7 @@ func TestNewCertificateAuthorities(t *testing.T) {
 
 	certificateAuthoritiesData, err := yaml.Marshal(&certificateAuthorities)
 	if err != nil {
-		log.Self.Error("channels", log.Error(err))
+		gnomon.Log().Error("channels", gnomon.Log().Err(err))
 	}
 	fmt.Printf("--- kfk dump:\n%s\n\n", string(certificateAuthoritiesData))
 }

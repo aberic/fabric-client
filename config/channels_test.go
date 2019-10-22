@@ -16,8 +16,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/ennoo/rivet/utils/log"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"testing"
 )
 
@@ -26,7 +25,7 @@ func TestNewChannels(t *testing.T) {
 
 	channelsData, err := yaml.Marshal(&channels)
 	if err != nil {
-		log.Self.Error("channels", log.Error(err))
+		t.Error(err)
 	}
 	fmt.Printf("--- kfk dump:\n%s\n\n", string(channelsData))
 }

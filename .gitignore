@@ -28,3 +28,5 @@ logs
 /geneses/example/
 /bin/fgc_linux_amd64.zip
 /bin/fgc_linux_amd64
+/example/ca/
+/example/config/

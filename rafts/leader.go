@@ -16,9 +16,9 @@ package rafts
 
 import (
 	"context"
+	"github.com/aberic/gnomon"
 	"github.com/ennoo/fabric-client/grpc/proto/utils"
 	"github.com/ennoo/fabric-client/service"
-	"github.com/ennoo/rivet/utils/log"
 	"github.com/panjf2000/ants"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v3"
@@ -33,7 +33,7 @@ type leader struct {
 }
 
 func (l *leader) become(raft *Raft) {
-	log.Self.Info("raft", log.String("become", "Leader"))
+	gnomon.Log().Info("raft", gnomon.Log().Field("become", "Leader"))
 	l.raft = raft
 	l.raft.persistence.version = 0
 	l.raft.persistence.currentTerm = l.raft.term
@@ -101,7 +101,7 @@ func (l *leader) heartbeat(i interface{}) {
 		return result, nil
 	})
 	if nil != err {
-		log.Self.Warn("raft", log.Error(err))
+		gnomon.Log().Warn("raft", gnomon.Log().Err(err))
 		return
 	}
 	if heartbeatReturn := hbr.(*HBeatReturn); !heartbeatReturn.Success {
@@ -123,7 +123,7 @@ func (l *leader) sendHeartbeats() {
 		Config:   configStr,
 	}
 	l.heartBeatPool.Tune(len(l.raft.nodes))
-	log.Self.Debug("raft", log.Reflect("send heartbeat", hBeat), log.Reflect("nodes", l.raft.nodes))
+	gnomon.Log().Debug("raft", gnomon.Log().Field("send heartbeat", hBeat), gnomon.Log().Field("nodes", l.raft.nodes))
 	// 遍历发送心跳
 	for _, node := range l.raft.nodes {
 		if node.Id == l.raft.self.Id {

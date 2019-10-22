@@ -15,7 +15,7 @@
 package rafts
 
 import (
-	"github.com/ennoo/rivet/utils/log"
+	"github.com/aberic/gnomon"
 	"github.com/robfig/cron"
 	"strings"
 	"time"
@@ -44,7 +44,7 @@ type scheduled struct {
 
 // start 启动定时检查raft计时任务可用性任务
 func (s *scheduled) start() {
-	log.Self.Info("raft", log.Reflect("start", s.raft.nodes))
+	gnomon.Log().Info("raft", gnomon.Log().Field("start", s.raft.nodes))
 	s.tickerEnd = make(chan int8, 1)
 	s.checkCron = cron.New()
 	s.checkErr = make(chan error, 1)
@@ -60,7 +60,7 @@ Loop:
 	for {
 		select {
 		case err := <-s.checkErr:
-			log.Self.Error("raft", log.String("check err", "reStartCheck"), log.Error(err))
+			gnomon.Log().Error("raft", gnomon.Log().Field("check err", "reStartCheck"), gnomon.Log().Err(err))
 			s.check()
 		case <-s.checkRelease:
 			break Loop
@@ -73,7 +73,7 @@ func (s *scheduled) task() {
 	s.checkCron.Stop()
 	err := s.checkCron.AddFunc(strings.Join([]string{"*/3 * * * * ?"}, ""), func() {
 		if s.raft.role.role() == RoleFollower && time.Now().UnixNano()/1e6-s.time > timeout { // 如果自身是follower节点
-			log.Self.Debug("raft", log.Int32("Term", s.raft.term), log.String("task", "follower timeout"))
+			gnomon.Log().Debug("raft", gnomon.Log().Field("Term", s.raft.term), gnomon.Log().Field("task", "follower timeout"))
 			s.raft.role.candidate()
 		}
 	})
@@ -86,7 +86,7 @@ func (s *scheduled) task() {
 
 // tickerStart 启动心跳定时任务
 func (s *scheduled) tickerStart() {
-	log.Self.Debug("raft", log.Int32("Term", s.raft.term), log.String("cron", "start ticker"))
+	gnomon.Log().Debug("raft", gnomon.Log().Field("Term", s.raft.term), gnomon.Log().Field("cron", "start ticker"))
 	s.ticker = time.NewTicker(timeout * time.Millisecond / 10)
 	go func() {
 	Loop:

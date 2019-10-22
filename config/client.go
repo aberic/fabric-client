@@ -200,6 +200,10 @@ func (c *Client) initClient(tls bool, organization, level, cryptoConfig, keyPath
 				Selection:         "10m",
 			},
 		},
+		&ClientCredentialStore{
+			Path:        strings.Join([]string{"/tmp", organization, "state-store"}, "/"),
+			CryptoStore: &ClientCredentialStoreCryptoStore{Path: strings.Join([]string{"/tmp", organization, "msp"}, "/")},
+		},
 		&ClientBCCSP{
 			Security: &ClientBCCSPSecurity{
 				Enabled:       true,
@@ -212,7 +216,8 @@ func (c *Client) initClient(tls bool, organization, level, cryptoConfig, keyPath
 }
 
 func (c *Client) initCustomClient(tls bool, organization, level, cryptoConfig, keyPath, certPath string,
-	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) {
+	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal,
+	ccs *ClientCredentialStore, bccsp *ClientBCCSP) {
 	c.Organization = organization
 	c.Logging = &ClientLogging{Level: level}
 	c.Peer = peer
@@ -220,10 +225,7 @@ func (c *Client) initCustomClient(tls bool, organization, level, cryptoConfig, k
 	c.Order = order
 	c.Global = global
 	c.CryptoConfig = &ClientCryptoConfig{Path: cryptoConfig}
-	c.CredentialStore = &ClientCredentialStore{
-		Path:        strings.Join([]string{"/tmp", organization, "state-store"}, "/"),
-		CryptoStore: &ClientCredentialStoreCryptoStore{Path: strings.Join([]string{"/tmp", organization, "msp"}, "/")},
-	}
+	c.CredentialStore = ccs
 	c.BCCSP = bccsp
 	c.TLSCerts = &ClientTLSCerts{
 		SystemCertPool: tls,

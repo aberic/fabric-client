@@ -16,7 +16,6 @@
 package sdk
 
 import (
-	"github.com/ennoo/rivet/trans/response"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	pc "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
@@ -78,8 +77,8 @@ func discoveryLocalPeers(orgName, orgUser string, sdk *fabsdk.FabricSDK) ([]fab.
 	return peers, nil
 }
 
-func discoveryClientPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
+func discoveryClientPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *Result {
+	result := Result{}
 	var (
 		contextClient pc.Client
 		err           error
@@ -135,8 +134,8 @@ ERR:
 	return &result
 }
 
-func discoveryClientLocalPeers(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
+func discoveryClientLocalPeers(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *Result {
+	result := Result{}
 	var (
 		contextClient pc.Client
 		err           error
@@ -181,8 +180,8 @@ ERR:
 }
 
 // 未调通
-func discoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID string, sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
+func discoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID string, sdk *fabsdk.FabricSDK) *Result {
+	result := Result{}
 	var (
 		contextClient pc.Client
 		err           error
@@ -227,8 +226,8 @@ ERR:
 }
 
 // 未调通
-func discoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
+func discoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) *Result {
+	result := Result{}
 	var (
 		contextClient pc.Client
 		err           error

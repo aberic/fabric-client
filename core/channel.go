@@ -16,8 +16,7 @@
 package sdk
 
 import (
-	"github.com/ennoo/rivet/trans/response"
-	"github.com/ennoo/rivet/utils/log"
+	"github.com/aberic/gnomon"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	mspclient "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
@@ -45,7 +44,7 @@ func channelClient(orgName, orgUser, channelID string, sdk *fabsdk.FabricSDK) *c
 	// Channel client is used to query and execute transactions (Org1 is default org)
 	client, err := channel.New(clientChannelContext)
 	if err != nil {
-		log.Self.Error("Failed to create new channel client:" + err.Error())
+		gnomon.Log().Error("channelClient", gnomon.Log().Err(err))
 		return nil
 	}
 	return client
@@ -72,7 +71,7 @@ func createChannel(orderURL, orgName, orgUser, channelID, channelConfigPath stri
 		SigningIdentities: []msp.SigningIdentity{adminIdentity}}
 	scResp, err = client.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(orderURL))
 	if err != nil {
-		log.Self.Error("error should be nil.", log.Error(err))
+		gnomon.Log().Error("createChannel", gnomon.Log().Err(err))
 		return "", errors.Errorf("error should be nil. %v", err)
 	}
 	return string(scResp.TransactionID), nil
@@ -86,7 +85,7 @@ func joinChannel(orderURL, channelID, peerName string, client *resmgmt.Client) e
 		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
 		resmgmt.WithTargetEndpoints(peerName),
 		resmgmt.WithOrdererEndpoint(orderURL)); err != nil {
-		log.Self.Error("Org peers failed to JoinChannel.", log.Error(err))
+		gnomon.Log().Error("joinChannel", gnomon.Log().Err(err))
 		return errors.Errorf("Org peers failed to JoinChannel:  %v", err)
 	}
 	return nil
@@ -103,30 +102,30 @@ func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) ([]
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
-		log.Self.Error("Failed to query channels: " + err.Error())
+		gnomon.Log().Error("queryChannels", gnomon.Log().Err(err))
 		return nil, errors.Errorf("Failed to query channels:  %v", err)
 	} else {
 		if nil != orgResMgmt {
 			qcResponse, err := orgResMgmt.QueryChannels(resmgmt.WithTargetEndpoints(peerName))
 			if err != nil {
-				log.Self.Error("Failed to query channels: peer cannot be nil", log.Error(err))
+				gnomon.Log().Error("queryChannels", gnomon.Log().Err(err))
 				return nil, errors.Errorf("Failed to query channels: peer cannot be nil.  %v", err)
 			}
 			if nil == qcResponse {
-				log.Self.Error("qcResponse error should be nil. ")
+				gnomon.Log().Error("queryChannels", gnomon.Log().Err(err))
 				return nil, errors.Errorf("qcResponse error should be nil. ")
 			} else {
 				return qcResponse.Channels, nil
 			}
 		} else {
-			log.Self.Error("orgResMgmt error should be nil. ")
+			gnomon.Log().Error("queryChannels", gnomon.Log().Err(err))
 			return nil, errors.Errorf("orgResMgmt error should be nil. ")
 		}
 	}
 }
 
-func queryChannelInfo(channelID, peerName string, client ctx.Client) *response.Result {
-	result := response.Result{}
+func queryChannelInfo(channelID, peerName string, client ctx.Client) *Result {
+	result := Result{}
 	var (
 		ledger1 *ch.Ledger
 		peerCfg *fab.NetworkPeer
@@ -156,8 +155,8 @@ ERR:
 	return &result
 }
 
-func queryChannelBlockByHeight(channelID, peerName string, height uint64, client ctx.Client) *response.Result {
-	result := response.Result{}
+func queryChannelBlockByHeight(channelID, peerName string, height uint64, client ctx.Client) *Result {
+	result := Result{}
 	var (
 		ledger  *ch.Ledger
 		peerCfg *fab.NetworkPeer
@@ -185,9 +184,9 @@ func queryChannelBlockByHeight(channelID, peerName string, height uint64, client
 		//		continue
 		//	}
 		//	if envelope, err := utils.GetEnvelopeFromBlock(d);nil!=err {
-		//		log.Self.Error("error", log.Error(err))
+		//		gnomon.Log().Error("error", log.Error(err))
 		//	} else {
-		//		log.Self.Info("envelope", log.Reflect("envelope", envelope))
+		//		gnomon.Log().Info("envelope", log.Reflect("envelope", envelope))
 		//	}
 		//
 		//}
@@ -199,8 +198,8 @@ ERR:
 	return &result
 }
 
-func queryChannelBlockByHash(channelID, peerName, hash string, client ctx.Client) *response.Result {
-	result := response.Result{}
+func queryChannelBlockByHash(channelID, peerName, hash string, client ctx.Client) *Result {
+	result := Result{}
 	var (
 		ledger  *ch.Ledger
 		peerCfg *fab.NetworkPeer
@@ -231,8 +230,8 @@ ERR:
 	return &result
 }
 
-func queryChannelBlockByTxID(channelID, peerName, txID string, client ctx.Client) *response.Result {
-	result := response.Result{}
+func queryChannelBlockByTxID(channelID, peerName, txID string, client ctx.Client) *Result {
+	result := Result{}
 	var (
 		ledger  *ch.Ledger
 		peerCfg *fab.NetworkPeer
@@ -262,8 +261,8 @@ ERR:
 	return &result
 }
 
-func queryChannelTransaction(channelID, peerName, txID string, client ctx.Client) *response.Result {
-	result := response.Result{}
+func queryChannelTransaction(channelID, peerName, txID string, client ctx.Client) *Result {
+	result := Result{}
 	var (
 		ledger  *ch.Ledger
 		peerCfg *fab.NetworkPeer

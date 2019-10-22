@@ -16,26 +16,25 @@
 package sdk
 
 import (
-	"github.com/ennoo/rivet/trans/response"
-	"github.com/ennoo/rivet/utils/log"
+	"github.com/aberic/gnomon"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
 
-func queryConfigFromOrderer(orgName, orgUser, channelID, orderURL string, sdk *fabsdk.FabricSDK) *response.Result {
-	result := response.Result{}
+func queryConfigFromOrderer(orgName, orgUser, channelID, orderURL string, sdk *fabsdk.FabricSDK) *Result {
+	result := Result{}
 	//prepare context
 	adminContext := sdk.Context(fabsdk.WithUser(orgUser), fabsdk.WithOrg(orgName))
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
-		log.Self.Error("Failed to query config from orderer: " + err.Error())
+		gnomon.Log().Error("queryConfigFromOrderer", gnomon.Log().Err(err))
 		result.Fail("Failed to query config from orderer: " + err.Error())
 	} else {
 		channelCfg, err := orgResMgmt.QueryConfigFromOrderer(channelID, resmgmt.WithOrdererEndpoint(orderURL), resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 		if err != nil {
-			log.Self.Error("QueryConfig return error" + err.Error())
+			gnomon.Log().Error("queryConfigFromOrderer", gnomon.Log().Err(err))
 			result.Fail("QueryConfig return error: " + err.Error())
 		} else {
 			result.Success(channelCfg.Orderers())

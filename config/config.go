@@ -45,10 +45,11 @@ func (c *Config) InitSelfClient(tls bool, leagueName, orgName, userName, level s
 }
 
 func (c *Config) InitCustomClient(tls bool, orgName, level, cryptoConfig, keyPath, certPath string,
-	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal, bccsp *ClientBCCSP) {
+	peer *ClientPeer, eventService *ClientEventService, order *ClientOrder, global *ClientGlobal,
+	ccs *ClientCredentialStore, bccsp *ClientBCCSP) {
 	c.initClient()
 	c.Client.initCustomClient(tls, orgName, level, cryptoConfig, keyPath, certPath, peer, eventService,
-		order, global, bccsp)
+		order, global, ccs, bccsp)
 }
 
 func (c *Config) AddOrSetPeerForChannel(channelName, peerName string, endorsingPeer, chaincodeQuery, ledgerQuery, eventSource bool) {

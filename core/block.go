@@ -2,8 +2,8 @@ package sdk
 
 import (
 	"encoding/hex"
+	"github.com/aberic/gnomon"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	str "github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/core/common/ccprovider"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/rwsetutil"
@@ -344,7 +344,7 @@ func parseChainCodeAction(chainCode *peer.ChaincodeAction) (*pb.ChainCodeAction,
 }
 
 func payloadAnalysis(buf []byte) (ccv *pb.ChainCodeValue, err error) {
-	instantiationPolicy := strings.Split(str.SingleSpace(string(buf)), "\n")
+	instantiationPolicy := strings.Split(gnomon.String().SingleSpace(string(buf)), "\n")
 	for index := range instantiationPolicy {
 		instantiationPolicy[index] = strconv.QuoteToASCII(instantiationPolicy[index])
 	}

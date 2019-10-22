@@ -17,8 +17,8 @@ package rafts
 import (
 	"context"
 	"errors"
+	"github.com/aberic/gnomon"
 	"github.com/ennoo/fabric-client/grpc/proto/utils"
-	"github.com/ennoo/rivet/utils/log"
 	"github.com/panjf2000/ants"
 	"google.golang.org/grpc"
 	"sync"
@@ -59,7 +59,7 @@ type voteChan struct {
 }
 
 func (c *candidate) become(raft *Raft) {
-	log.Self.Info("raft", log.String("become", "Candidate"))
+	gnomon.Log().Info("raft", gnomon.Log().Field("become", "Candidate"))
 	c.raft = raft
 	c.raft.term++
 	c.raft.persistence.votedFor.id = c.raft.self.Id
@@ -89,7 +89,7 @@ func (c *candidate) release() {
 	if nil != c.vote {
 		c.vote.voteEnd <- errors.New("candidate release")
 	}
-	_ = c.requestVotePool.Release()
+	c.requestVotePool.Release()
 }
 
 func (c *candidate) role() int {
@@ -120,7 +120,7 @@ func (c *candidate) work() {
 			dead++
 			position++
 		case err := <-c.vote.voteEnd:
-			log.Self.Error("raft", log.Error(err))
+			gnomon.Log().Error("raft", gnomon.Log().Err(err))
 			position = len(c.raft.nodes)
 			c.vote = nil
 			c.follower()
@@ -181,7 +181,7 @@ func (c *candidate) requestVote(i interface{}) {
 // sendRequestVotes 批量发起选举，索要选票
 func (c *candidate) sendRequestVotes() {
 	c.requestVotePool.Tune(len(c.raft.nodes))
-	log.Self.Info("raft", log.Reflect("send requestVotes", c.raft.nodes))
+	gnomon.Log().Info("raft", gnomon.Log().Field("send requestVotes", c.raft.nodes))
 	// 遍历发送心跳
 	for _, node := range c.raft.nodes {
 		if node.Id == c.raft.self.Id {

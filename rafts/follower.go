@@ -14,7 +14,9 @@
 
 package rafts
 
-import "github.com/ennoo/rivet/utils/log"
+import (
+	"github.com/aberic/gnomon"
+)
 
 // follower 负责响应来自Leader或者Candidate的请求
 type follower struct {
@@ -23,7 +25,7 @@ type follower struct {
 }
 
 func (f *follower) become(raft *Raft) {
-	log.Self.Info("raft", log.String("become", "Follower"))
+	gnomon.Log().Info("raft", gnomon.Log().Field("become", "Follower"))
 	f.raft = raft
 	f.raft.persistence.votedFor.id = ""
 	f.raft.persistence.votedFor.term = 0

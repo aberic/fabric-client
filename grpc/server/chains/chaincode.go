@@ -16,15 +16,12 @@ package chains
 
 import (
 	"errors"
+	"github.com/aberic/gnomon"
 	"github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/core"
 	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/fabric-client/service"
-	"github.com/ennoo/rivet/trans/response"
-	"github.com/ennoo/rivet/utils/file"
-	"github.com/ennoo/rivet/utils/log"
-	str "github.com/ennoo/rivet/utils/string"
 	"golang.org/x/net/context"
 	"io"
 	"io/ioutil"
@@ -51,20 +48,20 @@ func (c *ChainCodeServer) UploadCC(stream pb.LedgerChainCode_UploadCCServer) err
 		if err != nil {
 			return err
 		}
-		log.Self.Debug("code data", log.ByteString("bytes", uploadRecv.Data))
+		gnomon.Log().Debug("code data", gnomon.Log().Field("bytes", uploadRecv.Data))
 		data = append(data, uploadRecv.Data...)
 		upload.LedgerName = uploadRecv.LedgerName
 		upload.Name = uploadRecv.Name
 		upload.Version = uploadRecv.Version
 	}
-	if str.IsEmpty(upload.LedgerName) || str.IsEmpty(upload.Name) || str.IsEmpty(upload.Version) {
+	if gnomon.String().IsEmpty(upload.LedgerName) || gnomon.String().IsEmpty(upload.Name) || gnomon.String().IsEmpty(upload.Version) {
 		return errors.New("upload nil")
 	}
 	source, path, zipPath := geneses.ChainCodePath(upload.LedgerName, upload.Name, upload.Version)
-	if err := file.CreateAndWrite(zipPath, data, true); nil != err {
+	if _, err := gnomon.File().Append(zipPath, data, true); nil != err {
 		return err
 	}
-	if err := file.DeCompressZip(zipPath, strings.Join([]string{source, "src", path}, "/")); nil != err {
+	if err := gnomon.File().DeCompressZip(zipPath, strings.Join([]string{source, "src", path}, "/")); nil != err {
 		return err
 	}
 	if err := os.Remove(zipPath); nil != err {
@@ -102,14 +99,14 @@ func getSinglePath(path string) string {
 
 func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Result, error) {
 	var (
-		res  *response.Result
+		res  *sdk.Result
 		conf *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.Install(in.OrgName, in.OrgUser, in.PeerName, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		log.Self.Info("InstallCC", log.Reflect("success", res))
+	if res = sdk.Install(in.OrgName, in.OrgUser, in.PeerName, in.Name, in.Source, in.Path, in.Version, service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
+		gnomon.Log().Info("InstallCC", gnomon.Log().Field("success", res))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -117,18 +114,18 @@ func (c *ChainCodeServer) InstallCC(ctx context.Context, in *pb.Install) (*pb.Re
 
 func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*pb.ResultCCList, error) {
 	var (
-		res              *response.Result
+		res              *sdk.Result
 		chainCodeInfoArr *sdk.ChainCodeInfoArr
 		conf             *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.Installed(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.Installed(in.OrgName, in.OrgUser, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
 		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
-		log.Self.Info("InstalledCC", log.Reflect("chainCodeInfoArr", chainCodeInfoArr))
+		gnomon.Log().Info("InstalledCC", gnomon.Log().Field("chainCodeInfoArr", chainCodeInfoArr))
 		chainCodes := chainCodeInfoArr.ChainCodes
-		log.Self.Info("InstalledCC", log.Reflect("chainCodes", chainCodes))
+		gnomon.Log().Info("InstalledCC", gnomon.Log().Field("chainCodes", chainCodes))
 		data := make([]*pb.ChainCodeInfo, len(chainCodes))
 		for index, code := range chainCodes {
 			data[index] = &pb.ChainCodeInfo{}
@@ -147,15 +144,15 @@ func (c *ChainCodeServer) InstalledCC(ctx context.Context, in *pb.Installed) (*p
 
 func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate) (*pb.Result, error) {
 	var (
-		res  *response.Result
+		res  *sdk.Result
 		conf *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
 	if res = sdk.Instantiate(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
-		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		log.Self.Info("InstantiateCC", log.Reflect("success", res))
+		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
+		gnomon.Log().Info("InstantiateCC", gnomon.Log().Field("success", res))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -163,18 +160,18 @@ func (c *ChainCodeServer) InstantiateCC(ctx context.Context, in *pb.Instantiate)
 
 func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiated) (*pb.ResultCCList, error) {
 	var (
-		res              *response.Result
+		res              *sdk.Result
 		chainCodeInfoArr *sdk.ChainCodeInfoArr
 		conf             *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
-	if res = sdk.Instantiated(in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
+	if res = sdk.Instantiated(in.OrgName, in.OrgUser, in.ChannelID, in.PeerName, service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
 		chainCodeInfoArr = res.Data.(*sdk.ChainCodeInfoArr)
-		log.Self.Info("InstantiatedCC", log.Reflect("chainCodeInfoArr", chainCodeInfoArr))
+		gnomon.Log().Info("InstantiatedCC", gnomon.Log().Field("chainCodeInfoArr", chainCodeInfoArr))
 		chainCodes := chainCodeInfoArr.ChainCodes
-		log.Self.Info("InstantiatedCC", log.Reflect("chainCodes", chainCodes))
+		gnomon.Log().Info("InstantiatedCC", gnomon.Log().Field("chainCodes", chainCodes))
 		data := make([]*pb.ChainCodeInfo, len(chainCodes))
 		for index, code := range chainCodes {
 			data[index] = &pb.ChainCodeInfo{}
@@ -193,15 +190,15 @@ func (c *ChainCodeServer) InstantiatedCC(ctx context.Context, in *pb.Instantiate
 
 func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Result, error) {
 	var (
-		res  *response.Result
+		res  *sdk.Result
 		conf *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
 	if res = sdk.Upgrade(in.OrgName, in.OrgUser, in.PeerName, in.ChannelID, in.Name, in.Path, in.Version, in.OrgPolicies,
-		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		log.Self.Info("UpgradeCC", log.Reflect("success", res))
+		in.Args, service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
+		gnomon.Log().Info("UpgradeCC", gnomon.Log().Field("success", res))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -209,15 +206,15 @@ func (c *ChainCodeServer) UpgradeCC(ctx context.Context, in *pb.Upgrade) (*pb.Re
 
 func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Result, error) {
 	var (
-		res  *response.Result
+		res  *sdk.Result
 		conf *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
 	if res = sdk.Invoke(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
-		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		log.Self.Debug("InvokeCC", log.Reflect("success", res))
+		service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
+		gnomon.Log().Debug("InvokeCC", gnomon.Log().Field("success", res))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -225,15 +222,15 @@ func (c *ChainCodeServer) InvokeCC(ctx context.Context, in *pb.Invoke) (*pb.Resu
 
 func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync) (*pb.Result, error) {
 	var (
-		res  *response.Result
+		res  *sdk.Result
 		conf *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
 	if res = sdk.InvokeAsync(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Callback, in.Fcn, in.Args, in.TargetEndpoints,
-		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		log.Self.Debug("InvokeCCAsync", log.Reflect("success", res))
+		service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
+		gnomon.Log().Debug("InvokeCCAsync", gnomon.Log().Field("success", res))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)
@@ -241,15 +238,15 @@ func (c *ChainCodeServer) InvokeCCAsync(ctx context.Context, in *pb.InvokeAsync)
 
 func (c *ChainCodeServer) QueryCC(ctx context.Context, in *pb.Query) (*pb.Result, error) {
 	var (
-		res  *response.Result
+		res  *sdk.Result
 		conf *config.Config
 	)
 	if conf = service.Configs[in.ConfigID]; nil == conf {
 		return nil, errors.New("config client is not exist")
 	}
 	if res = sdk.Query(in.ChainCodeID, in.OrgName, in.OrgUser, in.ChannelID, in.Fcn, in.Args, in.TargetEndpoints,
-		service.GetBytes(in.ConfigID)); res.ResultCode == response.Success {
-		log.Self.Debug("QueryCC", log.Reflect("success", res))
+		service.GetBytes(in.ConfigID)); res.ResultCode == sdk.Success {
+		gnomon.Log().Debug("QueryCC", gnomon.Log().Field("success", res))
 		return &pb.Result{Code: pb.Code_Success, Data: res.Data.(string)}, nil
 	}
 	return &pb.Result{Code: pb.Code_Fail, ErrMsg: res.Msg}, errors.New(res.Msg)

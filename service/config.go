@@ -16,10 +16,10 @@
 package service
 
 import (
+	"github.com/aberic/gnomon"
 	"github.com/ennoo/fabric-client/config"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	"github.com/ennoo/rivet/utils/log"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"sync"
 )
 
@@ -42,7 +42,7 @@ func GetBytes(configID string) []byte {
 	}
 	confData, err := yaml.Marshal(Configs[configID])
 	if err != nil {
-		log.Self.Debug("client", log.Error(err))
+		gnomon.Log().Debug("client", gnomon.Log().Err(err))
 	}
 	return confData
 }

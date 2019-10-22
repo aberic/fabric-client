@@ -16,11 +16,11 @@ package chains
 
 import (
 	"errors"
+	"github.com/aberic/gnomon"
 	"github.com/ennoo/fabric-client/config"
 	sdk "github.com/ennoo/fabric-client/core"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/ennoo/fabric-client/service"
-	str "github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	mspctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
 	"golang.org/x/net/context"
@@ -57,7 +57,7 @@ func (ca *CAServer) Enroll(ctx context.Context, req *pb.ReqEnroll) (*pb.Result, 
 	if conf = service.Configs[req.ConfigID]; nil == conf {
 		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
-	if str.IsEmpty(req.Secret) {
+	if gnomon.String().IsEmpty(req.Secret) {
 		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "secret is nil"}, errors.New("secret is nil")
 	}
 	if err = sdk.Enroll(req.OrgName, req.EnrollmentID, service.GetBytes(req.ConfigID),
@@ -75,7 +75,7 @@ func (ca *CAServer) Reenroll(ctx context.Context, req *pb.ReqReenroll) (*pb.Resu
 	if conf = service.Configs[req.ConfigID]; nil == conf {
 		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "config client is not exist"}, errors.New("config client is not exist")
 	}
-	if str.IsEmpty(req.Secret) {
+	if gnomon.String().IsEmpty(req.Secret) {
 		return &pb.Result{Code: pb.Code_Fail, ErrMsg: "secret is nil"}, errors.New("secret is nil")
 	}
 	if err = sdk.Reenroll(req.OrgName, req.EnrollmentID, service.GetBytes(req.ConfigID),
@@ -448,15 +448,15 @@ func (ca *CAServer) Revoke(ctx context.Context, req *pb.ReqRevoke) (*pb.ResultRe
 func optionEnroll(secret, reqType, profile, label string) []msp.EnrollmentOption {
 	var eos []msp.EnrollmentOption
 	eos = append(eos, msp.WithSecret(secret))
-	if str.IsNotEmpty(reqType) {
+	if gnomon.String().IsNotEmpty(reqType) {
 		eos = append(eos, msp.WithType(reqType))
 	}
-	if str.IsNotEmpty(profile) {
+	if gnomon.String().IsNotEmpty(profile) {
 		eos = append(eos, msp.WithProfile(profile))
 	} else {
 		eos = append(eos, msp.WithType("x509"))
 	}
-	if str.IsNotEmpty(label) {
+	if gnomon.String().IsNotEmpty(label) {
 		eos = append(eos, msp.WithLabel(label))
 	}
 	return eos

@@ -16,8 +16,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/ennoo/rivet/utils/log"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"testing"
 )
 
@@ -25,7 +24,7 @@ func TestNewClient(t *testing.T) {
 	client := TGetClient()
 	clientData, err := yaml.Marshal(&client)
 	if err != nil {
-		log.Self.Debug("client", log.Error(err))
+		t.Error(err)
 	}
 	fmt.Printf("--- dump:\n%s\n\n", string(clientData))
 }

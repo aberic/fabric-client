@@ -16,8 +16,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/ennoo/rivet/utils/log"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"strings"
 	"testing"
 )
@@ -34,7 +33,7 @@ func TestNewConfig1(t *testing.T) {
 	}
 	configData, err := yaml.Marshal(&config)
 	if err != nil {
-		log.Self.Debug("client", log.Error(err))
+		t.Error(err)
 	}
 	fmt.Printf("--- dump:\n%s\n\n", string(configData))
 }
@@ -43,7 +42,7 @@ func TestNewConfig2(t *testing.T) {
 	config := TGetConfig()
 	configData, err := yaml.Marshal(&config)
 	if err != nil {
-		log.Self.Debug("client", log.Error(err))
+		t.Error(err)
 	}
 	fmt.Printf("--- dump:\n%s\n\n", string(configData))
 }

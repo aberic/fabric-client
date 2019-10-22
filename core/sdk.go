@@ -18,12 +18,10 @@ package sdk
 import (
 	"errors"
 	"fmt"
+	"github.com/aberic/gnomon"
 	config2 "github.com/ennoo/fabric-client/config"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet"
-	"github.com/ennoo/rivet/trans/response"
-	"github.com/ennoo/rivet/utils/log"
-	"github.com/ennoo/rivet/utils/string"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
@@ -45,6 +43,7 @@ func Create(orderOrgName, orderOrgUser, orderURL, orgName, orgUser, channelID, c
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, sdk, err := resMgmtOrdererClient(orderOrgName, orderOrgUser, configBytes, sdkOpts...)
 	if err != nil {
+		gnomon.Log().Error("Create", gnomon.Log().Err(err))
 		return "", err
 	}
 	defer sdk.Close()
@@ -54,7 +53,7 @@ func Create(orderOrgName, orderOrgUser, orderURL, orgName, orgUser, channelID, c
 func Join(orderURL, orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) error {
 	resMgmtClient, sdk, err := resMgmtOrgClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("Join", gnomon.Log().Err(err))
 		return err
 	}
 	defer sdk.Close()
@@ -64,17 +63,17 @@ func Join(orderURL, orgName, orgUser, channelID, peerName string, configBytes []
 func Channels(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]*peer.ChannelInfo, error) {
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("Channels", gnomon.Log().Err(err))
 		return nil, err
 	}
 	defer sdk.Close()
 	return queryChannels(orgName, orgUser, peerName, sdk)
 }
 
-func QueryLedgerInfo(configID, peerName, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerInfo(configID, peerName, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerInfo", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	} else {
@@ -82,10 +81,10 @@ func QueryLedgerInfo(configID, peerName, channelID string, configBytes []byte, s
 	}
 }
 
-func QueryLedgerBlockByHeight(configID, peerName, channelID string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerBlockByHeight(configID, peerName, channelID string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerBlockByHeight", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	} else {
@@ -93,10 +92,10 @@ func QueryLedgerBlockByHeight(configID, peerName, channelID string, height uint6
 	}
 }
 
-func QueryLedgerBlockByHash(configID, peerName, channelID, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerBlockByHash(configID, peerName, channelID, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerBlockByHash", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	} else {
@@ -104,10 +103,10 @@ func QueryLedgerBlockByHash(configID, peerName, channelID, hash string, configBy
 	}
 }
 
-func QueryLedgerBlockByTxID(configID, peerName, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerBlockByTxID(configID, peerName, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerBlockByTxID", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	} else {
@@ -115,10 +114,10 @@ func QueryLedgerBlockByTxID(configID, peerName, channelID, txID string, configBy
 	}
 }
 
-func QueryLedgerTransaction(configID, peerName, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerTransaction(configID, peerName, channelID, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerTransaction", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	} else {
@@ -126,10 +125,10 @@ func QueryLedgerTransaction(configID, peerName, channelID, txID string, configBy
 	}
 }
 
-func QueryLedgerConfig(configID, peerName, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerConfig(configID, peerName, channelID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	if orgName, orgUser, err := get(configID, channelID); nil != err {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerConfig", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	} else {
@@ -137,11 +136,11 @@ func QueryLedgerConfig(configID, peerName, channelID string, configBytes []byte,
 	}
 }
 
-func QueryLedgerInfoSpec(peerName, channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerInfoSpec(peerName, channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerInfoSpec", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -149,11 +148,11 @@ func QueryLedgerInfoSpec(peerName, channelID, orgName, orgUser string, configByt
 	return queryLedgerInfo(peerName, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHeightSpec(peerName, channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerBlockByHeightSpec(peerName, channelID, orgName, orgUser string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerBlockByHeightSpec", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -161,11 +160,11 @@ func QueryLedgerBlockByHeightSpec(peerName, channelID, orgName, orgUser string, 
 	return queryLedgerBlockByHeight(peerName, height, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByHashSpec(peerName, channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerBlockByHashSpec(peerName, channelID, orgName, orgUser, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerBlockByHashSpec", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -173,11 +172,11 @@ func QueryLedgerBlockByHashSpec(peerName, channelID, orgName, orgUser, hash stri
 	return queryLedgerBlockByHash(peerName, hash, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerBlockByTxIDSpec(peerName, channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerBlockByTxIDSpec(peerName, channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerBlockByTxIDSpec", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -185,11 +184,11 @@ func QueryLedgerBlockByTxIDSpec(peerName, channelID, orgName, orgUser, txID stri
 	return queryLedgerBlockByTxID(peerName, txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerTransactionSpec(peerName, channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerTransactionSpec(peerName, channelID, orgName, orgUser, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerTransactionSpec", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -197,11 +196,11 @@ func QueryLedgerTransactionSpec(peerName, channelID, orgName, orgUser, txID stri
 	return queryLedgerTransaction(peerName, txID, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryLedgerConfigSpec(peerName, channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryLedgerConfigSpec(peerName, channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryLedgerConfigSpec", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -209,8 +208,8 @@ func QueryLedgerConfigSpec(peerName, channelID, orgName, orgUser string, configB
 	return queryLedgerConfig(peerName, channelProvider(orgName, orgUser, channelID, sdk))
 }
 
-func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	var (
 		client ctx.Client
 		err    error
@@ -218,14 +217,15 @@ func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes 
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
 	defer sdk.Close()
 	if client, err = clientContext(); nil != err {
+		gnomon.Log().Error("QueryChannelInfo", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
 	return queryChannelInfo(channelID, peerName, client)
 }
 
-func QueryChannelBlockByHeight(channelID, orgName, orgUser, peerName string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryChannelBlockByHeight(channelID, orgName, orgUser, peerName string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	var (
 		client ctx.Client
 		err    error
@@ -233,14 +233,15 @@ func QueryChannelBlockByHeight(channelID, orgName, orgUser, peerName string, hei
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
 	defer sdk.Close()
 	if client, err = clientContext(); nil != err {
+		gnomon.Log().Error("QueryChannelBlockByHeight", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
 	return queryChannelBlockByHeight(channelID, peerName, height, client)
 }
 
-func QueryChannelBlockByHash(channelID, orgName, orgUser, peerName, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryChannelBlockByHash(channelID, orgName, orgUser, peerName, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	var (
 		client ctx.Client
 		err    error
@@ -248,14 +249,15 @@ func QueryChannelBlockByHash(channelID, orgName, orgUser, peerName, hash string,
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
 	defer sdk.Close()
 	if client, err = clientContext(); nil != err {
+		gnomon.Log().Error("QueryChannelBlockByHash", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
 	return queryChannelBlockByHash(channelID, peerName, hash, client)
 }
 
-func QueryChannelBlockByTxID(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryChannelBlockByTxID(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	var (
 		client ctx.Client
 		err    error
@@ -263,14 +265,15 @@ func QueryChannelBlockByTxID(channelID, orgName, orgUser, peerName, txID string,
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
 	defer sdk.Close()
 	if client, err = clientContext(); nil != err {
+		gnomon.Log().Error("QueryChannelBlockByTxID", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
 	return queryChannelBlockByTxID(channelID, peerName, txID, client)
 }
 
-func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	var (
 		client ctx.Client
 		err    error
@@ -278,18 +281,20 @@ func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string,
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
 	defer sdk.Close()
 	if client, err = clientContext(); nil != err {
+		gnomon.Log().Error("QueryChannelTransaction", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
 	return queryChannelTransaction(channelID, peerName, txID, client)
 }
 
-func Install(orgName, orgUser, peerName, name, goPath, chainCodePath, version string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func Install(orgName, orgUser, peerName, name, goPath, chainCodePath, version string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, sdk, err := resMgmtOrgClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
+		gnomon.Log().Error("Install", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -297,11 +302,11 @@ func Install(orgName, orgUser, peerName, name, goPath, chainCodePath, version st
 	return install(peerName, name, goPath, chainCodePath, version, resMgmtClient)
 }
 
-func OrderConfig(orgName, orgUser, channelID, orderURL string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func OrderConfig(orgName, orgUser, channelID, orderURL string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("OrderConfig", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -309,11 +314,11 @@ func OrderConfig(orgName, orgUser, channelID, orderURL string, configBytes []byt
 	return queryConfigFromOrderer(orgName, orgUser, channelID, orderURL, sdk)
 }
 
-func Installed(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func Installed(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("Installed", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -322,23 +327,24 @@ func Installed(orgName, orgUser, peerName string, configBytes []byte, sdkOpts ..
 }
 
 func Instantiate(orgName, orgUser, peerName, channelID, name, path, version string, orgPolicies []string, args [][]byte,
-	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, _, err := resMgmtOrdererClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
+		gnomon.Log().Error("Instantiate", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
 	return instantiate(peerName, channelID, name, path, version, orgPolicies, args, resMgmtClient)
 }
 
-func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("Instantiated", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -347,12 +353,13 @@ func Instantiated(orgName, orgUser, channelID, peerName string, configBytes []by
 }
 
 func Upgrade(orgName, orgUser, peerName, channelID, name, path, version string, orgPolicies []string, args [][]byte,
-	configBytes []byte, sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, _, err := resMgmtOrdererClient(orgName, orgUser, configBytes, sdkOpts...)
 	if err != nil {
+		gnomon.Log().Error("Upgrade", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -360,11 +367,11 @@ func Upgrade(orgName, orgUser, peerName, channelID, name, path, version string, 
 }
 
 func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("Invoke", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -374,15 +381,15 @@ func Invoke(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte,
 }
 
 func InvokeAsync(chaincodeID, orgName, orgUser, channelID, callback, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	go func() {
 		res := Invoke(chaincodeID, orgName, orgUser, channelID, fcn, args, targetEndpoints, configBytes, sdkOpts...)
-		if str.IsNotEmpty(callback) {
-			log.Self.Debug("InvokeAsync", log.String("callback", callback))
+		if gnomon.String().IsNotEmpty(callback) {
+			gnomon.Log().Debug("InvokeAsync", gnomon.Log().Field("callback", callback))
 			_, err := rivet.Request().RestJSONByURL(http.MethodPost, callback, res)
 			if nil != err {
-				log.Self.Error("InvokeAsync", log.Error(err))
+				gnomon.Log().Error("InvokeAsync", gnomon.Log().Err(err))
 			}
 		}
 	}()
@@ -391,11 +398,11 @@ func InvokeAsync(chaincodeID, orgName, orgUser, channelID, callback, fcn string,
 }
 
 func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, targetEndpoints []string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("Query", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -405,11 +412,11 @@ func Query(chaincodeID, orgName, orgUser, channelID, fcn string, args [][]byte, 
 }
 
 func QueryCollectionsConfig(chaincodeID, orgName, orgUser, channelID, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("QueryCollectionsConfig", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -420,6 +427,7 @@ func QueryCollectionsConfig(chaincodeID, orgName, orgUser, channelID, peerName s
 func DiscoveryChannelPeers(channelID, orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]fab.Peer, error) {
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
+		gnomon.Log().Error("DiscoveryChannelPeers", gnomon.Log().Err(err))
 		return nil, err
 	}
 	return discoveryChannelPeers(channelID, orgName, orgUser, sdk)
@@ -428,17 +436,18 @@ func DiscoveryChannelPeers(channelID, orgName, orgUser string, configBytes []byt
 func DiscoveryLocalPeers(orgName, orgUser string, configBytes []byte, sdkOpts ...fabsdk.Option) ([]fab.Peer, error) {
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
+		gnomon.Log().Error("DiscoveryLocalPeers", gnomon.Log().Err(err))
 		return nil, err
 	}
 	return discoveryLocalPeers(orgName, orgUser, sdk)
 }
 
 func DiscoveryClientPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("DiscoveryClientPeers", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -446,11 +455,11 @@ func DiscoveryClientPeers(channelID, orgName, orgUser, peerName string, configBy
 }
 
 func DiscoveryClientLocalPeers(orgName, orgUser, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("DiscoveryClientLocalPeers", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -458,11 +467,11 @@ func DiscoveryClientLocalPeers(orgName, orgUser, peerName string, configBytes []
 }
 
 func DiscoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("DiscoveryClientConfigPeers", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -470,11 +479,11 @@ func DiscoveryClientConfigPeers(channelID, orgName, orgUser, peerName string, co
 }
 
 func DiscoveryClientEndorsersPeers(channelID, orgName, orgUser, peerName, chainCodeID string, configBytes []byte,
-	sdkOpts ...fabsdk.Option) *response.Result {
-	result := response.Result{}
+	sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
 	sdk, err := sdk(configBytes, sdkOpts...)
 	if err != nil {
-		log.Self.Error(err.Error())
+		gnomon.Log().Error("DiscoveryClientEndorsersPeers", gnomon.Log().Err(err))
 		result.Fail(err.Error())
 		return &result
 	}
@@ -705,7 +714,7 @@ func resMgmtOrdererClient(ordererOrgName, ordererUser string, configBytes []byte
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, err := resmgmt.New(clientContext)
 	if err != nil {
-		log.Self.Error("Failed to create channel management client: " + err.Error())
+		gnomon.Log().Error("resMgmtOrdererClient", gnomon.Log().Err(err))
 		return nil, nil, fmt.Errorf("Failed to create channel management client: " + err.Error())
 	}
 	return resMgmtClient, sdk, nil
@@ -723,7 +732,7 @@ func resMgmtOrgClient(orgName, orgUser string, configBytes []byte, sdkOpts ...fa
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(clientContext)
 	if err != nil {
-		log.Self.Error("Failed to create new resource management client: " + err.Error())
+		gnomon.Log().Error("resMgmtOrgClient", gnomon.Log().Err(err))
 		return nil, nil, fmt.Errorf("Failed to create new resource management client: " + err.Error())
 	}
 	return orgResMgmt, sdk, nil
@@ -751,7 +760,7 @@ func get(configID, channelID string) (orgName, orgUser string, err error) {
 		peerName = name
 		break
 	}
-	if str.IsEmpty(peerName) {
+	if gnomon.String().IsEmpty(peerName) {
 		err = errors.New("peer is nil")
 		return
 	}
@@ -776,7 +785,7 @@ func get(configID, channelID string) (orgName, orgUser string, err error) {
 		}
 	}
 
-	if str.IsEmpty(orgName) {
+	if gnomon.String().IsEmpty(orgName) {
 		err = errors.New("org is nil")
 		return
 	}
