@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package sdk
 import (
 	"errors"
 	"fmt"
+	config2 "github.com/aberic/fabric-client/config"
+	"github.com/aberic/fabric-client/service"
 	"github.com/aberic/gnomon"
-	config2 "github.com/ennoo/fabric-client/config"
-	"github.com/ennoo/fabric-client/service"
 	"github.com/ennoo/rivet"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"

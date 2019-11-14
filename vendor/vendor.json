@@ -44,10 +44,10 @@
 			"revisionTime": "2018-10-26T20:02:10Z"
 		},
 		{
-			"checksumSHA1": "Solh1a3AmW20FWKArBNYHDuzM0w=",
+			"checksumSHA1": "EbXdmsEQyHQ39K8OomURtX+q57c=",
 			"path": "github.com/aberic/gnomon",
-			"revision": "491e32e3b3e91661c251f328f6cfca1754e6bd11",
-			"revisionTime": "2019-10-22T01:53:32Z"
+			"revision": "ff735ad64f4d4b283e44f5edd33e30581fbfd5f6",
+			"revisionTime": "2019-11-14T03:34:29Z"
 		},
 		{
 			"checksumSHA1": "0rido7hYHQtfq3UJzVT5LClLAWc=",
@@ -405,12 +405,6 @@
 		{
 			"checksumSHA1": "QnYfcpPoPt++gjcDDA1dBkroo68=",
 			"path": "github.com/ennoo/rivet/trans/response",
-			"revision": "44b362cf6619020de265d1ef9177956583e8f911",
-			"revisionTime": "2019-09-17T14:51:30Z"
-		},
-		{
-			"checksumSHA1": "SHgKZspaBoJzCb/GqzhN5rFfNz4=",
-			"path": "github.com/ennoo/rivet/utils/cmd",
 			"revision": "44b362cf6619020de265d1ef9177956583e8f911",
 			"revisionTime": "2019-09-17T14:51:30Z"
 		},
@@ -2195,10 +2189,10 @@
 			"revisionTime": "2018-11-02T00:30:07Z"
 		},
 		{
-			"checksumSHA1": "h4V3Bi2dBkJfzs2yXFyh1YWNNKY=",
+			"checksumSHA1": "PGEmqKttvy7NzqOkwNKI5E5xtOs=",
 			"path": "golang.org/x/crypto/ocsp",
-			"revision": "4d3f4d9ffa16a13f451c3b2999e9c49e9750bf06",
-			"revisionTime": "2018-10-23T16:52:47Z"
+			"revision": "87dc89f01550277dc22b74ffcf4cd89fa2f40f4c",
+			"revisionTime": "2019-10-11T18:31:21Z"
 		},
 		{
 			"checksumSHA1": "PJY7uCr3UnX4/Mf/RoWnbieSZ8o=",
@@ -2215,10 +2209,10 @@
 			"revisionTime": "2018-11-02T00:30:07Z"
 		},
 		{
-			"checksumSHA1": "eP6ULb7qY83lyYmM7AfaDIRDeXE=",
+			"checksumSHA1": "ErY5gBdoI6rIwCTYUjSZGGlCF7s=",
 			"path": "golang.org/x/crypto/sha3",
-			"revision": "4d3f4d9ffa16a13f451c3b2999e9c49e9750bf06",
-			"revisionTime": "2018-10-23T16:52:47Z"
+			"revision": "87dc89f01550277dc22b74ffcf4cd89fa2f40f4c",
+			"revisionTime": "2019-10-11T18:31:21Z"
 		},
 		{
 			"checksumSHA1": "BGm8lKZmvJbf/YOJLeL1rw2WVjA=",
@@ -2544,5 +2538,5 @@
 			"revisionTime": "2019-05-02T10:37:01Z"
 		}
 	],
-	"rootPath": "github.com/ennoo/fabric-client"
+	"rootPath": "github.com/aberic/fabric-client"
 }

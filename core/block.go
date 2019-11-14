@@ -2,8 +2,8 @@ package sdk
 
 import (
 	"encoding/hex"
+	pb "github.com/aberic/fabric-client/grpc/proto/chain"
 	"github.com/aberic/gnomon"
-	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/core/common/ccprovider"
 	"github.com/hyperledger/fabric/core/ledger/kvledger/txmgmt/rwsetutil"

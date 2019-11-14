@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ package generate
 import (
 	"context"
 	"errors"
-	"github.com/ennoo/fabric-client/ca"
-	sdk "github.com/ennoo/fabric-client/core"
-	"github.com/ennoo/fabric-client/grpc/proto/generate"
+	"github.com/aberic/fabric-client/ca"
+	sdk "github.com/aberic/fabric-client/core"
+	"github.com/aberic/fabric-client/grpc/proto/generate"
 )
 
 type CreationServer struct{}

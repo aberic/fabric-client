@@ -2,7 +2,7 @@ version: "3"
 
 services:
   operation:
-    image: ennoo/fabric-client:latest
+    image: aberic/fabric-client:latest
     ports:
       - 19865:19865
       - 19877:19877

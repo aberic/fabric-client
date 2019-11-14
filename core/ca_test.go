@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package sdk
 
 import (
-	"github.com/ennoo/fabric-client/config"
+	"github.com/aberic/fabric-client/config"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	mspctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
@@ -461,8 +461,8 @@ func TestCAInfo(t *testing.T) {
 }
 
 //func TGetCAConfig() *config.Config {
-//	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/example"
-//	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-client/example"
+//	rootPath := "/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/example"
+//	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
 //	conf := config.Config{}
 //	conf.InitClient(false, "league", "debug",
 //		rootPath+"/config/crypto-config",

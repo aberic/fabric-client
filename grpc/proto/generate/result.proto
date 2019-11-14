@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "io.ennoo.fabric-client.grpc.proto.result";
+option java_package = "cn.aberic.fabric-client.grpc.proto.result";
 option java_outer_classname = "ResultProto";
 option go_package = "grpc/proto/generate";
 

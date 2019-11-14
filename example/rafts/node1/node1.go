@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 package main
 
 import (
-	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	"github.com/ennoo/fabric-client/grpc/server/chains"
-	pbRafts "github.com/ennoo/fabric-client/rafts"
+	pb "github.com/aberic/fabric-client/grpc/proto/chain"
+	"github.com/aberic/fabric-client/grpc/server/chains"
+	pbRafts "github.com/aberic/fabric-client/rafts"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
 	"github.com/ennoo/rivet/utils/log"

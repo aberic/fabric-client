@@ -19,7 +19,7 @@ images:
 
 overalls:
 	@echo "overalls"
-	overalls -project=github.com/ennoo/fabric-client -covermode=count -ignore='.git,_vendor'
+	overalls -project=github.com/aberic/fabric-client -covermode=count -ignore='.git,_vendor'
 	go tool cover -func=overalls.coverprofile
 
 vet:

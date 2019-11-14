@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019.. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019.. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ func init() {
 	dataPath = strings.Join([]string{
 		env.GetEnvDefault(
 			WorkPath,
-			strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/geneses/example"}, "/"),
+			strings.Join([]string{goPath, "src/github.com/aberic/fabric-client/geneses/example"}, "/"),
 		),
 		"data",
 	}, "/")

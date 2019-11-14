@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@ package ca
 
 import (
 	"encoding/hex"
+	"github.com/aberic/fabric-client/config"
+	sdk "github.com/aberic/fabric-client/core"
+	"github.com/aberic/fabric-client/geneses"
+	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
-	"github.com/ennoo/fabric-client/config"
-	sdk "github.com/ennoo/fabric-client/core"
-	"github.com/ennoo/fabric-client/geneses"
-	"github.com/ennoo/fabric-client/grpc/proto/generate"
 	"github.com/ennoo/rivet/utils/log"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/resource"
@@ -217,7 +217,7 @@ func TestGenerateConfig_GenesisBlock(t *testing.T) {
 
 func TestGenerateConfig_InspectGenesisBlock(t *testing.T) {
 	data, err := ioutil.ReadFile(geneses.GenesisBlockFilePath(leagueDomain))
-	//data, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/geneses/example/test/channel-artifacts/genesis.block")
+	//data, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/geneses/example/test/channel-artifacts/genesis.block")
 	if nil != err {
 		t.Error(err)
 	}
@@ -269,7 +269,7 @@ func TestGenerateConfig_CreateChannelTx(t *testing.T) {
 
 func TestGenerateConfig_InspectChannelTx(t *testing.T) {
 	data, err := ioutil.ReadFile(geneses.ChannelTXFilePath(leagueDomain, channelID))
-	//data, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/geneses/example/test/channel-artifacts/channel01.tx")
+	//data, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/geneses/example/test/channel-artifacts/channel01.tx")
 	if nil != err {
 		t.Error(err)
 	}
@@ -287,7 +287,7 @@ func TestGenerateConfig_CreateChannel(t *testing.T) {
 		t.Error(err)
 	}
 	result, err := sdk.Create(orderName, admin, "grpcs://10.0.61.23:7050", org1Name, admin, channelID,
-		filepath.Join(geneses.ChannelArtifactsPath(leagueDomain), strings.Join([]string{channelID, "tx"}, ".")), // "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/example/config/channel-artifacts/cc6519b67c4177fc1110.tx",
+		filepath.Join(geneses.ChannelArtifactsPath(leagueDomain), strings.Join([]string{channelID, "tx"}, ".")), // "/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/example/config/channel-artifacts/cc6519b67c4177fc1110.tx",
 		confData)
 	t.Log("test query result", result)
 }
@@ -503,7 +503,7 @@ func genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgN
 
 func configGenerateConfig(leagueDomain, orderName, orderDomain, orderNodeName, orderUserName, orgName, orgDomain, peerName, orgUserName, channelID string) *config.Config {
 	rootPath := geneses.CryptoConfigPath(leagueDomain)
-	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-client/example"
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
 	conf := config.Config{}
 	_, orgUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orgDomain, orgName, orgUserName, true, geneses.CcnAdmin)
 	conf.InitCustomClient(true, orgName, "debug", rootPath, // rootPath+"/config/crypto-config"

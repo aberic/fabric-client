@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@ package sdk
 
 import (
 	"fmt"
-	"github.com/ennoo/fabric-client/config"
-	"github.com/ennoo/fabric-client/service"
+	"github.com/aberic/fabric-client/config"
+	"github.com/aberic/fabric-client/service"
 	"github.com/ennoo/rivet/utils/log"
 	"gopkg.in/yaml.v3"
 	"testing"
@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 	}
 	result, err := Create("OrdererOrg", "Admin", "grpc://10.10.203.51:30054",
 		"Org1", "Admin", "cc6519b67c4177fc1110",
-		"/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/example/config/channel-artifacts/cc6519b67c4177fc1110.tx",
+		"/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/example/config/channel-artifacts/cc6519b67c4177fc1110.tx",
 		confData)
 	log.Self.Debug("test query", log.Reflect("result", result))
 }
@@ -378,8 +378,8 @@ func TestOrderConfig(t *testing.T) {
 }
 
 func TGetConfig() *config.Config {
-	rootPath := "/Users/aberic/Documents/path/go/src/github.com/ennoo/fabric-client/example"
-	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/ennoo/fabric-client/example"
+	rootPath := "/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/example"
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
 	conf := config.Config{}
 	conf.InitClient(true, "Org1", "debug",
 		rootPath+"/config/crypto-config",

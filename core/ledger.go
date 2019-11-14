@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package sdk
 
 import (
 	"encoding/hex"
+	pb "github.com/aberic/fabric-client/grpc/proto/chain"
 	"github.com/aberic/gnomon"
-	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/ledger"
 	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"

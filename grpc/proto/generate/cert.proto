@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "io.ennoo.fabric-client.grpc.proto.generate";
+option java_package = "cn.aberic.fabric-client.grpc.proto.generate";
 option java_outer_classname = "CertProto";
 option go_package = "grpc/proto/generate";
 
@@ -85,7 +85,6 @@ message RespCreateOrgUser {
 }
 
 message OrgChild {
-    OrgType orgType = 1;
     string leagueDomain = 2; // 联盟根域名
     string orgName = 3; // 组织名称
     string orgDomain = 4;

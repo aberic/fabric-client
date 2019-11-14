@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. ENNOO - All Rights Reserved.
+ * Copyright (c) 2019. Aberic - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package config
 
 import (
-	"github.com/ennoo/fabric-client/geneses"
+	"github.com/aberic/fabric-client/geneses"
 	"strings"
 )
 
