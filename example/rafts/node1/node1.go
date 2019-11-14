@@ -16,9 +16,7 @@ package main
 
 import (
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	pbGeneses "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/fabric-client/grpc/server/chains"
-	"github.com/ennoo/fabric-client/grpc/server/geneses"
 	pbRafts "github.com/ennoo/fabric-client/rafts"
 	"github.com/ennoo/rivet"
 	"github.com/ennoo/rivet/utils/env"
@@ -60,7 +58,6 @@ func grpcListener() {
 	pb.RegisterLedgerChannelServer(rpcServer, &chains.ChannelServer{})
 	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
 	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
-	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
 	pbRafts.RegisterRaftServer(rpcServer, &pbRafts.Server{})
 
 	//  启动grpc服务

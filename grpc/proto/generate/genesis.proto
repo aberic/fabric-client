@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option java_package = "io.ennoo.fabric-client.grpc.proto.generate";
+option java_outer_classname = "GenesisProto";
+option go_package = "grpc/proto/generate";
+
+package generate;
+
+import "grpc/proto/generate/enums.proto";
+import "grpc/proto/generate/result.proto";
+
+message ReqGenesis {
+    LeagueInBlock league = 1;
+    repeated OrgInBlock orgs = 2;
+}
+
+message RespGenesis {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message ReqChannelTx {
+    string channelID = 1;
+    ReqGenesis genesis = 2;
+}
+
+message RespChannelTx {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message LeagueInBlock {
+    string domain = 1; // 联盟主域名
+    repeated string addresses = 2;
+    int64 BatchTimeout = 3;
+    BatchSize batchSize = 4;
+    Kafka kafka = 5;
+    uint64 MaxChannels = 6;
+}
+
+message BatchSize {
+    uint32 maxMessageCount = 1;
+    uint32 absoluteMaxBytes = 2;
+    uint32 preferredMaxBytes = 3;
+}
+
+message Kafka {
+    repeated string brokers = 1;
+}
+
+// ReqOrderers 请求生成指定联盟默认orderer服务集合
+message OrgInBlock {
+    string domain = 2; // 组织主域名
+    string name = 3; // 组织名称
+    OrgType type = 4;
+    repeated AnchorPeer anchorPeers = 5;
+}
+
+message AnchorPeer {
+    string host = 1;
+    int32 port = 2;
+}
+

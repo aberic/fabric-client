@@ -15,30 +15,29 @@
 package geneses
 
 import (
-	"fmt"
-	pb "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/rivet/utils/env"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
 var (
 	// WorkDir 项目工作目录
 	dataPath string
-	// FabricCryptoGenPathV14 1.4版本cryptogen二进制文件路径
-	fabricCryptoGenPathV14 string
-	// FabricConfigTXGenPathV14 1.4版本configtxgen二进制文件路径
-	fabricConfigTXGenPathV14 string
 )
 
 // 环境变量
 const (
-	// Fabric 二进制文件目录 [template]
-	BinPath = "BIN_PATH"
 	// WorkPath 项目工作目录 [template]
 	WorkPath       = "WORK_PATH"
 	OrdererOrgName = "OrdererOrg"
+)
+
+type ClientCANode int
+
+const (
+	CcnNode ClientCANode = iota
+	CcnAdmin
+	CcnUser
 )
 
 func init() {
@@ -50,80 +49,96 @@ func init() {
 		),
 		"data",
 	}, "/")
-	binDir := env.GetEnvDefault(BinPath,
-		strings.Join([]string{goPath, "src/github.com/ennoo/fabric-client/bin"}, "/"))
-	fabricCryptoGenPathV14 = strings.Join([]string{binDir, "1.4", systemDir(), "cryptogen"}, "/")
-	fabricConfigTXGenPathV14 = strings.Join([]string{binDir, "1.4", systemDir(), "configtxgen"}, "/")
 }
 
-func systemDir() string {
-	osStr := runtime.GOOS
-	osArch := runtime.GOARCH
-	fmt.Println(osStr, "-", osArch)
-	if osArch != "amd64" {
-		return ""
-	}
-	if osStr == "darwin" {
-		return "darwin-amd64"
-	} else if osStr == "linux" {
-		return "linux-amd64"
-	} else if osStr == "windows" {
-		return "windows-amd64"
+func MspID(orgName string) string {
+	return strings.Join([]string{orgName, "MSP"}, "")
+}
+
+// CryptoRootCAPath CryptoCAPath
+func CryptoRootCAPath(leagueDomain string) string {
+	return filepath.Join(dataPath, leagueDomain, "crypto-config", "root", "ca")
+}
+
+// CryptoRootTLSCAPath CryptoCAPath
+func CryptoRootTLSCAPath(leagueDomain string) string {
+	return filepath.Join(dataPath, leagueDomain, "crypto-config", "root", "tlsca")
+}
+
+func CertRootCAName(leagueDomain string) string {
+	return strings.Join([]string{"ca.", leagueDomain, "-cert.pem"}, "")
+}
+
+func CertRootTLSCAName(leagueDomain string) string {
+	return strings.Join([]string{"tlsca.", leagueDomain, "-cert.pem"}, "")
+}
+
+func CertNodeCAName(orgName, orgDomain, nodeName string) string {
+	return strings.Join([]string{nodeName, ".", orgName, ".", orgDomain, "-cert.pem"}, "")
+}
+
+func CertUserCAName(orgName, orgDomain, userName string) string {
+	return strings.Join([]string{userName, "@", orgName, ".", orgDomain, "-cert.pem"}, "")
+}
+
+func CsrPath(leagueDomain, orgName, orgDomain string) string {
+	return filepath.Join(dataPath, leagueDomain, "csr", strings.Join([]string{orgName, orgDomain}, "."))
+}
+
+func CsrFilePath(leagueDomain, orgName, orgDomain, commonName string) string {
+	fileName := strings.Join([]string{commonName, "csr"}, ".")
+	return filepath.Join(dataPath, leagueDomain, "csr", strings.Join([]string{orgName, orgDomain}, "."), fileName)
+}
+
+// CryptoOrgAndNodePath CryptoOrgAndNodePath
+func CryptoOrgAndNodePath(leagueDomain, orgDomain, orgName, nodeName string, isPeer bool, node ClientCANode) (orgPath, nodePath string) {
+	var orgsName, orgPathName, nodesName, nodePathName string
+	if isPeer {
+		orgsName = "peerOrganizations/"
+		if node == CcnNode {
+			nodesName = "peers"
+			nodePathName = strings.Join([]string{nodeName, orgName, orgDomain}, ".")
+		} else {
+			nodesName = "users"
+			nodePathName = strings.Join([]string{nodeName, "@", orgName, ".", orgDomain}, "")
+		}
 	} else {
-		return ""
+		orgsName = "ordererOrganizations/"
+		if node == CcnNode {
+			nodesName = "orderers"
+			nodePathName = strings.Join([]string{nodeName, orgName, orgDomain}, ".")
+		} else {
+			nodesName = "users"
+			nodePathName = strings.Join([]string{nodeName, "@", orgName, ".", orgDomain}, "")
+		}
 	}
+	orgPathName = strings.Join([]string{orgsName, orgName, ".", orgDomain}, "")
+	orgPath = filepath.Join(dataPath, leagueDomain, "crypto-config", orgPathName)
+	nodePath = filepath.Join(dataPath, leagueDomain, "crypto-config", orgPathName, nodesName, nodePathName)
+	return
 }
 
-func FabricCryptoGenPath(version pb.Version) string {
-	switch version {
-	case pb.Version_V14:
-		return fabricCryptoGenPathV14
-	default:
-		return ""
+// CryptoOrgMspPath CryptoOrgMspPath
+func CryptoOrgMspPath(leagueDomain, orgDomain, orgName string, isPeer bool) (mspPath string) {
+	var orgsName, orgPathName string
+	if isPeer {
+		orgsName = "peerOrganizations/"
+	} else {
+		orgsName = "ordererOrganizations/"
 	}
+	orgPathName = strings.Join([]string{orgsName, orgName, ".", orgDomain}, "")
+	return filepath.Join(dataPath, leagueDomain, "crypto-config", orgPathName, "msp")
 }
 
-func FabricConfigTXGenPath(version pb.Version) string {
-	switch version {
-	case pb.Version_V14:
-		return fabricConfigTXGenPathV14
-	default:
-		return ""
-	}
-}
-
-// CryptoCAPath CryptoCAPath
-//
-// caType 0-ordererOrganizations;1-peerOrganizations
-func CryptoCAPath(ledgerName, orgName string, caType int) string {
-	var cPath string
-	switch caType {
-	default:
-		cPath = strings.Join([]string{"peerOrganizations/", orgName, ".", ledgerName}, "")
-	case 0:
-		cPath = strings.Join([]string{"ordererOrganizations/", ledgerName}, "")
-	}
-	return filepath.Join(dataPath, ledgerName, "crypto-config", cPath, "ca")
-}
-
-// CryptoGenYmlPath cryptogen.yaml
-func CryptoGenYmlPath(ledgerName string) string {
-	return filepath.Join(dataPath, ledgerName, "config/cryptogen.yaml")
-}
-
-// ConfigTxYmlPath configtx.yaml
-func ConfigTxYmlPath(ledgerName string) string {
-	return filepath.Join(dataPath, ledgerName, "config/configtx.yaml")
-}
-
-// ConfPath crypto-config和channel-artifacts的上一级目录
-func ConfPath(ledgerName string) string {
-	return filepath.Join(dataPath, ledgerName, "config")
+// CryptoUserTmpPath CryptoUserTempPath
+func CryptoUserTmpPath(leagueDomain, orgDomain, orgName string) string {
+	tmpPath := strings.Join([]string{"tmp/", orgName, ".", orgDomain, "/users"}, "")
+	return filepath.Join(dataPath, leagueDomain, "crypto-config", tmpPath)
 }
 
 // ChainCodePath code目录
-func ChainCodePath(ledgerName, chainCodeName, version string) (source, path, zipPath string) {
-	source = filepath.Join(dataPath, ledgerName, "code/go")
+func ChainCodePath(leagueName, chainCodeName, version string) (source, path, zipPath string) {
+	source = filepath.Join(dataPath, leagueName, "code/go")
 	path = filepath.Join(chainCodeName, version, chainCodeName)
 	zipPath = strings.Join([]string{source, "/src/", path, ".zip"}, "")
 	return

@@ -1,0 +1,220 @@
+version: '2'
+
+services:
+
+  zk1:
+    container_name: zookeeper1
+    hostname: zookeeper1
+    image: hyperledger/fabric-zookeeper:0.4.14
+    restart: always
+    environment:
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS=server.1=zookeeper1:2887:3887 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2889:3889
+    ports:
+      - "2180:2181"
+      - "2887:2888"
+      - "3887:3888"
+
+  zk2:
+    container_name: zookeeper2
+    hostname: zookeeper2
+    image: hyperledger/fabric-zookeeper:0.4.14
+    restart: always
+    environment:
+      - ZOO_MY_ID=2
+      - ZOO_SERVERS=server.1=zookeeper1:2887:3887 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2889:3889
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+
+  zk3:
+    container_name: zookeeper3
+    hostname: zookeeper3
+    image: hyperledger/fabric-zookeeper:0.4.14
+    restart: always
+    environment:
+      - ZOO_MY_ID=3
+      - ZOO_SERVERS=server.1=zookeeper1:2887:3887 server.2=zookeeper2:2888:3888 server.3=zookeeper3:2889:3889
+    ports:
+      - "2182:2181"
+      - "2889:2888"
+      - "3889:3888"
+
+  kfk1:
+    container_name: kafka1
+    hostname: kafka1
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2180,zookeeper2:2181,zookeeper3:2182
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_LOG_RETENTION_MS=-1
+    ports:
+      - "9090:9092"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+
+  kfk2:
+    container_name: kafka2
+    hostname: kafka2
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2180,zookeeper2:2181,zookeeper3:2182
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_LOG_RETENTION_MS=-1
+    ports:
+      - "9091:9092"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+
+  kfk3:
+    container_name: kafka3
+    hostname: kafka3
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=3
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2180,zookeeper2:2181,zookeeper3:2182
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_LOG_RETENTION_MS=-1
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+
+  kfk4:
+    container_name: kafka4
+    hostname: kafka4
+    image: hyperledger/fabric-kafka:0.4.14
+    restart: always
+    environment:
+      - KAFKA_BROKER_ID=4
+      - KAFKA_MIN_INSYNC_REPLICAS=2
+      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2180,zookeeper2:2181,zookeeper3:2182
+      - KAFKA_MESSAGE_MAX_BYTES=103809024
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+      - KAFKA_LOG_RETENTION_MS=-1
+    ports:
+      - "9093:9092"
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+
+  orderer0:
+    container_name: orderer0.wh.whs.com
+    image: hyperledger/fabric-orderer:1.4.0
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=whMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+
+      - ORDERER_KAFKA_RETRY_LONGINTERVAL=10s
+      - ORDERER_KAFKA_RETRY_LONGTOTAL=100s
+      - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+      - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+      - ORDERER_KAFKA_VERBOSE=true
+      - ORDERER_KAFKA_BROKERS=[kafka1:9090,kafka2:9091,kafka3:9092,kafka4:9093]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ./ledger.com/channel-artifacts/orderer.genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ./ledger.com/crypto-config/ordererOrganizations/wh.whs.com/orderers/orderer0.wh.whs.com/msp:/var/hyperledger/orderer/msp
+      - ./ledger.com/crypto-config/ordererOrganizations/wh.whs.com/orderers/orderer0.wh.whs.com/tls/:/var/hyperledger/orderer/tls
+    ports:
+      - 7050:7050
+    depends_on:
+      - kfk1
+      - kfk2
+      - kfk3
+      - kfk4
+
+  peer0:
+    container_name: peer0.h1.h1s.com
+    image: hyperledger/fabric-peer:1.4.0
+    environment:
+      - CORE_PEER_ID=peer0
+      - CORE_PEER_ADDRESS=peer0.h1.h1s.com:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.h1.h1s.com:7051
+      - CORE_PEER_LOCALMSPID=h1MSP
+
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./ledger.com/crypto-config/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/msp:/etc/hyperledger/fabric/msp
+      - ./ledger.com/crypto-config/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/tls:/etc/hyperledger/fabric/tls
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+    depends_on:
+      - orderer0
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.4.0
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=peer0
+      - CORE_PEER_ADDRESS=peer0.h1.h1s.com:7051
+      - CORE_PEER_LOCALMSPID=h1MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/users/Admin@h1.h1s.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./ledger.com/chaincode/go/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/go
+      - ./ledger.com/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./ledger.com/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - peer0

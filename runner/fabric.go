@@ -18,9 +18,9 @@ package main
 import (
 	"github.com/aberic/gnomon"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	pbGeneses "github.com/ennoo/fabric-client/grpc/proto/geneses"
+	gr "github.com/ennoo/fabric-client/grpc/proto/generate"
 	"github.com/ennoo/fabric-client/grpc/server/chains"
-	"github.com/ennoo/fabric-client/grpc/server/geneses"
+	"github.com/ennoo/fabric-client/grpc/server/generate"
 	"github.com/ennoo/fabric-client/rafts"
 	"google.golang.org/grpc"
 	"net"
@@ -67,13 +67,13 @@ func grpcListener() {
 	rpcServer := grpc.NewServer()
 
 	//  注册我们自定义的helloworld服务
+	gr.RegisterGenerateServer(rpcServer, &generate.CreationServer{})
 	pb.RegisterLedgerConfigServer(rpcServer, &chains.ConfigServer{})
 	pb.RegisterLedgerCAServer(rpcServer, &chains.CAServer{})
 	pb.RegisterLedgerChannelServer(rpcServer, &chains.ChannelServer{})
 	pb.RegisterLedgerChainCodeServer(rpcServer, &chains.ChainCodeServer{})
 	pb.RegisterLedgerPeerServer(rpcServer, &chains.PeerServer{})
 	pb.RegisterLedgerServer(rpcServer, &chains.LedgerServer{})
-	pbGeneses.RegisterGenesisServer(rpcServer, &geneses.GenesisServer{})
 	rafts.RegisterRaftServer(rpcServer, &rafts.Server{})
 
 	//  启动grpc服务

@@ -19,7 +19,6 @@ import (
 	"github.com/ennoo/fabric-client/core"
 	"github.com/ennoo/fabric-client/geneses"
 	pb "github.com/ennoo/fabric-client/grpc/proto/chain"
-	genesis "github.com/ennoo/fabric-client/grpc/proto/geneses"
 	"github.com/ennoo/fabric-client/service"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/peer"
 	"golang.org/x/net/context"
@@ -48,14 +47,14 @@ func (c *ChannelServer) Create(ctx context.Context, in *pb.ChannelCreate) (*pb.R
 		}
 		orgName = name
 	}
-	if _, _, err = geneses.GenerateChannelTX(
-		&genesis.ChannelTX{
-			LedgerName:  in.LeagueName,
-			ChannelName: in.ChannelID,
-			Force:       true,
-		}); nil != err {
-		return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
-	}
+	//if _, _, err = geneses.GenerateChannelTX(
+	//	&genesis.ChannelTX{
+	//		LedgerName:  in.LeagueName,
+	//		ChannelName: in.ChannelID,
+	//		Force:       true,
+	//	}); nil != err {
+	//	return &pb.Result{Code: pb.Code_Fail, ErrMsg: err.Error()}, nil
+	//}
 	channelTXFilePath := geneses.ChannelTXFilePath(in.LeagueName, in.ChannelID)
 	if txID, err = sdk.Create(geneses.OrdererOrgName, "Admin", orderOrgURL, orgName, "Admin",
 		in.ChannelID, channelTXFilePath, service.GetBytes(in.ConfigID)); nil != err {

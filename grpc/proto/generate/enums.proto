@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option java_package = "io.ennoo.fabric-client.grpc.proto.generate";
+option java_outer_classname = "EnumsProto";
+option go_package = "grpc/proto/generate";
+
+package generate;
+
+enum OrgType {
+    Order = 0;
+    Peer = 1;
+}
+
+enum CryptoType {
+    ECDSA = 0;
+    RSA = 1;
+}
+
+enum EccAlgorithm {
+    p256 = 0;
+    p384 = 1;
+    p521 = 2;
+}
+
+enum RsaAlgorithm {
+    r2048 = 0;
+    r4096 = 1;
+}
+
+enum SignAlgorithm {
+    SHA256WithRSA = 0;
+    SHA512WithRSA = 1;
+    ECDSAWithSHA256 = 2;
+    ECDSAWithSHA384 = 3;
+    ECDSAWithSHA512 = 4;
+}

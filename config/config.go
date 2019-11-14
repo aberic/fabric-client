@@ -103,13 +103,13 @@ func (c *Config) AddOrSetEventServicePolicyForChannel(channelName, resolverStrat
 	}
 }
 
-func (c *Config) AddOrSetOrdererForOrganizations(mspID, cryptoPath string, users map[string]string) {
+func (c *Config) AddOrSetOrdererForOrganizations(orderName, mspID, cryptoPath string, users map[string]string) {
 	c.initOrganizations()
 	userMap := map[string]*User{}
 	for username, path := range users {
 		userMap[username] = &User{Cert: &Cert{Path: path}}
 	}
-	c.Organizations[OrderOrgKey] = &Organization{
+	c.Organizations[orderName] = &Organization{
 		MspID:      mspID,
 		CryptoPath: cryptoPath,
 		Users:      userMap,

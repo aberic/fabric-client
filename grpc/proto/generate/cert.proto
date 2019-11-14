@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+option java_package = "io.ennoo.fabric-client.grpc.proto.generate";
+option java_outer_classname = "CertProto";
+option go_package = "grpc/proto/generate";
+
+package generate;
+
+import "grpc/proto/generate/result.proto";
+import "grpc/proto/generate/enums.proto";
+
+message ReqKeyConfig {
+    CryptoType cryptoType = 1;
+    oneof Algorithm {
+        EccAlgorithm eccAlgorithm = 2;
+        RsaAlgorithm rsaAlgorithm = 3;
+    }
+}
+
+message RespKeyConfig {
+    Code code = 1;
+    string errMsg = 2;
+    string priKeyFilePath = 3;
+    string pubKeyFilePath = 4;
+}
+
+message ReqCreateLeague {
+    string domain = 1; // 联盟根域名
+    bytes priData = 2;
+    bytes priTlsData = 3;
+    CSR csr = 4; // 证书请求申请内容
+    SignAlgorithm signAlgorithm = 5;
+}
+
+message RespCreateLeague {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message ReqCreateOrg {
+    OrgType orgType = 1;
+    string leagueDomain = 2; // 联盟根域名
+    string name = 3; // 组织名称
+    string domain = 4; // 组织根域名
+}
+
+message RespCreateOrg {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message ReqCreateCsr {
+    string leagueDomain = 2; // 联盟根域名
+    string orgName = 3; // 组织名称
+    string orgDomain = 4; // 组织根域名
+    bytes priKey = 5;
+    CSR name = 6; // 证书请求申请内容
+    SignAlgorithm signAlgorithm = 7;
+}
+
+message RespCreateCsr {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message ReqCreateOrgNode {
+    OrgType orgType = 1;
+    OrgChild orgChild = 2;
+}
+
+message RespCreateOrgNode {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message ReqCreateOrgUser {
+    OrgType orgType = 1;
+    OrgChild orgChild = 2;
+    bool isAdmin = 3; // 是否为admin用户
+}
+
+message RespCreateOrgUser {
+    Code code = 1;
+    string errMsg = 2;
+}
+
+message OrgChild {
+    OrgType orgType = 1;
+    string leagueDomain = 2; // 联盟根域名
+    string orgName = 3; // 组织名称
+    string orgDomain = 4;
+    string name = 5; // 用户名称
+    bytes pubTlsData = 7; // 用户公钥
+    SignAlgorithm signAlgorithm = 8;
+    EnrollInfo enrollInfo = 9;
+}
+message EnrollInfo {
+    bytes csrPem = 1;
+    string fabricCaServerURL = 2;
+    int64 notBefore = 3; // 在多少天前无效
+    int64 notAfter = 4; // 在多少天后无效
+    EnrollRequest enrollRequest = 5;
+}
+
+message EnrollRequest {
+    string enrollID = 1;
+    string secret = 2;
+    CSR name = 3; // 证书请求申请内容
+    string profile = 4;
+    string label = 5;
+    string caName = 6;
+    repeated string hosts = 7;
+    repeated EnrollAttribute attrs = 8;
+}
+
+message EnrollAttribute {
+    string name = 1;
+    bool optional = 2;
+}
+
+// csr 证书请求申请内容
+message CSR {
+    repeated string country = 1;
+    repeated string organization = 2;
+    repeated string organizationalUnit = 3;
+    repeated string locality = 4;
+    repeated string province = 5;
+    repeated string streetAddress = 6;
+    repeated string postalCode = 7;
+    string serialNumber = 8;
+    string commonName = 9;
+}

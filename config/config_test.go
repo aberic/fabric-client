@@ -68,7 +68,7 @@ func TGetConfig() *Config {
 		2, 4, 2.0)
 	config.AddOrSetEventServicePolicyForChannel("mychannel1", "PreferOrg", "RoundRobin",
 		"6s", 5, 8)
-	config.AddOrSetOrdererForOrganizations("OrdererMSP",
+	config.AddOrSetOrdererForOrganizations("OrdererMSP", "OrdererMSP",
 		"/fabric/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp",
 		map[string]string{
 			"Admin": "/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/signcerts/Admin@example.com-cert.pem",

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_package = "io.ennoo.fabric-client.grpc.proto.generate";
+option java_outer_classname = "ServerProto";
+option go_package = "grpc/proto/generate";
+
+package generate;
+
+import "grpc/proto/generate/cert.proto";
+import "grpc/proto/generate/genesis.proto";
+
+service Generate {
+    rpc GenerateCrypto (ReqKeyConfig) returns (RespKeyConfig) {
+    }
+    rpc GenerateLeague (ReqCreateLeague) returns (RespCreateLeague) {
+    }
+    rpc GenerateOrg (ReqCreateOrg) returns (RespCreateOrg) {
+    }
+    rpc GenerateCsr (ReqCreateCsr) returns (RespCreateCsr) {
+    }
+    rpc GenerateOrgNode (ReqCreateOrgNode) returns (RespCreateOrgNode) {
+    }
+    rpc GenerateOrgUser (ReqCreateOrgUser) returns (RespCreateOrgUser) {
+    }
+    rpc GenerateGenesisBlock (ReqGenesis) returns (RespGenesis) {
+    }
+    rpc GenerateChannelTx (ReqChannelTx) returns (RespChannelTx) {
+    }
+}

@@ -395,7 +395,7 @@ func TGetConfig() *config.Config {
 		2, 4, 2.0)
 	conf.AddOrSetEventServicePolicyForChannel("cc6519b67c4177fc11", "PreferOrg", "RoundRobin",
 		"6s", 5, 8)
-	conf.AddOrSetOrdererForOrganizations("OrdererMSP",
+	conf.AddOrSetOrdererForOrganizations(config.OrderOrgKey, "OrdererMSP",
 		rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp",
 		map[string]string{
 			"Admin": rootPath + "/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp/signcerts/Admin@20de78630ef6a411-cert.pem",

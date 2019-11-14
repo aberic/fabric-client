@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+
+  peer0:
+    container_name: peer0
+    image: hyperledger/fabric-peer:1.4.0
+    environment:
+      - CORE_PEER_ID=peer0
+      - CORE_PEER_ADDRESS=peer0.h1.h1s.com:7051
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.h1.h1s.com:7051
+      - CORE_PEER_LOCALMSPID=A00G2JMSP
+
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./ledger.com/crypto-config/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/msp:/etc/hyperledger/fabric/msp
+      - ./ledger.com/crypto-config/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/tls:/etc/hyperledger/fabric/tls
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+    extra_hosts:
+      - "orderer0.wh.whs.com:10.0.61.23"
+      - "peer0.h1.h1s.com:10.0.61.23"
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.4.0
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=peer0
+      - CORE_PEER_ADDRESS=peer0.h1.h1s.com:7051
+      - CORE_PEER_LOCALMSPID=h1MSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/peers/peer0.h1.h1s.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/h1.h1s.com/users/Admin@h1.h1s.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./ledger.com/chaincode/go/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/go
+      - ./ledger.com/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./ledger.com/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - peer0
+    extra_hosts:
+      - "orderer0.wh.whs.com:10.0.61.23"
+      - "peer0.h1.h1s.com:10.0.61.23"
