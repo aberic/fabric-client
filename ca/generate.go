@@ -352,7 +352,7 @@ func (gc *GenerateConfig) enroll(child *generate.OrgChild, path, certFileName st
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", strings.Join([]string{child.EnrollInfo.FabricCaServerURL, "api/v1/enroll"}, "/"), bytes.NewBuffer(crm))
+	req, err := http.NewRequest(http.MethodPost, strings.Join([]string{child.EnrollInfo.FabricCaServerURL, "api/v1/enroll"}, "/"), bytes.NewBuffer(crm))
 	if nil != err {
 		return err
 	}

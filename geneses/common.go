@@ -15,7 +15,7 @@
 package geneses
 
 import (
-	"github.com/ennoo/rivet/utils/env"
+	"github.com/aberic/gnomon"
 	"path/filepath"
 	"strings"
 )
@@ -30,6 +30,7 @@ const (
 	// WorkPath 项目工作目录 [template]
 	WorkPath       = "WORK_PATH"
 	OrdererOrgName = "OrdererOrg"
+	GOPath         = "GOPATH"
 )
 
 type ClientCANode int
@@ -41,11 +42,10 @@ const (
 )
 
 func init() {
-	goPath := env.GetEnv(env.GOPath)
 	dataPath = strings.Join([]string{
-		env.GetEnvDefault(
+		gnomon.Env().GetD(
 			WorkPath,
-			strings.Join([]string{goPath, "src/github.com/aberic/fabric-client/geneses/example"}, "/"),
+			strings.Join([]string{gnomon.Env().Get(GOPath), "src/github.com/aberic/fabric-client/geneses/example"}, "/"),
 		),
 		"data",
 	}, "/")

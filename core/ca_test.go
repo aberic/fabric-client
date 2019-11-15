@@ -16,7 +16,6 @@ package sdk
 
 import (
 	"github.com/aberic/fabric-client/config"
-	"github.com/ennoo/rivet/utils/log"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	mspctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
 	"gopkg.in/yaml.v3"
@@ -451,13 +450,13 @@ func TestCAInfo(t *testing.T) {
 	conf := TGetCAConfigCustom()
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
-		log.Self.Error("client", log.Error(err))
+		t.Log(err)
 	}
 	result, err := CAInfo("league", confData)
 	if err != nil {
-		log.Self.Error("ca info", log.Error(err))
+		t.Log(err)
 	}
-	log.Self.Debug("test ca info", log.Reflect("result", result))
+	t.Log(result)
 }
 
 //func TGetCAConfig() *config.Config {

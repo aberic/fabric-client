@@ -18,23 +18,9 @@ import (
 	pb "github.com/aberic/fabric-client/grpc/proto/chain"
 	"github.com/aberic/fabric-client/grpc/server/chains"
 	pbRafts "github.com/aberic/fabric-client/rafts"
-	"github.com/ennoo/rivet"
-	"github.com/ennoo/rivet/utils/env"
-	"github.com/ennoo/rivet/utils/log"
 	"google.golang.org/grpc"
 	"net"
 )
-
-func init() {
-	rivet.Initialize(false, false, false, false)
-	rivet.Log().Init(env.GetEnvDefault(env.LogPath, "./logs/node1"), "node1", &log.Config{
-		Level:      log.InfoLevel,
-		MaxSize:    128,
-		MaxBackups: 30,
-		MaxAge:     30,
-		Compress:   true,
-	}, false)
-}
 
 func main() {
 	go pbRafts.NewRaft()

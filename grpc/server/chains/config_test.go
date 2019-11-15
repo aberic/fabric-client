@@ -16,7 +16,6 @@ package chains
 
 import (
 	pb "github.com/aberic/fabric-client/grpc/proto/chain"
-	"github.com/ennoo/rivet/utils/log"
 	"gopkg.in/yaml.v3"
 	"testing"
 )
@@ -44,7 +43,7 @@ func TestGetConfig(t *testing.T) {
 	t.Log(i)
 	configData, err := yaml.Marshal(i)
 	if err != nil {
-		t.Log("client", log.Error(err))
+		t.Log("client", err)
 	}
 	t.Log(string(configData))
 }

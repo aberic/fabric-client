@@ -21,7 +21,6 @@ import (
 	"github.com/aberic/fabric-client/geneses"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
-	"github.com/ennoo/rivet/utils/log"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/resource"
 	"gopkg.in/yaml.v3"
@@ -306,10 +305,10 @@ func TestChannels(t *testing.T) {
 	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org1Name, org1Domain, node1, admin, channelID)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
-		log.Self.Debug("client", log.Error(err))
+		t.Error(err)
 	}
 	result, err := sdk.Channels(org1Name, admin, node1, confData)
-	log.Self.Debug("test query", log.Reflect("result", result))
+	t.Log(result)
 }
 
 func genesisAddAffiliation(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, affiliationName, url string, t *testing.T) {

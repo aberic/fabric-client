@@ -17,7 +17,6 @@ package service
 
 //import (
 //	"fmt"
-//	"github.com/ennoo/rivet/utils/log"
 //	"gopkg.in/yaml.v3"
 //	"testing"
 //)

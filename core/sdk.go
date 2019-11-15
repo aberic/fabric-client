@@ -16,12 +16,13 @@
 package sdk
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	config2 "github.com/aberic/fabric-client/config"
 	"github.com/aberic/fabric-client/service"
 	"github.com/aberic/gnomon"
-	"github.com/ennoo/rivet"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
@@ -387,7 +388,11 @@ func InvokeAsync(chaincodeID, orgName, orgUser, channelID, callback, fcn string,
 		res := Invoke(chaincodeID, orgName, orgUser, channelID, fcn, args, targetEndpoints, configBytes, sdkOpts...)
 		if gnomon.String().IsNotEmpty(callback) {
 			gnomon.Log().Debug("InvokeAsync", gnomon.Log().Field("callback", callback))
-			_, err := rivet.Request().RestJSONByURL(http.MethodPost, callback, res)
+			jsonByte, err := json.Marshal(res)
+			if nil != err {
+				return
+			}
+			_, err = http.NewRequest(http.MethodPost, callback, bytes.NewReader(jsonByte))
 			if nil != err {
 				gnomon.Log().Error("InvokeAsync", gnomon.Log().Err(err))
 			}

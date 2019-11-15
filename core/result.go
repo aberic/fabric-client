@@ -14,7 +14,9 @@
 
 package sdk
 
-import "github.com/ennoo/rivet/utils/log"
+import (
+	"github.com/aberic/gnomon"
+)
 
 const (
 	// Success 请求返回成功码
@@ -47,7 +49,7 @@ func (result *Result) Fail(msg string) {
 // FailErr 携带error信息
 func (result *Result) FailErr(err error) {
 	result.ResultCode = Fail
-	log.Trans.Error(err.Error())
+	gnomon.Log().Error("FailErr", gnomon.Log().Err(err))
 	//result.Msg = ServiceException.Msg
 	result.Msg = err.Error()
 }
