@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. Aberic - All Rights Reserved.
+ * Copyright (c) 2019. ENNOO - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,9 @@
  * limitations under the License.
  */
 
-package sdk
+package geneses
 
 import (
-	"github.com/aberic/fabric-client/geneses"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/resource"
@@ -40,7 +39,7 @@ func (g *Genesis) CreateGenesisBlock(consortium string) error {
 	if nil != err {
 		return err
 	}
-	if _, err = gnomon.File().Append(geneses.GenesisBlockFilePath(g.Info.League.Domain), data, true); nil != err {
+	if _, err = gnomon.File().Append(GenesisBlockFilePath(g.Info.League.Domain), data, true); nil != err {
 		return err
 	}
 	return nil
@@ -51,7 +50,7 @@ func (g *Genesis) CreateChannelCreateTx(consortium, channelID string) error {
 	if nil != err {
 		return err
 	}
-	if _, err = gnomon.File().Append(geneses.ChannelTXFilePath(g.Info.League.Domain, channelID), data, true); nil != err {
+	if _, err = gnomon.File().Append(ChannelTXFilePath(g.Info.League.Domain, channelID), data, true); nil != err {
 		return err
 	}
 	return nil
@@ -78,30 +77,19 @@ func (g *Genesis) orgPolicies(mspID string) map[string]*genesisconfig.Policy {
 	}
 }
 
-func (g *Genesis) organization(name, mspID, mspType, mspDir string, anchorPeers ...*genesisconfig.AnchorPeer) *genesisconfig.Organization {
-	return &genesisconfig.Organization{
-		Name:          name,
-		SkipAsForeign: false,
-		ID:            mspID,
-		MSPDir:        mspDir,
-		MSPType:       mspType,
-		Policies:      g.orgPolicies(mspID),
-		AnchorPeers:   anchorPeers,
-	}
-}
-
 func (g *Genesis) organizations(orgs []*generate.OrgInBlock) (orders, peers, all []*genesisconfig.Organization) {
 	for _, org := range orgs {
 		var (
 			mspDir string
-			mspID  = geneses.MspID(org.Name)
+			mspID  = MspID(org.Name)
 		)
 		organization := &genesisconfig.Organization{
-			Name:          org.Name,
-			SkipAsForeign: false,
-			ID:            mspID,
-			MSPType:       "bccsp",
-			Policies:      g.orgPolicies(mspID),
+			Name:           org.Name,
+			SkipAsForeign:  false,
+			ID:             mspID,
+			MSPType:        "bccsp",
+			Policies:       g.orgPolicies(mspID),
+			AdminPrincipal: "Role.ADMIN",
 		}
 		switch org.Type {
 		default:
@@ -112,11 +100,11 @@ func (g *Genesis) organizations(orgs []*generate.OrgInBlock) (orders, peers, all
 				anchorPeers = append(anchorPeers, &genesisconfig.AnchorPeer{Host: peer.Host, Port: int(peer.Port)})
 			}
 			organization.AnchorPeers = anchorPeers
-			mspDir = geneses.CryptoOrgMspPath(g.Info.League.Domain, org.Domain, org.Name, true)
+			mspDir = CryptoOrgMspPath(g.Info.League.Domain, org.Domain, org.Name, true)
 			organization.MSPDir = mspDir
 			peers = append(peers, organization)
 		case generate.OrgType_Order:
-			mspDir = geneses.CryptoOrgMspPath(g.Info.League.Domain, org.Domain, org.Name, false)
+			mspDir = CryptoOrgMspPath(g.Info.League.Domain, org.Domain, org.Name, false)
 			organization.MSPDir = mspDir
 			orders = append(orders, organization)
 		}
@@ -134,6 +122,7 @@ func (g *Genesis) applicationCapabilities() map[string]bool {
 }
 
 func (g *Genesis) applications() *genesisconfig.Application {
+	//rule := strings.Join([]string{"OR('", adminOrgMspID, ".admin')"}, "")
 	return &genesisconfig.Application{
 		Organizations: g.peerOrganizations,
 		Capabilities:  g.applicationCapabilities(),
@@ -158,6 +147,10 @@ func (g *Genesis) applications() *genesisconfig.Application {
 				Rule: "MAJORITY Admins",
 				Type: "ImplicitMeta",
 			},
+			//"ChannelCreate": {
+			//	Type: "Signature",
+			//	Rule: rule,
+			//},
 		},
 		ACLs: map[string]string{
 			"_lifecycle/CommitChaincodeDefinition": "/Channel/Application/Writers",
@@ -204,6 +197,9 @@ func (g *Genesis) orderer() *genesisconfig.Orderer {
 		},
 		Organizations: g.orderOrganizations,
 		MaxChannels:   g.Info.League.MaxChannels, // 1000
+		// Policies defines the set of policies at this level of the config tree
+		// For Orderer policies, their canonical path is
+		// /Channel/Orderer/<PolicyName>
 		Policies: map[string]*genesisconfig.Policy{
 			"Readers": {
 				Type: "ImplicitMeta",
@@ -215,7 +211,7 @@ func (g *Genesis) orderer() *genesisconfig.Orderer {
 			},
 			"Admins": {
 				Type: "ImplicitMeta",
-				Rule: "ANY Admins",
+				Rule: "MAJORITY Admins",
 			},
 			"BlockValidation": {
 				Type: "ImplicitMeta",
@@ -227,10 +223,13 @@ func (g *Genesis) orderer() *genesisconfig.Orderer {
 }
 
 func (g *Genesis) channelDefaults() map[string]*genesisconfig.Policy {
+	// Policies defines the set of policies at this level of the config tree
+	// For Channel policies, their canonical path is
+	// /Channel/<PolicyName>
 	policies := map[string]*genesisconfig.Policy{
 		"Admins": {
 			Type: "ImplicitMeta",
-			Rule: "ANY Admins",
+			Rule: "MAJORITY Admins",
 		},
 		"Readers": {
 			Type: "ImplicitMeta",

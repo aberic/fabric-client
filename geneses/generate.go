@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. Aberic - All Rights Reserved.
+ * Copyright (c) 2019. ENNOO - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package ca
+package geneses
 
 import (
 	"bytes"
@@ -31,7 +31,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"github.com/aberic/fabric-client/geneses"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
 	"io/ioutil"
@@ -82,7 +81,7 @@ func (gc *GenerateConfig) CreateLeague(league *generate.ReqCreateLeague) error {
 
 func (gc *GenerateConfig) CreateOrg(org *generate.ReqCreateOrg) error {
 	var err error
-	orgMspPath := geneses.CryptoOrgMspPath(org.LeagueDomain, org.Domain, org.Name, org.OrgType == generate.OrgType_Peer)
+	orgMspPath := CryptoOrgMspPath(org.LeagueDomain, org.Domain, org.Name, org.OrgType == generate.OrgType_Peer)
 	if gnomon.File().PathExists(orgMspPath) {
 		return errors.New("org already exist")
 	}
@@ -139,13 +138,13 @@ func (gc *GenerateConfig) CreateCsr(reqCsr *generate.ReqCreateCsr) error {
 		return err
 	}
 
-	csrPath := geneses.CsrPath(reqCsr.LeagueDomain, reqCsr.OrgName, reqCsr.OrgDomain)
+	csrPath := CsrPath(reqCsr.LeagueDomain, reqCsr.OrgName, reqCsr.OrgDomain)
 	if !gnomon.File().PathExists(csrPath) {
 		if err = os.MkdirAll(csrPath, 0755); nil != err {
 			return err
 		}
 	}
-	fileIO, err := os.OpenFile(geneses.CsrFilePath(reqCsr.LeagueDomain, reqCsr.OrgName, reqCsr.OrgDomain, subject.CommonName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+	fileIO, err := os.OpenFile(CsrFilePath(reqCsr.LeagueDomain, reqCsr.OrgName, reqCsr.OrgDomain, subject.CommonName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 	if nil != err {
 		return err
 	}
@@ -156,7 +155,7 @@ func (gc *GenerateConfig) CreateCsr(reqCsr *generate.ReqCreateCsr) error {
 func (gc *GenerateConfig) CreateOrgNode(node *generate.ReqCreateOrgNode) error {
 	var (
 		isPeer bool
-		ccn    = geneses.CcnNode
+		ccn    = CcnNode
 		err    error
 	)
 	if node.OrgType == generate.OrgType_Peer {
@@ -164,7 +163,7 @@ func (gc *GenerateConfig) CreateOrgNode(node *generate.ReqCreateOrgNode) error {
 	} else {
 		isPeer = false
 	}
-	orgPath, nodePath := geneses.CryptoOrgAndNodePath(node.OrgChild.LeagueDomain, node.OrgChild.OrgDomain, node.OrgChild.OrgName, node.OrgChild.Name, isPeer, ccn)
+	orgPath, nodePath := CryptoOrgAndNodePath(node.OrgChild.LeagueDomain, node.OrgChild.OrgDomain, node.OrgChild.OrgName, node.OrgChild.Name, isPeer, ccn)
 	if err = gc.orgChildExec(node.OrgChild.LeagueDomain, orgPath, nodePath, ccn); nil != err {
 		return err
 	}
@@ -190,7 +189,7 @@ func (gc *GenerateConfig) CreateOrgUser(user *generate.ReqCreateOrgUser) error {
 	var (
 		nodesName       string
 		isPeer          bool
-		ccn             geneses.ClientCANode
+		ccn             ClientCANode
 		orgsDirPathName []string
 		err             error
 	)
@@ -202,11 +201,11 @@ func (gc *GenerateConfig) CreateOrgUser(user *generate.ReqCreateOrgUser) error {
 		isPeer = false
 	}
 	if user.IsAdmin {
-		ccn = geneses.CcnAdmin
+		ccn = CcnAdmin
 	} else {
-		ccn = geneses.CcnUser
+		ccn = CcnUser
 	}
-	orgPath, nodePath := geneses.CryptoOrgAndNodePath(user.OrgChild.LeagueDomain, user.OrgChild.OrgDomain, user.OrgChild.OrgName, user.OrgChild.Name, isPeer, ccn)
+	orgPath, nodePath := CryptoOrgAndNodePath(user.OrgChild.LeagueDomain, user.OrgChild.OrgDomain, user.OrgChild.OrgName, user.OrgChild.Name, isPeer, ccn)
 	if err = gc.orgChildExec(user.OrgChild.LeagueDomain, orgPath, nodePath, ccn); nil != err {
 		return err
 	}
@@ -215,7 +214,7 @@ func (gc *GenerateConfig) CreateOrgUser(user *generate.ReqCreateOrgUser) error {
 	}
 	adminCertPath := path.Join(nodePath, "msp", "admincerts")
 	signCertPath := path.Join(nodePath, "msp", "signcerts")
-	signCertFileName := geneses.CertUserCAName(user.OrgChild.OrgName, user.OrgChild.OrgDomain, user.OrgChild.Name)
+	signCertFileName := CertUserCAName(user.OrgChild.OrgName, user.OrgChild.OrgDomain, user.OrgChild.Name)
 	adminCertFilePath := filepath.Join(adminCertPath, signCertFileName)
 	signCertFilePath := filepath.Join(signCertPath, signCertFileName)
 	if _, err = gnomon.File().Copy(signCertFilePath, adminCertFilePath); nil != err {
@@ -291,9 +290,9 @@ func (gc *GenerateConfig) generateCryptoOrgChild(child *generate.OrgChild, nodeP
 	// ca cert
 	signCertPath = path.Join(nodePath, "msp", "signcerts")
 	if isNode {
-		signCertFileName = geneses.CertNodeCAName(child.OrgName, child.OrgDomain, child.Name)
+		signCertFileName = CertNodeCAName(child.OrgName, child.OrgDomain, child.Name)
 	} else {
-		signCertFileName = geneses.CertUserCAName(child.OrgName, child.OrgDomain, child.Name)
+		signCertFileName = CertUserCAName(child.OrgName, child.OrgDomain, child.Name)
 	}
 	if err = gc.enroll(child, signCertPath, signCertFileName); nil != err {
 		return err
@@ -474,14 +473,14 @@ func (gc *GenerateConfig) getCertKey(priParentKeyFilePath string, pubKeyData []b
 }
 
 func (gc *GenerateConfig) getRootCA(leagueDomain string) (caPath, caFileName, tlsCaPath, tlsCaFileName string) {
-	caPath = geneses.CryptoRootCAPath(leagueDomain)
-	caFileName = geneses.CertRootCAName(leagueDomain)
-	tlsCaPath = geneses.CryptoRootTLSCAPath(leagueDomain)
-	tlsCaFileName = geneses.CertRootTLSCAName(leagueDomain)
+	caPath = CryptoRootCAPath(leagueDomain)
+	caFileName = CertRootCAName(leagueDomain)
+	tlsCaPath = CryptoRootTLSCAPath(leagueDomain)
+	tlsCaFileName = CertRootTLSCAName(leagueDomain)
 	return
 }
 
-func (gc *GenerateConfig) orgChildExec(leagueDomain, orgPath, nodePath string, ccn geneses.ClientCANode) error {
+func (gc *GenerateConfig) orgChildExec(leagueDomain, orgPath, nodePath string, ccn ClientCANode) error {
 	var err error
 	if !gnomon.File().PathExists(orgPath) {
 		return errors.New("org done't exist")
@@ -528,7 +527,7 @@ func (gc *GenerateConfig) orgChildExec(leagueDomain, orgPath, nodePath string, c
 }
 
 func (gc *GenerateConfig) orgChildCopy(leagueDomain, orgPath, nodePath, childMspAdminCertsPath, childMspCaCertsPath,
-	childMspTlsCaCertsPath string, ccn geneses.ClientCANode) error {
+	childMspTlsCaCertsPath string, ccn ClientCANode) error {
 
 	var err error
 	caPath, certName, tlsCaPath, tlsCertName := gc.getRootCA(leagueDomain)
@@ -551,7 +550,7 @@ func (gc *GenerateConfig) orgChildCopy(leagueDomain, orgPath, nodePath, childMsp
 	switch ccn {
 	default:
 		return nil
-	case geneses.CcnNode:
+	case CcnNode:
 		orgAdminCertsPath := path.Join(orgPath, "msp", "admincerts")
 		var fileNames []string
 		if fileNames, err = gnomon.File().LoopFileNames(orgAdminCertsPath); nil != err {
@@ -569,7 +568,7 @@ func (gc *GenerateConfig) orgChildCopy(leagueDomain, orgPath, nodePath, childMsp
 }
 
 // SKI returns the subject key identifier of this key.
-func (gc *GenerateConfig) eccSKI(key *ecdsa.PrivateKey) []byte {
+func (gc *GenerateConfig) EccSKI(key *ecdsa.PrivateKey) []byte {
 	if key == nil {
 		return nil
 	}
@@ -590,7 +589,7 @@ type rsaPublicKeyASN struct {
 }
 
 // SKI returns the subject key identifier of this key.
-func (gc *GenerateConfig) rsaSKI(key *rsa.PrivateKey) []byte {
+func (gc *GenerateConfig) RsaSKI(key *rsa.PrivateKey) []byte {
 	if key == nil {
 		return nil
 	}

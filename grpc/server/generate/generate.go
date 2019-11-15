@@ -17,15 +17,14 @@ package generate
 import (
 	"context"
 	"errors"
-	"github.com/aberic/fabric-client/ca"
-	sdk "github.com/aberic/fabric-client/core"
+	"github.com/aberic/fabric-client/geneses"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 )
 
 type CreationServer struct{}
 
 func (cs *CreationServer) GenerateCrypto(ctx context.Context, in *generate.ReqKeyConfig) (*generate.RespKeyConfig, error) {
-	pemConfig := &ca.PemConfig{KeyConfig: in}
+	pemConfig := &geneses.PemConfig{KeyConfig: in}
 	kcr := pemConfig.GenerateCrypto()
 	if kcr.Code == generate.Code_Success {
 		return kcr, nil
@@ -34,7 +33,7 @@ func (cs *CreationServer) GenerateCrypto(ctx context.Context, in *generate.ReqKe
 }
 
 func (cs *CreationServer) GenerateLeague(ctx context.Context, in *generate.ReqCreateLeague) (*generate.RespCreateLeague, error) {
-	gc := &ca.GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	if err := gc.CreateLeague(in); nil != err {
 		return &generate.RespCreateLeague{Code: generate.Code_Fail, ErrMsg: err.Error()}, err
 	}
@@ -42,7 +41,7 @@ func (cs *CreationServer) GenerateLeague(ctx context.Context, in *generate.ReqCr
 }
 
 func (cs *CreationServer) GenerateCsr(ctx context.Context, in *generate.ReqCreateCsr) (*generate.RespCreateCsr, error) {
-	gc := &ca.GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	if err := gc.CreateCsr(in); nil != err {
 		return &generate.RespCreateCsr{Code: generate.Code_Fail, ErrMsg: err.Error()}, err
 	}
@@ -50,7 +49,7 @@ func (cs *CreationServer) GenerateCsr(ctx context.Context, in *generate.ReqCreat
 }
 
 func (cs *CreationServer) GenerateOrg(ctx context.Context, in *generate.ReqCreateOrg) (*generate.RespCreateOrg, error) {
-	gc := &ca.GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	if err := gc.CreateOrg(in); nil != err {
 		return &generate.RespCreateOrg{Code: generate.Code_Fail, ErrMsg: err.Error()}, err
 	}
@@ -58,7 +57,7 @@ func (cs *CreationServer) GenerateOrg(ctx context.Context, in *generate.ReqCreat
 }
 
 func (cs *CreationServer) GenerateOrgNode(ctx context.Context, in *generate.ReqCreateOrgNode) (*generate.RespCreateOrgNode, error) {
-	gc := &ca.GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	if err := gc.CreateOrgNode(in); nil != err {
 		return &generate.RespCreateOrgNode{Code: generate.Code_Fail, ErrMsg: err.Error()}, err
 	}
@@ -66,7 +65,7 @@ func (cs *CreationServer) GenerateOrgNode(ctx context.Context, in *generate.ReqC
 }
 
 func (cs *CreationServer) GenerateOrgUser(ctx context.Context, in *generate.ReqCreateOrgUser) (*generate.RespCreateOrgUser, error) {
-	gc := &ca.GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	if err := gc.CreateOrgUser(in); nil != err {
 		return &generate.RespCreateOrgUser{Code: generate.Code_Fail, ErrMsg: err.Error()}, err
 	}
@@ -74,7 +73,7 @@ func (cs *CreationServer) GenerateOrgUser(ctx context.Context, in *generate.ReqC
 }
 
 func (cs *CreationServer) GenerateGenesisBlock(ctx context.Context, in *generate.ReqGenesis) (*generate.RespGenesis, error) {
-	genesis := sdk.Genesis{Info: in}
+	genesis := geneses.Genesis{Info: in}
 	genesis.Init()
 	if err := genesis.CreateGenesisBlock("default"); nil != err {
 		return &generate.RespGenesis{Code: generate.Code_Fail, ErrMsg: err.Error()}, err
@@ -83,7 +82,7 @@ func (cs *CreationServer) GenerateGenesisBlock(ctx context.Context, in *generate
 }
 
 func (cs *CreationServer) GenerateChannelTx(ctx context.Context, in *generate.ReqChannelTx) (*generate.RespChannelTx, error) {
-	genesis := sdk.Genesis{Info: in.Genesis}
+	genesis := geneses.Genesis{Info: in.Genesis}
 	genesis.Init()
 	if err := genesis.CreateChannelCreateTx("default", in.ChannelID); nil != err {
 		return &generate.RespChannelTx{Code: generate.Code_Fail, ErrMsg: err.Error()}, err

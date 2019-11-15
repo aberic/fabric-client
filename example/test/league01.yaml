@@ -192,8 +192,40 @@ services:
     depends_on:
       - order0
 
-  cli:
-    container_name: cli
+  node2:
+    container_name: node1.org2.two.com
+    image: hyperledger/fabric-peer:1.4.0
+    environment:
+      - CORE_PEER_ID=node1
+      - CORE_PEER_ADDRESS=node1.org2.two.com:7061
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7062
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=node1.org2.two.com:7061
+      - CORE_PEER_LOCALMSPID=org2MSP
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_GOSSIP_SKIPHANDSHAKE=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./league01.com/crypto-config/peerOrganizations/org2.two.com/peers/node1.org2.two.com/msp:/etc/hyperledger/fabric/msp
+      - ./league01.com/crypto-config/peerOrganizations/org2.two.com/peers/node1.org2.two.com/tls:/etc/hyperledger/fabric/tls
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 7061:7051
+      - 7062:7052
+      - 7063:7053
+    depends_on:
+      - order0
+
+  cli1:
+    container_name: cli1
     image: hyperledger/fabric-tools:1.4.0
     tty: true
     environment:
@@ -216,3 +248,28 @@ services:
       - ./league01.com/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     depends_on:
       - node1
+
+  cli2:
+    container_name: cli2
+    image: hyperledger/fabric-tools:1.4.0
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=node1
+      - CORE_PEER_ADDRESS=node1.org2.two.com:7061
+      - CORE_PEER_LOCALMSPID=org2MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.two.com/peers/node1.org2.two.com.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.two.com/peers/node1.org2.two.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.two.com/peers/node1.org2.two.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.two.com/users/Admin@org2.two.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./league01.com/chaincode/go/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/go
+      - ./league01.com/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./league01.com/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - node2

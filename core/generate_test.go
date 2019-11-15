@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019. Aberic - All Rights Reserved.
+ * Copyright (c) 2019. ENNOO - All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,12 +12,11 @@
  * limitations under the License.
  */
 
-package ca
+package sdk
 
 import (
 	"encoding/hex"
 	"github.com/aberic/fabric-client/config"
-	sdk "github.com/aberic/fabric-client/core"
 	"github.com/aberic/fabric-client/geneses"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
@@ -45,7 +44,7 @@ const (
 	node2          = "node2"
 	admin          = "Admin"
 	user2          = "User2"
-	channelID      = "mychannel01"
+	channelID      = "mychannel02"
 
 	cryptoType    = generate.CryptoType_ECDSA
 	signAlgorithm = generate.SignAlgorithm_ECDSAWithSHA256
@@ -58,7 +57,7 @@ var (
 )
 
 func TestPemConfig_GenerateCrypto(t *testing.T) {
-	pemConfig := &PemConfig{KeyConfig: &generate.ReqKeyConfig{
+	pemConfig := &geneses.PemConfig{KeyConfig: &generate.ReqKeyConfig{
 		CryptoType: cryptoType,
 		Algorithm:  algorithm,
 	}}
@@ -67,7 +66,7 @@ func TestPemConfig_GenerateCrypto(t *testing.T) {
 
 func TestPemConfig_GenerateCryptos(t *testing.T) {
 	for i := 0; i < 30; i++ {
-		pemConfig := &PemConfig{KeyConfig: &generate.ReqKeyConfig{
+		pemConfig := &geneses.PemConfig{KeyConfig: &generate.ReqKeyConfig{
 			CryptoType: cryptoType,
 			Algorithm:  algorithm,
 		}}
@@ -84,7 +83,7 @@ func TestGenerateConfig_CreateLeague(t *testing.T) {
 	if nil != err {
 		t.Error(err)
 	}
-	gc := &GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	t.Log(gc.CreateLeague(&generate.ReqCreateLeague{
 		Domain:     leagueDomain,
 		PriData:    priData,
@@ -101,7 +100,7 @@ func TestGenerateConfig_CreateLeague(t *testing.T) {
 }
 
 func TestGenerateConfig_CreateOrg(t *testing.T) {
-	gc := &GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	t.Log(gc.CreateOrg(&generate.ReqCreateOrg{
 		OrgType:      generate.OrgType_Order,
 		LeagueDomain: leagueDomain,
@@ -176,7 +175,7 @@ func TestGenerateConfig_CreateOrgNode(t *testing.T) {
 }
 
 func TestGenerateConfig_GenesisBlock(t *testing.T) {
-	genesis := sdk.Genesis{
+	genesis := geneses.Genesis{
 		Info: &generate.ReqGenesis{
 			League: &generate.LeagueInBlock{
 				Domain: leagueDomain,
@@ -228,7 +227,7 @@ func TestGenerateConfig_InspectGenesisBlock(t *testing.T) {
 }
 
 func TestGenerateConfig_CreateChannelTx(t *testing.T) {
-	genesis := sdk.Genesis{
+	genesis := geneses.Genesis{
 		Info: &generate.ReqGenesis{
 			League: &generate.LeagueInBlock{
 				Domain: leagueDomain,
@@ -280,12 +279,12 @@ func TestGenerateConfig_InspectChannelTx(t *testing.T) {
 }
 
 func TestGenerateConfig_CreateChannel(t *testing.T) {
-	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org1Name, org1Domain, node1, admin, channelID)
+	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org2Name, org2Domain, node1, admin, channelID)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
 	}
-	result, err := sdk.Create(orderName, admin, "grpcs://10.0.61.23:7050", org1Name, admin, channelID,
+	result, err := Create(orderName, admin, "grpcs://10.0.61.23:7050", org2Name, admin, channelID,
 		filepath.Join(geneses.ChannelArtifactsPath(leagueDomain), strings.Join([]string{channelID, "tx"}, ".")), // "/Users/aberic/Documents/path/go/src/github.com/aberic/fabric-client/example/config/channel-artifacts/cc6519b67c4177fc1110.tx",
 		confData)
 	t.Log("test query result", result)
@@ -297,17 +296,17 @@ func TestGenerateConfig_Join(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	result := sdk.Join("grpcs://10.0.61.23:7050", org1Name, admin, channelID, node1, confData)
+	result := Join("grpcs://10.0.61.23:7050", org1Name, admin, channelID, node1, confData)
 	t.Log("test query result", result)
 }
 
-func TestChannels(t *testing.T) {
+func TestGenerateConfig_Channels(t *testing.T) {
 	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org1Name, org1Domain, node1, admin, channelID)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
 	}
-	result, err := sdk.Channels(org1Name, admin, node1, confData)
+	result, err := Channels(org1Name, admin, node1, confData)
 	t.Log(result)
 }
 
@@ -317,7 +316,7 @@ func genesisAddAffiliation(enrollID, enrollSecret, leagueDomain, orgDomain, orgN
 	if err != nil {
 		t.Error("yaml", err)
 	}
-	result, err := sdk.AddAffiliation(orgName, &msp.AffiliationRequest{
+	result, err := AddAffiliation(orgName, &msp.AffiliationRequest{
 		Name:   affiliationName, // Name of the affiliation
 		Force:  true,            // Creates parent affiliations if they do not exist
 		CAName: caName,          // Name of the CA
@@ -334,7 +333,7 @@ func genesisRegister(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, o
 	if err != nil {
 		t.Error("yaml", err)
 	}
-	result, err := sdk.Register(orgName, &msp.RegistrationRequest{
+	result, err := Register(orgName, &msp.RegistrationRequest{
 		Name:           name,
 		Type:           registerCAType,  // (e.g. "client, orderer, peer, app, user")
 		MaxEnrollments: -1,              // if omitted, this defaults to max_enrollments configured on the server
@@ -369,7 +368,7 @@ func createCsr(priKeyFilePath, orgName, orgDomain, childName string, isNode bool
 	} else {
 		commonName = strings.Split(geneses.CertUserCAName(orgName, orgDomain, childName), "-")[0]
 	}
-	gc := &GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	return gc.CreateCsr(&generate.ReqCreateCsr{
 		PriKey:       priData,
 		LeagueDomain: leagueDomain,
@@ -396,7 +395,7 @@ func createOrgNode(orgType generate.OrgType, pubTlsKeyFilePath, orgName, orgDoma
 	if nil != err {
 		t.Error(err)
 	}
-	gc := &GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	return gc.CreateOrgNode(&generate.ReqCreateOrgNode{
 		OrgType: orgType,
 		OrgChild: &generate.OrgChild{
@@ -439,7 +438,7 @@ func createOrgUser(orgType generate.OrgType, pubTlsKeyFilePath, orgName, orgDoma
 	if nil != err {
 		t.Error(err)
 	}
-	gc := &GenerateConfig{}
+	gc := &geneses.GenerateConfig{}
 	return gc.CreateOrgUser(&generate.ReqCreateOrgUser{
 		IsAdmin: isAdmin,
 		OrgType: orgType,
@@ -585,12 +584,13 @@ func configGenerateConfig(leagueDomain, orderName, orderDomain, orderNodeName, o
 }
 
 func TestGenerateConfig_eccSKI(t *testing.T) {
-	priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/366428000/pri.key")
+	//priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/366428000/pri.key")
+	priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/368896000/pri.key")
 	if nil != err {
 		t.Error(err)
 	}
-	gc := &GenerateConfig{}
-	data := gc.eccSKI(priKey)
+	gc := &geneses.GenerateConfig{}
+	data := gc.EccSKI(priKey)
 	t.Log(data)
 	t.Log(hex.EncodeToString(data))
 }
