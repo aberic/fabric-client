@@ -245,6 +245,24 @@ func (gc *GenerateConfig) CreateOrgUser(user *generate.ReqCreateOrgUser) error {
 	return nil
 }
 
+//func (gc *GenerateConfig) UpdateChannel(sdk *fabsdk.FabricSDK, channelID, orgName, orgUser, orderURL string) error {
+//	orgChannelClientContext := sdk.ChannelContext(channelID, fabsdk.WithOrg(orgName), fabsdk.WithUser(orgUser))
+//	channelCtx, err := orgChannelClientContext()
+//	if err != nil {
+//		return err
+//	}
+//	reqCtx, cancel := context.NewRequest(channelCtx, context.WithTimeoutType(fab.PeerResponse))
+//	clientProvider := sdk.Context()
+//	ClientContext, err := clientProvider()
+//	order, err := orderer.New(ClientContext.EndpointConfig(), orderer.WithURL(orderURL)) // "localhost:9999"
+//	defer cancel()
+//	block, err := resource.LastConfigFromOrderer(reqCtx, channelID, order)
+//	if err != nil {
+//		return err
+//	}
+//
+//}
+
 func (gc *GenerateConfig) getSubject(csr *generate.CSR) pkix.Name {
 	return pkix.Name{
 		Country:            csr.Country,

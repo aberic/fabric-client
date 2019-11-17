@@ -474,12 +474,12 @@ func createOrgUser(orgType generate.OrgType, pubTlsKeyFilePath, orgName, orgDoma
 
 func genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url string) *config.Config {
 	conf := config.Config{}
-	path := geneses.CryptoUserTmpPath(leagueDomain, orgDomain, orgName)
+	orgPath := geneses.CryptoUserTmpPath(leagueDomain, orgDomain, orgName)
 	conf.InitCustomClient(false, orgName, "debug", "", "", "",
 		nil, nil, nil, nil,
 		&config.ClientCredentialStore{
-			Path:        path,
-			CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: path},
+			Path:        orgPath,
+			CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: orgPath},
 		},
 		&config.ClientBCCSP{
 			Security: &config.ClientBCCSPSecurity{
