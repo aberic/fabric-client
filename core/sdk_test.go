@@ -245,6 +245,16 @@ func TestQueryChannelTransaction(t *testing.T) {
 	t.Log(result)
 }
 
+func TestQueryConfigBlock(t *testing.T) {
+	conf := TGetConfig()
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		t.Log(err)
+	}
+	result := QueryConfigBlock("cc6519b67c4177fc11", "Org1", "Admin", "peer0.20de78630ef6a411-org1", confData)
+	t.Log(result)
+}
+
 func TestInstall(t *testing.T) {
 	conf := TGetConfig()
 	confData, err := yaml.Marshal(&conf)

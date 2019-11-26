@@ -26,7 +26,6 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
-	ctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	mspctx "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
@@ -212,7 +211,7 @@ func QueryLedgerConfigSpec(peerName, channelID, orgName, orgUser string, configB
 func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
 	result := Result{}
 	var (
-		client ctx.Client
+		client context.Client
 		err    error
 	)
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
@@ -228,7 +227,7 @@ func QueryChannelInfo(channelID, orgName, orgUser, peerName string, configBytes 
 func QueryChannelBlockByHeight(channelID, orgName, orgUser, peerName string, height uint64, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
 	result := Result{}
 	var (
-		client ctx.Client
+		client context.Client
 		err    error
 	)
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
@@ -244,7 +243,7 @@ func QueryChannelBlockByHeight(channelID, orgName, orgUser, peerName string, hei
 func QueryChannelBlockByHash(channelID, orgName, orgUser, peerName, hash string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
 	result := Result{}
 	var (
-		client ctx.Client
+		client context.Client
 		err    error
 	)
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
@@ -260,7 +259,7 @@ func QueryChannelBlockByHash(channelID, orgName, orgUser, peerName, hash string,
 func QueryChannelBlockByTxID(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
 	result := Result{}
 	var (
-		client ctx.Client
+		client context.Client
 		err    error
 	)
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
@@ -276,7 +275,7 @@ func QueryChannelBlockByTxID(channelID, orgName, orgUser, peerName, txID string,
 func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
 	result := Result{}
 	var (
-		client ctx.Client
+		client context.Client
 		err    error
 	)
 	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
@@ -287,6 +286,22 @@ func QueryChannelTransaction(channelID, orgName, orgUser, peerName, txID string,
 		return &result
 	}
 	return queryChannelTransaction(channelID, peerName, txID, client)
+}
+
+func QueryConfigBlock(channelID, orgName, orgUser, peerName string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {
+	result := Result{}
+	var (
+		client context.Client
+		err    error
+	)
+	clientContext, sdk := clientContext(orgName, orgUser, configBytes, sdkOpts...)
+	defer sdk.Close()
+	if client, err = clientContext(); nil != err {
+		gnomon.Log().Error("QueryChannelTransaction", gnomon.Log().Err(err))
+		result.Fail(err.Error())
+		return &result
+	}
+	return queryConfigBlock(channelID, peerName, client)
 }
 
 func Install(orgName, orgUser, peerName, name, goPath, chainCodePath, version string, configBytes []byte, sdkOpts ...fabsdk.Option) *Result {

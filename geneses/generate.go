@@ -33,6 +33,14 @@ import (
 	"fmt"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	"github.com/hyperledger/fabric-sdk-go/pkg/context"
+	"github.com/hyperledger/fabric-sdk-go/pkg/core/config/endpoint"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fab/orderer"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fab/resource"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	"github.com/hyperledger/fabric/protos/common"
+	"golang.org/x/protobuf/proto"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -245,23 +253,36 @@ func (gc *GenerateConfig) CreateOrgUser(user *generate.ReqCreateOrgUser) error {
 	return nil
 }
 
-//func (gc *GenerateConfig) UpdateChannel(sdk *fabsdk.FabricSDK, channelID, orgName, orgUser, orderURL string) error {
-//	orgChannelClientContext := sdk.ChannelContext(channelID, fabsdk.WithOrg(orgName), fabsdk.WithUser(orgUser))
-//	channelCtx, err := orgChannelClientContext()
-//	if err != nil {
-//		return err
-//	}
-//	reqCtx, cancel := context.NewRequest(channelCtx, context.WithTimeoutType(fab.PeerResponse))
-//	clientProvider := sdk.Context()
-//	ClientContext, err := clientProvider()
-//	order, err := orderer.New(ClientContext.EndpointConfig(), orderer.WithURL(orderURL)) // "localhost:9999"
-//	defer cancel()
-//	block, err := resource.LastConfigFromOrderer(reqCtx, channelID, order)
-//	if err != nil {
-//		return err
-//	}
-//
-//}
+func (gc *GenerateConfig) UpdateChannel(sdk *fabsdk.FabricSDK, channelID, orgName, orgUser, orderURL string, tlsConfig endpoint.TLSConfig) error {
+	orgChannelClientContext := sdk.ChannelContext(channelID, fabsdk.WithOrg(orgName), fabsdk.WithUser(orgUser))
+	channelCtx, err := orgChannelClientContext()
+	if err != nil {
+		return err
+	}
+	reqCtx, cancel := context.NewRequest(channelCtx, context.WithTimeoutType(fab.PeerResponse))
+	clientProvider := sdk.Context()
+	ClientContext, err := clientProvider()
+	if err != nil {
+		return err
+	}
+	cert, ok, err := tlsConfig.TLSCert()
+	if err != nil || !ok {
+		return err
+	}
+	order, err := orderer.New(ClientContext.EndpointConfig(), orderer.WithURL(orderURL), orderer.WithTLSCert(cert)) // "localhost:9999"
+	defer cancel()
+	block, err := resource.LastConfigFromOrderer(reqCtx, channelID, order)
+	if err != nil {
+		return err
+	}
+	envelopeData := block.Data.Data[0]
+	//protoutil.MarshalOrPanic
+	envelope := &common.Envelope{}
+	if err := proto.Unmarshal(envelopeData, envelope); nil != err {
+		return err
+	}
+	return nil
+}
 
 func (gc *GenerateConfig) getSubject(csr *generate.CSR) pkix.Name {
 	return pkix.Name{

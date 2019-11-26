@@ -22,6 +22,8 @@ import (
 	"github.com/aberic/gnomon"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fab/resource"
+	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
+	"golang.org/x/protobuf/proto"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"path"
@@ -38,13 +40,15 @@ const (
 	order1NodeName = "order1"
 	org1Name       = "org1"
 	org2Name       = "org2"
+	org3Name       = "org3"
 	org1Domain     = "one.com"
 	org2Domain     = "two.com"
+	org3Domain     = "three.com"
 	node1          = "node1"
 	node2          = "node2"
 	admin          = "Admin"
 	user2          = "User2"
-	channelID      = "mychannel02"
+	channelID      = "mychannel01"
 
 	cryptoType    = generate.CryptoType_ECDSA
 	signAlgorithm = generate.SignAlgorithm_ECDSAWithSHA256
@@ -119,59 +123,78 @@ func TestGenerateConfig_CreateOrg(t *testing.T) {
 		Name:         org2Name,
 		Domain:       org2Domain,
 	}))
+	t.Log(gc.CreateOrg(&generate.ReqCreateOrg{
+		OrgType:      generate.OrgType_Peer,
+		LeagueDomain: leagueDomain,
+		Name:         org3Name,
+		Domain:       org3Domain,
+	}))
 }
 
 func TestGenerateConfig_CAGenesisAddAffiliation(t *testing.T) {
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", strings.Join([]string{orderName, order0NodeName}, "."), "http://10.0.61.22:7054", t)
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "http://10.0.61.22:7054", t)
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", strings.Join([]string{org2Name, node2}, "."), "http://10.0.61.22:7054", t)
+	genesisAddAffiliation("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "http://10.0.61.22:7054", t)
+	genesisAddAffiliation("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "http://10.0.61.22:7054", t)
+	genesisAddAffiliation("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "http://10.0.61.22:7054", t)
+	genesisAddAffiliation("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "http://10.0.61.22:7054", t)
 }
 
 func TestGenerateConfig_CAGenesisRegister(t *testing.T) {
 	// 获取各组织根CA用于启动fabric-ca
-	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", strings.Join([]string{orderName, order0NodeName}, "."), "orderer,user", "orderer,user", strings.Split(geneses.CertUserCAName(orderName, orderDomain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", strings.Join([]string{orderName, order0NodeName}, "."), "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order0NodeName), "-")[0], "adminpw", "orderer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", strings.Join([]string{orderName, order0NodeName}, "."), "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order1NodeName), "-")[0], "adminpw", "orderer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, admin), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", strings.Join([]string{org1Name, node1}, "."), "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertUserCAName(orderName, orderDomain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order0NodeName), "-")[0], "adminpw", "orderer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order1NodeName), "-")[0], "adminpw", "orderer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, admin), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org3Name, org3Domain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org3Name, org3Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org3Name, org3Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org3Name, org3Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
 }
 
 func TestGenerateConfig_CreateCsr(t *testing.T) {
-	t.Log(createCsr("/tmp/365412000/pri.key", orderName, orderDomain, admin, false, t))
-	t.Log(createCsr("/tmp/366428000/pri.key", org1Name, org1Domain, admin, false, t))
-	t.Log(createCsr("/tmp/367627000/pri.key", org1Name, org1Domain, user2, false, t))
-	t.Log(createCsr("/tmp/368896000/pri.key", org2Name, org2Domain, admin, false, t))
-	t.Log(createCsr("/tmp/370156000/pri.key", org2Name, org2Domain, user2, false, t))
+	t.Log(createCsr("/tmp/263926000/pri.key", orderName, orderDomain, admin, false, t))
+	t.Log(createCsr("/tmp/275001000/pri.key", org1Name, org1Domain, admin, false, t))
+	t.Log(createCsr("/tmp/275937000/pri.key", org1Name, org1Domain, user2, false, t))
+	t.Log(createCsr("/tmp/276880000/pri.key", org2Name, org2Domain, admin, false, t))
+	t.Log(createCsr("/tmp/277731000/pri.key", org2Name, org2Domain, user2, false, t))
+	t.Log(createCsr("/tmp/186602000/pri.key", org3Name, org3Domain, admin, false, t))
+	t.Log(createCsr("/tmp/198066000/pri.key", org3Name, org3Domain, user2, false, t))
 
-	t.Log(createCsr("/tmp/371367000/pri.key", orderName, orderDomain, order0NodeName, true, t))
-	t.Log(createCsr("/tmp/372924000/pri.key", orderName, orderDomain, order1NodeName, true, t))
-	t.Log(createCsr("/tmp/374165000/pri.key", org1Name, org1Domain, node1, true, t))
-	t.Log(createCsr("/tmp/375201000/pri.key", org1Name, org1Domain, node2, true, t))
-	t.Log(createCsr("/tmp/376241000/pri.key", org2Name, org2Domain, node1, true, t))
-	t.Log(createCsr("/tmp/377321000/pri.key", org2Name, org2Domain, node2, true, t))
-}
-
-func TestGenerateConfig_CreateOrgUser(t *testing.T) {
-	t.Log(createOrgUser(generate.OrgType_Order, "/tmp/365939000/pub.key", orderName, orderDomain, admin, "http://10.0.61.22:7054", true, t))
-	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/367051000/pub.key", org1Name, org1Domain, admin, "http://10.0.61.22:7054", true, t))
-	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/368193000/pub.key", org1Name, org1Domain, user2, "http://10.0.61.22:7054", false, t))
-	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/369533000/pub.key", org2Name, org2Domain, admin, "http://10.0.61.22:7054", true, t))
-	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/370743000/pub.key", org2Name, org2Domain, user2, "http://10.0.61.22:7054", false, t))
+	t.Log(createCsr("/tmp/278330000/pri.key", orderName, orderDomain, order0NodeName, true, t))
+	t.Log(createCsr("/tmp/278916000/pri.key", orderName, orderDomain, order1NodeName, true, t))
+	t.Log(createCsr("/tmp/279511000/pri.key", org1Name, org1Domain, node1, true, t))
+	t.Log(createCsr("/tmp/280104000/pri.key", org1Name, org1Domain, node2, true, t))
+	t.Log(createCsr("/tmp/280660000/pri.key", org2Name, org2Domain, node1, true, t))
+	t.Log(createCsr("/tmp/281219000/pri.key", org2Name, org2Domain, node2, true, t))
+	t.Log(createCsr("/tmp/198937000/pri.key", org3Name, org3Domain, node1, true, t))
+	t.Log(createCsr("/tmp/199644000/pri.key", org3Name, org3Domain, node2, true, t))
 }
 
 func TestGenerateConfig_CreateOrgNode(t *testing.T) {
-	t.Log(createOrgNode(generate.OrgType_Order, "/tmp/371936000/pub.key", orderName, orderDomain, order0NodeName, "http://10.0.61.22:7054", t))
-	t.Log(createOrgNode(generate.OrgType_Order, "/tmp/373643000/pub.key", orderName, orderDomain, order1NodeName, "http://10.0.61.22:7054", t))
-	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/374676000/pub.key", org1Name, org1Domain, node1, "http://10.0.61.22:7054", t))
-	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/375722000/pub.key", org1Name, org1Domain, node2, "http://10.0.61.22:7054", t))
-	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/376760000/pub.key", org2Name, org2Domain, node1, "http://10.0.61.22:7054", t))
-	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/377848000/pub.key", org2Name, org2Domain, node2, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Order, "/tmp/285000000/pub.key", orderName, orderDomain, order0NodeName, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Order, "/tmp/285711000/pub.key", orderName, orderDomain, order1NodeName, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/286275000/pub.key", org1Name, org1Domain, node1, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/286836000/pub.key", org1Name, org1Domain, node2, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/287420000/pub.key", org2Name, org2Domain, node1, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/287960000/pub.key", org2Name, org2Domain, node2, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/201468000/pub.key", org3Name, org3Domain, node1, "http://10.0.61.22:7054", t))
+	t.Log(createOrgNode(generate.OrgType_Peer, "/tmp/202170000/pub.key", org3Name, org3Domain, node2, "http://10.0.61.22:7054", t))
+}
+
+func TestGenerateConfig_CreateOrgUser(t *testing.T) {
+	t.Log(createOrgUser(generate.OrgType_Order, "/tmp/281845000/pub.key", orderName, orderDomain, admin, "http://10.0.61.22:7054", true, t))
+	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/282485000/pub.key", org1Name, org1Domain, admin, "http://10.0.61.22:7054", true, t))
+	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/283058000/pub.key", org1Name, org1Domain, user2, "http://10.0.61.22:7054", false, t))
+	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/283628000/pub.key", org2Name, org2Domain, admin, "http://10.0.61.22:7054", true, t))
+	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/284287000/pub.key", org2Name, org2Domain, user2, "http://10.0.61.22:7054", false, t))
+	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/200170000/pub.key", org3Name, org3Domain, admin, "http://10.0.61.22:7054", true, t))
+	t.Log(createOrgUser(generate.OrgType_Peer, "/tmp/200816000/pub.key", org3Name, org3Domain, user2, "http://10.0.61.22:7054", false, t))
 }
 
 func TestGenerateConfig_GenesisBlock(t *testing.T) {
@@ -200,7 +223,7 @@ func TestGenerateConfig_GenesisBlock(t *testing.T) {
 					{Host: strings.Join([]string{node1, org1Name, org1Domain}, "."), Port: 7051},
 				}},
 				{Domain: org2Domain, Name: org2Name, Type: generate.OrgType_Peer, AnchorPeers: []*generate.AnchorPeer{
-					{Host: strings.Join([]string{node1, org2Name, org2Domain}, "."), Port: 7051},
+					{Host: strings.Join([]string{node1, org2Name, org2Domain}, "."), Port: 7061},
 				}},
 			},
 		},
@@ -252,7 +275,7 @@ func TestGenerateConfig_CreateChannelTx(t *testing.T) {
 					{Host: strings.Join([]string{node1, org1Name, org1Domain}, "."), Port: 7051},
 				}},
 				{Domain: org2Domain, Name: org2Name, Type: generate.OrgType_Peer, AnchorPeers: []*generate.AnchorPeer{
-					{Host: strings.Join([]string{node1, org2Name, org2Domain}, "."), Port: 7051},
+					{Host: strings.Join([]string{node1, org2Name, org2Domain}, "."), Port: 7061},
 				}},
 			},
 		},
@@ -279,7 +302,7 @@ func TestGenerateConfig_InspectChannelTx(t *testing.T) {
 }
 
 func TestGenerateConfig_CreateChannel(t *testing.T) {
-	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org2Name, org2Domain, node1, admin, channelID)
+	conf := configGenerateConfig(org2Name, org2Domain, node1, admin)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -291,22 +314,154 @@ func TestGenerateConfig_CreateChannel(t *testing.T) {
 }
 
 func TestGenerateConfig_Join(t *testing.T) {
-	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org1Name, org1Domain, node1, admin, channelID)
-	confData, err := yaml.Marshal(&conf)
-	if err != nil {
-		t.Error(err)
-	}
-	result := Join("grpcs://10.0.61.23:7050", org1Name, admin, channelID, node1, confData)
-	t.Log("test query result", result)
+	//genesisJoinChannel(org1Name, org1Domain, node1, admin, t)
+	//genesisJoinChannel(org2Name, org2Domain, node1, admin, t)
+	genesisJoinChannel(org3Name, org3Domain, node1, admin, t)
 }
 
 func TestGenerateConfig_Channels(t *testing.T) {
-	conf := configGenerateConfig(leagueDomain, orderName, orderDomain, order0NodeName, admin, org1Name, org1Domain, node1, admin, channelID)
+	//channels(org1Name, org1Domain, node1, admin, t)
+	//channels(org2Name, org2Domain, node1, admin, t)
+	channels(org2Name, org2Domain, node1, admin, t)
+}
+
+func TestGenerateConfig_QueryConfigBlock(t *testing.T) {
+	conf := configGenerateConfig(org2Name, org2Domain, node1, admin)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
 	}
-	result, err := Channels(org1Name, admin, node1, confData)
+	result := QueryConfigBlock(channelID, org2Name, admin, geneses.NodeDomain(org2Name, org2Domain, node1), confData)
+	block := result.Data.(*common.Block)
+	data, err := proto.Marshal(block)
+	str, err := resource.InspectBlock(data)
+	if nil != err {
+		t.Error(err)
+	}
+	t.Log(str)
+}
+
+func TestGenerateConfig_AddGroup(t *testing.T) {
+	conf := configGenerateConfig(org1Name, org1Domain, node1, admin)
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		t.Error(err)
+	}
+	result := QueryConfigBlock(channelID, org1Name, admin, geneses.NodeDomain(org1Name, org1Domain, node1), confData)
+	block := result.Data.(*common.Block)
+	//data, err := proto.Marshal(block)
+	//_, err = resource.InspectBlock(data)
+	//if nil != err {
+	//	t.Error(err)
+	//}
+	//t.Log(str)
+
+	blockData, err := obtainGenesisBlock()
+	updateBlock := &common.Block{}
+	if err = proto.Unmarshal(blockData, updateBlock); nil != err {
+		t.Error(err)
+	}
+	configUpdateEnvBytes, err := AddGroup(block, updateBlock, channelID, "default", "org3")
+	if nil != err {
+		t.Error(err)
+	}
+	//t.Log(string(configUpdateBytes))
+	//data, err = proto.Marshal(block)
+	//if nil != err {
+	//	t.Error(err)
+	//}
+	//_, err = resource.InspectBlock(data)
+	//if nil != err {
+	//	t.Error(err)
+	//}
+	//t.Log(str)
+	//resource.CreateConfigEnvelope()
+
+	//resmgmtClient, sdk, err := resMgmtOrgClient(org1Name, admin, confData)
+	//if nil != err {
+	//	t.Error(err)
+	//}
+	err = CreateConfigUpdateBytes(configUpdateEnvBytes, leagueDomain, channelID)
+	if nil != err {
+		t.Error(err)
+	}
+	//err = UpdateChannel(sdk, resmgmtClient, block, configUpdateBytes, leagueDomain, "grpcs://10.0.61.23:7050", channelID)
+	//if nil != err {
+	//	t.Error(err)
+	//}
+}
+
+func TestGenerateConfig_UpdateChannel(t *testing.T) {
+	conf := configGenerateConfig(org1Name, org1Domain, node1, admin)
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		t.Error(err)
+	}
+	resmgmtClient, _, err := resMgmtOrgClient(org1Name, admin, confData)
+	if nil != err {
+		t.Error(err)
+	}
+	err = UpdateChannel(resmgmtClient, leagueDomain, "grpcs://10.0.61.23:7050", channelID)
+	if nil != err {
+		t.Error(err)
+	}
+}
+
+func obtainGenesisBlock() ([]byte, error) {
+	genesis := geneses.Genesis{
+		Info: &generate.ReqGenesis{
+			League: &generate.LeagueInBlock{
+				Domain: leagueDomain,
+				Addresses: []string{
+					strings.Join([]string{order0NodeName, ".", orderName, ".", orderDomain, ":7050"}, ""),
+					strings.Join([]string{order1NodeName, ".", orderName, ".", orderDomain, ":7050"}, ""),
+				},
+				BatchTimeout: 2,
+				BatchSize: &generate.BatchSize{
+					MaxMessageCount:   1000,
+					AbsoluteMaxBytes:  10 * 1024 * 1024,
+					PreferredMaxBytes: 2 * 1024 * 1024,
+				},
+				Kafka: &generate.Kafka{
+					Brokers: []string{"kafka1:9090", "kafka2:9091", "kafka3:9092", "kafka4:9093"},
+				},
+				MaxChannels: 1000,
+			},
+			Orgs: []*generate.OrgInBlock{
+				{Domain: orderDomain, Name: orderName, Type: generate.OrgType_Order},
+				{Domain: org1Domain, Name: org1Name, Type: generate.OrgType_Peer, AnchorPeers: []*generate.AnchorPeer{
+					{Host: strings.Join([]string{node1, org1Name, org1Domain}, "."), Port: 7051},
+				}},
+				{Domain: org2Domain, Name: org2Name, Type: generate.OrgType_Peer, AnchorPeers: []*generate.AnchorPeer{
+					{Host: strings.Join([]string{node1, org2Name, org2Domain}, "."), Port: 7061},
+				}},
+				{Domain: org3Domain, Name: org3Name, Type: generate.OrgType_Peer, AnchorPeers: []*generate.AnchorPeer{
+					{Host: strings.Join([]string{node1, org3Name, org3Domain}, "."), Port: 7071},
+				}},
+			},
+		},
+	}
+	genesis.Init()
+	return genesis.ObtainGenesisBlockData("default")
+}
+
+func genesisJoinChannel(orgName, orgDomain, nodeName, orgUserName string, t *testing.T) {
+	conf := configGenerateConfig(orgName, orgDomain, nodeName, orgUserName)
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		t.Error(err)
+	}
+	result := Join("grpcs://10.0.61.23:7050", orgName, orgUserName, channelID, geneses.NodeDomain(orgName, orgDomain, nodeName), confData)
+	t.Log("test query result", result)
+}
+
+func channels(orgName, orgDomain, nodeName, orgUserName string, t *testing.T) {
+	conf := configGenerateConfig(orgName, orgDomain, nodeName, orgUserName)
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		t.Error(err)
+	}
+	result, err := Channels(orgName, orgUserName, geneses.NodeDomain(orgName, orgDomain, nodeName), confData)
 	t.Log(result)
 }
 
@@ -499,7 +654,7 @@ func genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgN
 	return &conf
 }
 
-func configGenerateConfig(leagueDomain, orderName, orderDomain, orderNodeName, orderUserName, orgName, orgDomain, peerName, orgUserName, channelID string) *config.Config {
+func configGenerateConfig(orgName, orgDomain, nodeName, orgUserName string) *config.Config {
 	rootPath := geneses.CryptoConfigPath(leagueDomain)
 	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
 	conf := config.Config{}
@@ -545,7 +700,7 @@ func configGenerateConfig(leagueDomain, orderName, orderDomain, orderNodeName, o
 	)
 	//conf.AddOrSetPeerForChannel("cc6519b67c4177fc11", "peer0",
 	//	true, true, true, true)
-	conf.AddOrSetPeerForChannel(channelID, peerName,
+	conf.AddOrSetPeerForChannel(channelID, geneses.NodeDomain(orgName, orgDomain, nodeName),
 		true, true, true, true)
 	conf.AddOrSetQueryChannelPolicyForChannel(channelID, "500ms", "5s",
 		1, 1, 5, 2.0)
@@ -553,30 +708,62 @@ func configGenerateConfig(leagueDomain, orderName, orderDomain, orderNodeName, o
 		2, 4, 2.0)
 	conf.AddOrSetEventServicePolicyForChannel(channelID, "PreferOrg", "RoundRobin",
 		"6s", 5, 8)
-	_, orderUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orderDomain, orderName, orderUserName, false, geneses.CcnAdmin)
+	_, orderUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orderDomain, orderName, admin, false, geneses.CcnAdmin)
 	conf.AddOrSetOrdererForOrganizations(orderName, strings.Join([]string{orderName, "MSP"}, ""),
 		path.Join(orderUserPath, "msp"), // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp",
 		map[string]string{
 			//"Admin": rootPath + "/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp/signcerts/Admin@20de78630ef6a411-cert.pem",
-			orderUserName: filepath.Join(orderUserPath, "msp", "signcerts", geneses.CertUserCAName(orderName, orderDomain, orderUserName)),
+			admin: filepath.Join(orderUserPath, "msp", "signcerts", geneses.CertUserCAName(orderName, orderDomain, admin)),
 		},
 	)
-	conf.AddOrSetOrgForOrganizations(orgName, strings.Join([]string{orgName, "MSP"}, ""),
-		path.Join(orgUserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+
+	_, org1UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org1Domain, org1Name, admin, true, geneses.CcnAdmin)
+	_, org2UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org2Domain, org2Name, admin, true, geneses.CcnAdmin)
+	_, org3UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org3Domain, org3Name, admin, true, geneses.CcnAdmin)
+	conf.AddOrSetOrgForOrganizations(org1Name, strings.Join([]string{org1Name, "MSP"}, ""),
+		path.Join(org1UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
 		map[string]string{
 			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
-			orgUserName: filepath.Join(orgUserPath, "msp", "signcerts", geneses.CertUserCAName(orgName, orgDomain, orgUserName)),
+			admin: filepath.Join(org1UserPath, "msp", "signcerts", geneses.CertUserCAName(org1Name, org1Domain, admin)),
 		},
-		[]string{peerName}, //"peer0", "peer1",
+		[]string{geneses.NodeDomain(org1Name, org1Domain, node1), geneses.NodeDomain(org1Name, org1Domain, node2)}, //"peer0", "peer1",
+		[]string{},
+	)
+	conf.AddOrSetOrgForOrganizations(org2Name, strings.Join([]string{org2Name, "MSP"}, ""),
+		path.Join(org2UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+		map[string]string{
+			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
+			admin: filepath.Join(org2UserPath, "msp", "signcerts", geneses.CertUserCAName(org2Name, org2Domain, admin)),
+		},
+		[]string{geneses.NodeDomain(org2Name, org2Domain, node1), geneses.NodeDomain(org2Name, org2Domain, node2)}, //"peer0", "peer1",
+		[]string{},
+	)
+	conf.AddOrSetOrgForOrganizations(org3Name, strings.Join([]string{org3Name, "MSP"}, ""),
+		path.Join(org3UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+		map[string]string{
+			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
+			admin: filepath.Join(org3UserPath, "msp", "signcerts", geneses.CertUserCAName(org3Name, org3Domain, admin)),
+		},
+		[]string{geneses.NodeDomain(org3Name, org3Domain, node1), geneses.NodeDomain(org3Name, org3Domain, node2)}, //"peer0", "peer1",
 		[]string{},
 	)
 	tlsRootCaFilePath := filepath.Join(geneses.CryptoRootTLSCAPath(leagueDomain), geneses.CertRootTLSCAName(leagueDomain))
 	conf.AddOrSetOrderer(orderName, "grpcs://10.0.61.23:7050",
-		strings.Join([]string{orderNodeName, orderName, orderDomain}, "."), "0s", "20s",
+		strings.Join([]string{order0NodeName, orderName, orderDomain}, "."), "0s", "20s",
 		tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem",
 		false, false, false)
-	conf.AddOrSetPeer(peerName, "grpcs://10.0.61.23:7051",
-		"grpcs://10.0.61.23:7052", strings.Join([]string{peerName, orgName, orgDomain}, "."),
+	conf.AddOrSetPeer(geneses.NodeDomain(org1Name, org1Domain, node1), "grpcs://10.0.61.23:7051",
+		"grpcs://10.0.61.23:7052", strings.Join([]string{node1, org1Name, org1Domain}, "."),
+		"0s", "20s",
+		tlsRootCaFilePath,
+		false, false, false)
+	conf.AddOrSetPeer(geneses.NodeDomain(org2Name, org2Domain, node1), "grpcs://10.0.61.23:7061",
+		"grpcs://10.0.61.23:7062", strings.Join([]string{node1, org2Name, org2Domain}, "."),
+		"0s", "20s",
+		tlsRootCaFilePath,
+		false, false, false)
+	conf.AddOrSetPeer(geneses.NodeDomain(org3Name, org3Domain, node1), "grpcs://10.0.61.23:7071",
+		"grpcs://10.0.61.23:7072", strings.Join([]string{node1, org3Name, org3Domain}, "."),
 		"0s", "20s",
 		tlsRootCaFilePath,
 		false, false, false)
@@ -585,7 +772,7 @@ func configGenerateConfig(leagueDomain, orderName, orderDomain, orderNodeName, o
 
 func TestGenerateConfig_eccSKI(t *testing.T) {
 	//priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/366428000/pri.key")
-	priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/368896000/pri.key")
+	priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/276880000/pri.key")
 	if nil != err {
 		t.Error(err)
 	}

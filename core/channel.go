@@ -127,13 +127,13 @@ func queryChannels(orgName, orgUser, peerName string, sdk *fabsdk.FabricSDK) ([]
 func queryChannelInfo(channelID, peerName string, client ctx.Client) *Result {
 	result := Result{}
 	var (
-		ledger1 *ch.Ledger
+		ledger  *ch.Ledger
 		peerCfg *fab.NetworkPeer
 		peerFab fab.Peer
 		res     []*fab.BlockchainInfoResponse
 		err     error
 	)
-	if ledger1, err = ch.NewLedger(channelID); nil != err {
+	if ledger, err = ch.NewLedger(channelID); nil != err {
 		goto ERR
 	} else {
 		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
@@ -144,7 +144,7 @@ func queryChannelInfo(channelID, peerName string, client ctx.Client) *Result {
 		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
 			goto ERR
 		}
-		if res, err = ledger1.QueryInfo(reqCtx, []fab.ProposalProcessor{peerFab}, nil); nil != err {
+		if res, err = ledger.QueryInfo(reqCtx, []fab.ProposalProcessor{peerFab}, nil); nil != err {
 			goto ERR
 		}
 		result.Success(res)
@@ -282,6 +282,37 @@ func queryChannelTransaction(channelID, peerName, txID string, client ctx.Client
 			goto ERR
 		}
 		if res, err = ledger.QueryTransaction(reqCtx, fab.TransactionID(txID), []fab.ProposalProcessor{peerFab}, nil); nil != err {
+			goto ERR
+		}
+		result.Success(res)
+		return &result
+	}
+ERR:
+	result.Fail(err.Error())
+	return &result
+}
+
+func queryConfigBlock(channelID, peerName string, client ctx.Client) *Result {
+	result := Result{}
+	var (
+		ledger  *ch.Ledger
+		peerCfg *fab.NetworkPeer
+		peerFab fab.Peer
+		res     interface{}
+		err     error
+	)
+	if ledger, err = ch.NewLedger(channelID); nil != err {
+		goto ERR
+	} else {
+		reqCtx, cancel := context.NewRequest(client, context.WithTimeout(10*time.Second))
+		defer cancel()
+		if peerCfg, err = comm.NetworkPeerConfig(client.EndpointConfig(), peerName); nil != err {
+			goto ERR
+		}
+		if peerFab, err = client.InfraProvider().CreatePeerFromConfig(peerCfg); nil != err {
+			goto ERR
+		}
+		if res, err = ledger.QueryConfigBlock(reqCtx, []fab.ProposalProcessor{peerFab}, &ch.TransactionProposalResponseVerifier{MinResponses: 1}); nil != err {
 			goto ERR
 		}
 		result.Success(res)

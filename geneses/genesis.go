@@ -34,6 +34,14 @@ func (g *Genesis) Init() {
 	g.orderOrganizations, g.peerOrganizations, g.allOrganizations = g.organizations(g.Info.Orgs)
 }
 
+func (g *Genesis) ObtainGenesisBlockData(consortium string) ([]byte, error) {
+	data, err := resource.CreateGenesisBlock(g.genesisBlockConfigProfile(consortium), consortium)
+	if nil != err {
+		return nil, err
+	}
+	return data, err
+}
+
 func (g *Genesis) CreateGenesisBlock(consortium string) error {
 	data, err := resource.CreateGenesisBlock(g.genesisBlockConfigProfile(consortium), consortium)
 	if nil != err {
