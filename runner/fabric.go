@@ -66,7 +66,7 @@ func grpcListener() {
 	//  创建grpc的server
 	rpcServer := grpc.NewServer()
 
-	//  注册我们自定义的helloworld服务
+	//  注册服务
 	gr.RegisterGenerateServer(rpcServer, &generate.CreationServer{})
 	pb.RegisterLedgerConfigServer(rpcServer, &chains.ConfigServer{})
 	pb.RegisterLedgerCAServer(rpcServer, &chains.CAServer{})

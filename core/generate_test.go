@@ -322,16 +322,16 @@ func TestGenerateConfig_Join(t *testing.T) {
 func TestGenerateConfig_Channels(t *testing.T) {
 	//channels(org1Name, org1Domain, node1, admin, t)
 	//channels(org2Name, org2Domain, node1, admin, t)
-	channels(org2Name, org2Domain, node1, admin, t)
+	channels(org3Name, org3Domain, node1, admin, t)
 }
 
 func TestGenerateConfig_QueryConfigBlock(t *testing.T) {
-	conf := configGenerateConfig(org2Name, org2Domain, node1, admin)
+	conf := configGenerateConfig(org3Name, org3Domain, node1, admin)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
 	}
-	result := QueryConfigBlock(channelID, org2Name, admin, geneses.NodeDomain(org2Name, org2Domain, node1), confData)
+	result := QueryConfigBlock(channelID, org3Name, admin, geneses.NodeDomain(org3Name, org3Domain, node1), confData)
 	block := result.Data.(*common.Block)
 	data, err := proto.Marshal(block)
 	str, err := resource.InspectBlock(data)
@@ -401,10 +401,33 @@ func TestGenerateConfig_UpdateChannel(t *testing.T) {
 	if nil != err {
 		t.Error(err)
 	}
-	err = UpdateChannel(resmgmtClient, leagueDomain, "grpcs://10.0.61.23:7050", channelID)
+	channelUpdateFilePath := geneses.ChannelUpdateTXFilePath(leagueDomain, channelID)
+	envelopeBytes, err := ioutil.ReadFile(channelUpdateFilePath)
 	if nil != err {
 		t.Error(err)
 	}
+	err = UpdateChannel(resmgmtClient, envelopeBytes, "grpcs://10.0.61.23:7050", channelID)
+	if nil != err {
+		t.Error(err)
+	}
+}
+
+func TestGenerateConfig_Sign(t *testing.T) {
+	blockSign(leagueDomain, org1Name, org1Domain, node1, admin, channelID, t)
+}
+
+func blockSign(leagueDomain, orgName, orgDomain, nodeName, orgUser, channelID string, t *testing.T) {
+	conf := configGenerateConfig(orgName, orgDomain, nodeName, orgUser)
+	confData, err := yaml.Marshal(&conf)
+	if err != nil {
+		t.Error(err)
+	}
+	channelUpdateFilePath := geneses.ChannelUpdateTXFilePath(leagueDomain, channelID)
+	envelopeBytes, err := ioutil.ReadFile(channelUpdateFilePath)
+	if nil != err {
+		t.Error(err)
+	}
+	err = Sign(confData, envelopeBytes, leagueDomain, orgName, orgUser, channelID)
 }
 
 func obtainGenesisBlock() ([]byte, error) {

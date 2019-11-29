@@ -21,11 +21,12 @@ import (
 	"github.com/aberic/gnomon"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/context"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/common/tools/configtxlator/update"
 	common2 "github.com/hyperledger/fabric/protos/common"
 	"golang.org/x/protobuf/proto"
-	"io/ioutil"
 )
 
 func marshalCommonEnvelope(block *common.Block) (*common.Envelope, error) {
@@ -157,11 +158,40 @@ func CreateConfigUpdateBytes(configUpdateEnvBytes []byte, leagueName, channelID 
 	return nil
 }
 
-func UpdateChannel(resmgmtClient *resmgmt.Client, leagueName, orderURL, channelID string) error {
+func Sign(configBytes, envelopeBytes []byte, leagueName, orgName, orgUser, channelID string, sdkOpts ...fabsdk.Option) error {
+	var (
+		ctx context.Client
+		err error
+	)
+	clientContext, _ := clientContext(orgName, orgUser, configBytes, sdkOpts...)
+	if ctx, err = clientContext(); nil != err {
+		return err
+	}
+	signingMgr := ctx.SigningManager()
+	signature, err := signingMgr.Sign(envelopeBytes, ctx.PrivateKey())
+	if err != nil {
+		return errors.New("sign failed")
+	}
+	envelope := &common.Envelope{}
+	if err = proto.Unmarshal(envelopeBytes, envelope); nil != err {
+		return err
+	}
+	envelope.Signature = signature
+	if envelopeBytes, err = proto.Marshal(envelope); nil != err {
+		return err
+	}
+	channelUpdateFilePath := geneses.ChannelUpdateTXFilePath(leagueName, channelID)
+	if _, err = gnomon.File().Append(channelUpdateFilePath, envelopeBytes, true); nil != err {
+		return err
+	}
+	return nil
+}
+
+func UpdateChannel(resmgmtClient *resmgmt.Client, envelopeBytes []byte, orderURL, channelID string) error {
 	var (
 		//envelope      *common.Envelope
-		envelopeBytes []byte
-		err           error
+		//envelopeBytes []byte
+		err error
 	)
 	//if envelope, err = createConfigEnvelopeReader(block.Data.Data[0], configUpdateBytes, channelID);nil != err {
 	//	return err
@@ -173,10 +203,6 @@ func UpdateChannel(resmgmtClient *resmgmt.Client, leagueName, orderURL, channelI
 	//if _, err = gnomon.File().Append(channelUpdateFilePath, envelopeBytes, true);nil!=err {
 	//	return err
 	//}
-	channelUpdateFilePath := geneses.ChannelUpdateTXFilePath(leagueName, channelID)
-	if envelopeBytes, err = ioutil.ReadFile(channelUpdateFilePath); nil != err {
-		return err
-	}
 	reader := bytes.NewReader(envelopeBytes)
 	//org1MspClient, err := mspclient.New(sdk.Context(), mspclient.WithOrg("org1"))
 	//if nil != err {
