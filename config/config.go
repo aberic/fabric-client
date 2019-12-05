@@ -442,18 +442,18 @@ func (c *Config) getPBCertificateAuthorities() map[string]*pb.CertificateAuthori
 	cs := map[string]*pb.CertificateAuthority{}
 	for cName, c := range c.CertificateAuthorities {
 		cs[cName] = &pb.CertificateAuthority{
-			Url:    c.URL,
-			CaName: c.CAName,
+			Url:        c.URL,
+			CaName:     c.CAName,
 			TlsCACerts: &pb.CertificateAuthorityTLSCACerts{
-				Path: c.TLSCACerts.Path,
-				Client: &pb.CertificateAuthorityTLSCACertsClient{
-					Key: &pb.CertificateAuthorityTLSCACertsClientKey{
-						Path: c.TLSCACerts.Client.Key.Path,
-					},
-					Cert: &pb.CertificateAuthorityTLSCACertsClientCert{
-						Path: c.TLSCACerts.Client.Cert.Path,
-					},
-				},
+				//Path: c.TLSCACerts.Path,
+				//Client: &pb.CertificateAuthorityTLSCACertsClient{
+				//	Key: &pb.CertificateAuthorityTLSCACertsClientKey{
+				//		Path: c.TLSCACerts.Client.Key.Path,
+				//	},
+				//	Cert: &pb.CertificateAuthorityTLSCACertsClientCert{
+				//		Path: c.TLSCACerts.Client.Cert.Path,
+				//	},
+				//},
 			},
 			Registrar: &pb.CertificateAuthorityRegistrar{
 				EnrollId:     c.Registrar.EnrollId,

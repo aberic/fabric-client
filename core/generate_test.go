@@ -16,8 +16,9 @@ package sdk
 
 import (
 	"encoding/hex"
-	"github.com/aberic/fabric-client/config"
+	config "github.com/aberic/fabric-client/conf"
 	"github.com/aberic/fabric-client/geneses"
+	"github.com/aberic/fabric-client/grpc/proto/chain"
 	"github.com/aberic/fabric-client/grpc/proto/generate"
 	"github.com/aberic/gnomon"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
@@ -49,6 +50,7 @@ const (
 	admin          = "Admin"
 	user2          = "User2"
 	channelID      = "mychannel01"
+	caName         = "rootCA"
 
 	cryptoType    = generate.CryptoType_ECDSA
 	signAlgorithm = generate.SignAlgorithm_ECDSAWithSHA256
@@ -132,29 +134,34 @@ func TestGenerateConfig_CreateOrg(t *testing.T) {
 }
 
 func TestGenerateConfig_CAGenesisAddAffiliation(t *testing.T) {
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "http://10.0.61.22:7054", t)
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "http://10.0.61.22:7054", t)
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "http://10.0.61.22:7054", t)
-	genesisAddAffiliation("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "http://10.0.61.22:7054", t)
+	genesisAddAffiliation(leagueDomain, orderDomain, orderName, caName, orderName, t)
+	genesisAddAffiliation(leagueDomain, org1Domain, org1Name, caName, org1Name, t)
+	genesisAddAffiliation(leagueDomain, org2Domain, org2Name, caName, org2Name, t)
+	genesisAddAffiliation(leagueDomain, org3Domain, org3Name, caName, org3Name, t)
+}
+
+func TestGenerateConfig_CAGenesisAddAffiliation1(t *testing.T) {
+	//genesisAddAffiliation(leagueDomain, orderDomain, orderName, geneses.MspID(orderName), caName, "od1", t)
+	genesisAddAffiliation(leagueDomain, org1Domain, org1Name, caName, "od2", t)
 }
 
 func TestGenerateConfig_CAGenesisRegister(t *testing.T) {
 	// 获取各组织根CA用于启动fabric-ca
-	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertUserCAName(orderName, orderDomain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order0NodeName), "-")[0], "adminpw", "orderer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, orderDomain, orderName, geneses.MspID(orderName), "rootCA", orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order1NodeName), "-")[0], "adminpw", "orderer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org1Domain, org1Name, geneses.MspID(org1Name), "rootCA", org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, admin), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org2Domain, org2Name, geneses.MspID(org2Name), "rootCA", org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org3Name, org3Domain, admin), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org3Name, org3Domain, user2), "-")[0], "adminpw", "user", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org3Name, org3Domain, node1), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
-	genesisRegister("admin", "adminpw", leagueDomain, org3Domain, org3Name, geneses.MspID(org3Name), "rootCA", org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org3Name, org3Domain, node2), "-")[0], "adminpw", "peer", "http://10.0.61.22:7054", t)
+	genesisRegister(leagueDomain, orderDomain, orderName, caName, orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertUserCAName(orderName, orderDomain, admin), "-")[0], "adminpw", "user", t)
+	genesisRegister(leagueDomain, orderDomain, orderName, caName, orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order0NodeName), "-")[0], "adminpw", "orderer", t)
+	genesisRegister(leagueDomain, orderDomain, orderName, caName, orderName, "orderer,user", "orderer,user", strings.Split(geneses.CertNodeCAName(orderName, orderDomain, order1NodeName), "-")[0], "adminpw", "orderer", t)
+	genesisRegister(leagueDomain, org1Domain, org1Name, caName, org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, admin), "-")[0], "adminpw", "user", t)
+	genesisRegister(leagueDomain, org1Domain, org1Name, caName, org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org1Name, org1Domain, user2), "-")[0], "adminpw", "user", t)
+	genesisRegister(leagueDomain, org1Domain, org1Name, caName, org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node1), "-")[0], "adminpw", "peer", t)
+	genesisRegister(leagueDomain, org1Domain, org1Name, caName, org1Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org1Name, org1Domain, node2), "-")[0], "adminpw", "peer", t)
+	genesisRegister(leagueDomain, org2Domain, org2Name, caName, org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, admin), "-")[0], "adminpw", "peer", t)
+	genesisRegister(leagueDomain, org2Domain, org2Name, caName, org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org2Name, org2Domain, user2), "-")[0], "adminpw", "user", t)
+	genesisRegister(leagueDomain, org2Domain, org2Name, caName, org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node1), "-")[0], "adminpw", "peer", t)
+	genesisRegister(leagueDomain, org2Domain, org2Name, caName, org2Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org2Name, org2Domain, node2), "-")[0], "adminpw", "peer", t)
+	genesisRegister(leagueDomain, org3Domain, org3Name, caName, org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org3Name, org3Domain, admin), "-")[0], "adminpw", "user", t)
+	genesisRegister(leagueDomain, org3Domain, org3Name, caName, org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertUserCAName(org3Name, org3Domain, user2), "-")[0], "adminpw", "user", t)
+	genesisRegister(leagueDomain, org3Domain, org3Name, caName, org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org3Name, org3Domain, node1), "-")[0], "adminpw", "peer", t)
+	genesisRegister(leagueDomain, org3Domain, org3Name, caName, org3Name, "client,peer,user", "peer,user", strings.Split(geneses.CertNodeCAName(org3Name, org3Domain, node2), "-")[0], "adminpw", "peer", t)
 }
 
 func TestGenerateConfig_CreateCsr(t *testing.T) {
@@ -302,7 +309,7 @@ func TestGenerateConfig_InspectChannelTx(t *testing.T) {
 }
 
 func TestGenerateConfig_CreateChannel(t *testing.T) {
-	conf := configGenerateConfig(org2Name, org2Domain, node1, admin)
+	conf := configGenerateConfig(leagueDomain, org2Name, org2Domain, node1, admin, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -316,17 +323,17 @@ func TestGenerateConfig_CreateChannel(t *testing.T) {
 func TestGenerateConfig_Join(t *testing.T) {
 	//genesisJoinChannel(org1Name, org1Domain, node1, admin, t)
 	//genesisJoinChannel(org2Name, org2Domain, node1, admin, t)
-	genesisJoinChannel(org3Name, org3Domain, node1, admin, t)
+	genesisJoinChannel(leagueDomain, org3Name, org3Domain, node1, admin, caName, t)
 }
 
 func TestGenerateConfig_Channels(t *testing.T) {
 	//channels(org1Name, org1Domain, node1, admin, t)
 	//channels(org2Name, org2Domain, node1, admin, t)
-	channels(org3Name, org3Domain, node1, admin, t)
+	channels(leagueDomain, org3Name, org3Domain, node1, admin, caName, t)
 }
 
 func TestGenerateConfig_QueryConfigBlock(t *testing.T) {
-	conf := configGenerateConfig(org3Name, org3Domain, node1, admin)
+	conf := configGenerateConfig(leagueDomain, org3Name, org3Domain, node1, admin, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -342,7 +349,7 @@ func TestGenerateConfig_QueryConfigBlock(t *testing.T) {
 }
 
 func TestGenerateConfig_AddGroup(t *testing.T) {
-	conf := configGenerateConfig(org1Name, org1Domain, node1, admin)
+	conf := configGenerateConfig(leagueDomain, org1Name, org1Domain, node1, admin, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -392,7 +399,7 @@ func TestGenerateConfig_AddGroup(t *testing.T) {
 }
 
 func TestGenerateConfig_UpdateChannel(t *testing.T) {
-	conf := configGenerateConfig(org1Name, org1Domain, node1, admin)
+	conf := configGenerateConfig(leagueDomain, org1Name, org1Domain, node1, admin, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -413,11 +420,11 @@ func TestGenerateConfig_UpdateChannel(t *testing.T) {
 }
 
 func TestGenerateConfig_Sign(t *testing.T) {
-	blockSign(leagueDomain, org1Name, org1Domain, node1, admin, channelID, t)
+	blockSign(leagueDomain, org1Name, org1Domain, node1, admin, channelID, caName, t)
 }
 
-func blockSign(leagueDomain, orgName, orgDomain, nodeName, orgUser, channelID string, t *testing.T) {
-	conf := configGenerateConfig(orgName, orgDomain, nodeName, orgUser)
+func blockSign(leagueDomain, orgName, orgDomain, nodeName, orgUser, channelID, caName string, t *testing.T) {
+	conf := configGenerateConfig(leagueDomain, orgName, orgDomain, nodeName, orgUser, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -468,8 +475,8 @@ func obtainGenesisBlock() ([]byte, error) {
 	return genesis.ObtainGenesisBlockData("default")
 }
 
-func genesisJoinChannel(orgName, orgDomain, nodeName, orgUserName string, t *testing.T) {
-	conf := configGenerateConfig(orgName, orgDomain, nodeName, orgUserName)
+func genesisJoinChannel(leagueDomain, orgName, orgDomain, nodeName, orgUserName, caName string, t *testing.T) {
+	conf := configGenerateConfig(leagueDomain, orgName, orgDomain, nodeName, orgUserName, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -478,8 +485,8 @@ func genesisJoinChannel(orgName, orgDomain, nodeName, orgUserName string, t *tes
 	t.Log("test query result", result)
 }
 
-func channels(orgName, orgDomain, nodeName, orgUserName string, t *testing.T) {
-	conf := configGenerateConfig(orgName, orgDomain, nodeName, orgUserName)
+func channels(leagueDomain, orgName, orgDomain, nodeName, orgUserName, caName string, t *testing.T) {
+	conf := configGenerateConfig1(leagueDomain, orgName, orgDomain, nodeName, orgUserName, caName, t)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error(err)
@@ -488,8 +495,9 @@ func channels(orgName, orgDomain, nodeName, orgUserName string, t *testing.T) {
 	t.Log(result)
 }
 
-func genesisAddAffiliation(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, affiliationName, url string, t *testing.T) {
-	conf := genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url)
+func genesisAddAffiliation(leagueDomain, orgDomain, orgName, caName, affiliationName string, t *testing.T) {
+	//conf := genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url)
+	conf := configGenerateConfig(leagueDomain, orgName, orgDomain, node1, admin, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error("yaml", err)
@@ -505,8 +513,9 @@ func genesisAddAffiliation(enrollID, enrollSecret, leagueDomain, orgDomain, orgN
 	t.Log("test ca TestAddAffiliation, result = ", result)
 }
 
-func genesisRegister(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, affiliationName, roles, delegateRoles, name, secret, registerCAType, url string, t *testing.T) {
-	conf := genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url)
+func genesisRegister(leagueDomain, orgDomain, orgName, caName, affiliationName, roles, delegateRoles, name, secret, registerCAType string, t *testing.T) {
+	//conf := genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url)
+	conf := configGenerateConfig(leagueDomain, orgName, orgDomain, node1, admin, caName)
 	confData, err := yaml.Marshal(&conf)
 	if err != nil {
 		t.Error("yaml", err)
@@ -650,148 +659,613 @@ func createOrgUser(orgType generate.OrgType, pubTlsKeyFilePath, orgName, orgDoma
 	})
 }
 
-func genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url string) *config.Config {
-	conf := config.Config{}
-	orgPath := geneses.CryptoUserTmpPath(leagueDomain, orgDomain, orgName)
-	conf.InitCustomClient(false, orgName, "debug", "", "", "",
-		nil, nil, nil, nil,
-		&config.ClientCredentialStore{
-			Path:        orgPath,
-			CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: orgPath},
-		},
-		&config.ClientBCCSP{
-			Security: &config.ClientBCCSPSecurity{
-				Enabled:       true,
-				HashAlgorithm: "SHA2",
-				SoftVerify:    true,
-				Level:         256,
-				Default:       &config.ClientBCCSPSecurityDefault{Provider: "SW"},
-			},
-		})
-	conf.AddOrSetOrgForOrganizations(orgName, orgMspID, "/Users/aberic/Documents/code/ca/demo/msp", map[string]string{}, []string{}, []string{caName})
-	conf.AddOrSetCertificateAuthority(caName, url,
-		"/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp384/rootCA.crt",
-		"/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.key",
-		"/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.crt",
-		caName, enrollID, enrollSecret)
-	return &conf
-}
-
-func configGenerateConfig(orgName, orgDomain, nodeName, orgUserName string) *config.Config {
+func configGenerateConfig(leagueDomain, orgName, orgDomain, nodeName, orgUserName, caName string) *config.Config {
 	rootPath := geneses.CryptoConfigPath(leagueDomain)
-	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
-	conf := config.Config{}
+	orgUserTmpPath := geneses.CryptoUserTmpPath(leagueDomain, orgDomain, orgName)
 	_, orgUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orgDomain, orgName, orgUserName, true, geneses.CcnAdmin)
-	conf.InitCustomClient(true, orgName, "debug", rootPath, // rootPath+"/config/crypto-config"
-		filepath.Join(orgUserPath, "tls", "client.key"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.key",
-		filepath.Join(orgUserPath, "tls", "client.crt"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.crt")
-		&config.ClientPeer{
-			Timeout: &config.ClientPeerTimeout{Connection: "10s", Response: "180s",
-				Discovery: &config.ClientPeerTimeoutDiscovery{GreyListExpiry: "10s"},
-			},
-		},
-		&config.ClientEventService{Timeout: &config.ClientEventServiceTimeout{RegistrationResponse: "15s"}},
-		&config.ClientOrder{Timeout: &config.ClientOrderTimeout{Connection: "15s", Response: "15s"}},
-		&config.ClientGlobal{
-			Timeout: &config.ClientGlobalTimeout{
-				Query:   "180s",
-				Execute: "180s",
-				Resmgmt: "180s",
-			},
-			Cache: &config.ClientGlobalCache{
-				ConnectionIdle:    "30s",
-				EventServiceIdle:  "2m",
-				ChannelConfig:     "30m",
-				ChannelMembership: "30s",
-				Discovery:         "10s",
-				Selection:         "10m",
-			},
-		},
-		&config.ClientCredentialStore{
-			Path:        path.Join(orgUserPath, "msp", "signcerts"),
-			CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: path.Join(orgUserPath, "msp")},
-		},
-		&config.ClientBCCSP{
-			Security: &config.ClientBCCSPSecurity{
-				Enabled:       true,
-				HashAlgorithm: "SHA2",
-				SoftVerify:    true,
-				Level:         256,
-				Default:       &config.ClientBCCSPSecurityDefault{Provider: "SW"},
-			},
-		},
-	)
-	//conf.AddOrSetPeerForChannel("cc6519b67c4177fc11", "peer0",
-	//	true, true, true, true)
-	conf.AddOrSetPeerForChannel(channelID, geneses.NodeDomain(orgName, orgDomain, nodeName),
-		true, true, true, true)
-	conf.AddOrSetQueryChannelPolicyForChannel(channelID, "500ms", "5s",
-		1, 1, 5, 2.0)
-	conf.AddOrSetDiscoveryPolicyForChannel(channelID, "500ms", "5s",
-		2, 4, 2.0)
-	conf.AddOrSetEventServicePolicyForChannel(channelID, "PreferOrg", "RoundRobin",
-		"6s", 5, 8)
-	_, orderUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orderDomain, orderName, admin, false, geneses.CcnAdmin)
-	conf.AddOrSetOrdererForOrganizations(orderName, strings.Join([]string{orderName, "MSP"}, ""),
-		path.Join(orderUserPath, "msp"), // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp",
-		map[string]string{
-			//"Admin": rootPath + "/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp/signcerts/Admin@20de78630ef6a411-cert.pem",
-			admin: filepath.Join(orderUserPath, "msp", "signcerts", geneses.CertUserCAName(orderName, orderDomain, admin)),
-		},
-	)
-
 	_, org1UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org1Domain, org1Name, admin, true, geneses.CcnAdmin)
 	_, org2UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org2Domain, org2Name, admin, true, geneses.CcnAdmin)
 	_, org3UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org3Domain, org3Name, admin, true, geneses.CcnAdmin)
-	conf.AddOrSetOrgForOrganizations(org1Name, strings.Join([]string{org1Name, "MSP"}, ""),
-		path.Join(org1UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
-		map[string]string{
-			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
-			admin: filepath.Join(org1UserPath, "msp", "signcerts", geneses.CertUserCAName(org1Name, org1Domain, admin)),
-		},
-		[]string{geneses.NodeDomain(org1Name, org1Domain, node1), geneses.NodeDomain(org1Name, org1Domain, node2)}, //"peer0", "peer1",
-		[]string{},
-	)
-	conf.AddOrSetOrgForOrganizations(org2Name, strings.Join([]string{org2Name, "MSP"}, ""),
-		path.Join(org2UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
-		map[string]string{
-			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
-			admin: filepath.Join(org2UserPath, "msp", "signcerts", geneses.CertUserCAName(org2Name, org2Domain, admin)),
-		},
-		[]string{geneses.NodeDomain(org2Name, org2Domain, node1), geneses.NodeDomain(org2Name, org2Domain, node2)}, //"peer0", "peer1",
-		[]string{},
-	)
-	conf.AddOrSetOrgForOrganizations(org3Name, strings.Join([]string{org3Name, "MSP"}, ""),
-		path.Join(org3UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
-		map[string]string{
-			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
-			admin: filepath.Join(org3UserPath, "msp", "signcerts", geneses.CertUserCAName(org3Name, org3Domain, admin)),
-		},
-		[]string{geneses.NodeDomain(org3Name, org3Domain, node1), geneses.NodeDomain(org3Name, org3Domain, node2)}, //"peer0", "peer1",
-		[]string{},
-	)
 	tlsRootCaFilePath := filepath.Join(geneses.CryptoRootTLSCAPath(leagueDomain), geneses.CertRootTLSCAName(leagueDomain))
-	conf.AddOrSetOrderer(orderName, "grpcs://10.0.61.23:7050",
-		strings.Join([]string{order0NodeName, orderName, orderDomain}, "."), "0s", "20s",
-		tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem",
-		false, false, false)
-	conf.AddOrSetPeer(geneses.NodeDomain(org1Name, org1Domain, node1), "grpcs://10.0.61.23:7051",
-		"grpcs://10.0.61.23:7052", strings.Join([]string{node1, org1Name, org1Domain}, "."),
-		"0s", "20s",
-		tlsRootCaFilePath,
-		false, false, false)
-	conf.AddOrSetPeer(geneses.NodeDomain(org2Name, org2Domain, node1), "grpcs://10.0.61.23:7061",
-		"grpcs://10.0.61.23:7062", strings.Join([]string{node1, org2Name, org2Domain}, "."),
-		"0s", "20s",
-		tlsRootCaFilePath,
-		false, false, false)
-	conf.AddOrSetPeer(geneses.NodeDomain(org3Name, org3Domain, node1), "grpcs://10.0.61.23:7071",
-		"grpcs://10.0.61.23:7072", strings.Join([]string{node1, org3Name, org3Domain}, "."),
-		"0s", "20s",
-		tlsRootCaFilePath,
-		false, false, false)
-	return &conf
+	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
+	return &config.Config{
+		Version: "1.0.0",
+		Client: &config.Client{
+			Organization: orgName,
+			Logging: &config.ClientLogging{
+				Level: "debug",
+			},
+			Peer: &config.ClientPeer{
+				Timeout: &config.ClientPeerTimeout{Connection: "10s", Response: "180s",
+					Discovery: &config.ClientPeerTimeoutDiscovery{GreyListExpiry: "10s"},
+				},
+			},
+			EventService: &config.ClientEventService{Timeout: &config.ClientEventServiceTimeout{RegistrationResponse: "15s"}},
+			Order:        &config.ClientOrder{Timeout: &config.ClientOrderTimeout{Connection: "15s", Response: "15s"}},
+			Global: &config.ClientGlobal{
+				Timeout: &config.ClientGlobalTimeout{
+					Query:   "180s",
+					Execute: "180s",
+					Resmgmt: "180s",
+				},
+				Cache: &config.ClientGlobalCache{
+					ConnectionIdle:    "30s",
+					EventServiceIdle:  "2m",
+					ChannelConfig:     "30m",
+					ChannelMembership: "30s",
+					Discovery:         "10s",
+					Selection:         "10m",
+				},
+			},
+			CryptoConfig: &config.ClientCryptoConfig{Path: rootPath}, // rootPath+"/config/crypto-config"
+
+			CredentialStore: &config.ClientCredentialStore{
+				Path:        orgUserTmpPath,
+				CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: orgUserTmpPath},
+			},
+			BCCSP: &config.ClientBCCSP{
+				Security: &config.ClientBCCSPSecurity{
+					Enabled:       true,
+					HashAlgorithm: "SHA2",
+					SoftVerify:    true,
+					Level:         256,
+					Default:       &config.ClientBCCSPSecurityDefault{Provider: "SW"},
+				},
+			},
+			TLSCerts: &config.ClientTLSCerts{
+				SystemCertPool: true,
+				Client: &config.ClientTLSCertsClient{
+					// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.key",
+					Key: &config.ClientTLSCertsClientKey{Path: filepath.Join(orgUserPath, "tls", "client.key")},
+					// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.crt")
+					Cert: &config.ClientTLSCertsClientCert{Path: filepath.Join(orgUserPath, "tls", "client.crt")},
+				},
+			},
+		},
+		Channels: map[string]*config.Channel{
+			channelID: {
+				Peers: map[string]*config.ChannelPeer{
+					geneses.NodeDomain(orgName, orgDomain, nodeName): {
+						EndorsingPeer:  true,
+						ChaincodeQuery: true,
+						LedgerQuery:    true,
+						EventSource:    true,
+					},
+				},
+				Policies: &config.Policy{
+					QueryChannelConfig: &config.PolicyQueryChannelConfig{
+						MinResponses: 1,
+						MaxTargets:   1,
+						RetryOpts: &config.PolicyCommonRetryOpts{
+							Attempts:       5,
+							InitialBackOff: "500ms",
+							MaxBackOff:     "5s",
+							BackOffFactor:  2.0,
+						},
+					},
+					Discovery: &config.PolicyDiscovery{
+						MaxTargets: 2,
+						RetryOpts: &config.PolicyCommonRetryOpts{
+							Attempts:       4,
+							InitialBackOff: "500ms",
+							MaxBackOff:     "5s",
+							BackOffFactor:  2.0,
+						},
+					},
+					EventService: &config.PolicyEventService{
+						ResolverStrategy:                 "Balanced",
+						Balancer:                         "RoundRobin",
+						BlockHeightLagThreshold:          5,
+						ReconnectBlockHeightLagThreshold: 8,
+						PeerMonitorPeriod:                "6s",
+					},
+				},
+			},
+		},
+		Organizations: map[string]*config.Organization{
+			org1Name: {
+				MspID: strings.Join([]string{org1Name, "MSP"}, ""),
+				// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+				CryptoPath: path.Join(org1UserPath, "msp"),
+				Peers: []string{
+					geneses.NodeDomain(org1Name, org1Domain, node1), // "peer0"
+					geneses.NodeDomain(org1Name, org1Domain, node2), // "peer1",
+				},
+				CertificateAuthorities: []string{caName},
+			},
+			org2Name: {
+				MspID: strings.Join([]string{org2Name, "MSP"}, ""),
+				// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+				CryptoPath: path.Join(org2UserPath, "msp"),
+				Peers: []string{
+					geneses.NodeDomain(org2Name, org2Domain, node1), // "peer0"
+					geneses.NodeDomain(org2Name, org2Domain, node2), // "peer1",
+				},
+				CertificateAuthorities: []string{caName},
+			},
+			org3Name: {
+				MspID: strings.Join([]string{org3Name, "MSP"}, ""),
+				// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+				CryptoPath: path.Join(org3UserPath, "msp"),
+				Peers: []string{
+					geneses.NodeDomain(org3Name, org3Domain, node1), // "peer0"
+					geneses.NodeDomain(org3Name, org3Domain, node2), // "peer1",
+				},
+				CertificateAuthorities: []string{caName},
+			},
+		},
+		Orderers: map[string]*config.Orderer{
+			orderName: {
+				URL: "grpcs://10.0.61.23:7050",
+				GRPCOptions: &config.OrdererGRPCOptions{
+					SSLTargetNameOverride: strings.Join([]string{order0NodeName, orderName, orderDomain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TLSCACerts: &config.OrdererTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+		},
+		Peers: map[string]*config.Peer{
+			geneses.NodeDomain(org1Name, org1Domain, node1): {
+				URL:      "grpcs://10.0.61.23:7051",
+				EventURL: "grpcs://10.0.61.23:7052",
+				GRPCOptions: &config.PeerGRPCOptions{
+					SSLTargetNameOverride: strings.Join([]string{node1, org1Name, org1Domain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TLSCACerts: &config.PeerTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+			geneses.NodeDomain(org2Name, org2Domain, node1): {
+				URL:      "grpcs://10.0.61.23:7061",
+				EventURL: "grpcs://10.0.61.23:7062",
+				GRPCOptions: &config.PeerGRPCOptions{
+					SSLTargetNameOverride: strings.Join([]string{node1, org2Name, org2Domain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TLSCACerts: &config.PeerTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+			geneses.NodeDomain(org3Name, org3Domain, node1): {
+				URL:      "grpcs://10.0.61.23:7071",
+				EventURL: "grpcs://10.0.61.23:7072",
+				GRPCOptions: &config.PeerGRPCOptions{
+					SSLTargetNameOverride: strings.Join([]string{node1, org3Name, org3Domain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TLSCACerts: &config.PeerTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+		},
+		CertificateAuthorities: map[string]*config.CertificateAuthority{
+			caName: {
+				URL:    "http://10.0.61.22:7054",
+				CAName: caName,
+				TLSCACerts: &config.CertificateAuthorityTLSCACerts{
+					Path: "/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp384/rootCA.crt",
+					Client: &config.CertificateAuthorityTLSCACertsClient{
+						Key: &config.CertificateAuthorityTLSCACertsClientKey{
+							Path: "/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.key",
+						},
+						Cert: &config.CertificateAuthorityTLSCACertsClientCert{
+							Path: "/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.crt",
+						},
+					},
+				},
+				Registrar: &config.CertificateAuthorityRegistrar{
+					EnrollId:     "admin",
+					EnrollSecret: "adminpw",
+				},
+			},
+		},
+	}
 }
+
+func configGenerateConfig1(leagueDomain, orgName, orgDomain, nodeName, orgUserName, caName string, t *testing.T) *config.Config {
+	rootPath := geneses.CryptoConfigPath(leagueDomain)
+	orgUserTmpPath := geneses.CryptoUserTmpPath(leagueDomain, orgDomain, orgName)
+	_, orgUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orgDomain, orgName, orgUserName, true, geneses.CcnAdmin)
+	_, org1UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org1Domain, org1Name, admin, true, geneses.CcnAdmin)
+	_, org2UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org2Domain, org2Name, admin, true, geneses.CcnAdmin)
+	_, org3UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org3Domain, org3Name, admin, true, geneses.CcnAdmin)
+	tlsRootCaFilePath := filepath.Join(geneses.CryptoRootTLSCAPath(leagueDomain), geneses.CertRootTLSCAName(leagueDomain))
+	tlsCaCertData, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp384/rootCA.crt")
+	if nil != err {
+		t.Error(err)
+	}
+	tlsCaClientKey, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.key")
+	if nil != err {
+		t.Error(err)
+	}
+	tlsCaClientCert, err := ioutil.ReadFile("/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.crt")
+	if nil != err {
+		t.Error(err)
+	}
+	conf := &config.Config{}
+	if err := conf.Set(&chain.ReqConfigSet{
+		Version: "1.0.0",
+		OrgInfo: &chain.OrgInfo{
+			LeagueDomain: leagueDomain,
+			Domain:       orgDomain,
+			Name:         orgName,
+			Username:     orgUserName,
+		},
+		Client: &chain.Client{
+			Organization: orgName,
+			Logging: &chain.ClientLogging{
+				Level: "debug",
+			},
+			Peer: &chain.ClientPeer{
+				Timeout: &chain.ClientPeerTimeout{Connection: "10s", Response: "180s",
+					Discovery: &chain.ClientPeerTimeoutDiscovery{GreyListExpiry: "10s"},
+				},
+			},
+			EventService: &chain.ClientEventService{Timeout: &chain.ClientEventServiceTimeout{RegistrationResponse: "15s"}},
+			Order:        &chain.ClientOrder{Timeout: &chain.ClientOrderTimeout{Connection: "15s", Response: "15s"}},
+			Global: &chain.ClientGlobal{
+				Timeout: &chain.ClientGlobalTimeout{
+					Query:   "180s",
+					Execute: "180s",
+					Resmgmt: "180s",
+				},
+				Cache: &chain.ClientGlobalCache{
+					ConnectionIdle:    "30s",
+					EventServiceIdle:  "2m",
+					ChannelConfig:     "30m",
+					ChannelMembership: "30s",
+					Discovery:         "10s",
+					Selection:         "10m",
+				},
+			},
+			CryptoConfig: &chain.ClientCryptoConfig{Path: rootPath}, // rootPath+"/config/crypto-config"
+
+			CredentialStore: &chain.ClientCredentialStore{
+				Path:        orgUserTmpPath,
+				CryptoStore: &chain.ClientCredentialStoreCryptoStore{Path: orgUserTmpPath},
+			},
+			BCCSP: &chain.ClientBCCSP{
+				Security: &chain.ClientBCCSPSecurity{
+					Enabled:       true,
+					HashAlgorithm: "SHA2",
+					SoftVerify:    true,
+					Level:         256,
+					Default:       &chain.ClientBCCSPSecurityDefault{Provider: "SW"},
+				},
+			},
+			TlsCerts: &chain.ClientTLSCerts{
+				SystemCertPool: true,
+				Client: &chain.ClientTLSCertsClient{
+					// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.key",
+					Key: &chain.ClientTLSCertsClientKey{Path: filepath.Join(orgUserPath, "tls", "client.key")},
+					// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.crt")
+					Cert: &chain.ClientTLSCertsClientCert{Path: filepath.Join(orgUserPath, "tls", "client.crt")},
+				},
+			},
+		},
+		Channels: map[string]*chain.Channel{
+			channelID: {
+				Peers: map[string]*chain.ChannelPeer{
+					geneses.NodeDomain(orgName, orgDomain, nodeName): {
+						EndorsingPeer:  true,
+						ChaincodeQuery: true,
+						LedgerQuery:    true,
+						EventSource:    true,
+					},
+				},
+				Policies: &chain.Policy{
+					QueryChannelConfig: &chain.PolicyQueryChannelConfig{
+						MinResponses: 1,
+						MaxTargets:   1,
+						RetryOpts: &chain.PolicyCommonRetryOpts{
+							Attempts:       5,
+							InitialBackoff: "500ms",
+							MaxBackoff:     "5s",
+							BackoffFactor:  2.0,
+						},
+					},
+					Discovery: &chain.PolicyDiscovery{
+						MaxTargets: 2,
+						RetryOpts: &chain.PolicyCommonRetryOpts{
+							Attempts:       4,
+							InitialBackoff: "500ms",
+							MaxBackoff:     "5s",
+							BackoffFactor:  2.0,
+						},
+					},
+					EventService: &chain.PolicyEventService{
+						ResolverStrategy:                 "Balanced",
+						Balancer:                         "RoundRobin",
+						BlockHeightLagThreshold:          5,
+						ReconnectBlockHeightLagThreshold: 8,
+						PeerMonitorPeriod:                "6s",
+					},
+				},
+			},
+		},
+		Organizations: map[string]*chain.Organization{
+			org1Name: {
+				MspID: strings.Join([]string{org1Name, "MSP"}, ""),
+				// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+				CryptoPath: path.Join(org1UserPath, "msp"),
+				Peers: []string{
+					geneses.NodeDomain(org1Name, org1Domain, node1), // "peer0"
+					geneses.NodeDomain(org1Name, org1Domain, node2), // "peer1",
+				},
+				CertificateAuthorities: []string{caName},
+			},
+			org2Name: {
+				MspID: strings.Join([]string{org2Name, "MSP"}, ""),
+				// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+				CryptoPath: path.Join(org2UserPath, "msp"),
+				Peers: []string{
+					geneses.NodeDomain(org2Name, org2Domain, node1), // "peer0"
+					geneses.NodeDomain(org2Name, org2Domain, node2), // "peer1",
+				},
+				CertificateAuthorities: []string{caName},
+			},
+			org3Name: {
+				MspID: strings.Join([]string{org3Name, "MSP"}, ""),
+				// rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+				CryptoPath: path.Join(org3UserPath, "msp"),
+				Peers: []string{
+					geneses.NodeDomain(org3Name, org3Domain, node1), // "peer0"
+					geneses.NodeDomain(org3Name, org3Domain, node2), // "peer1",
+				},
+				CertificateAuthorities: []string{caName},
+			},
+		},
+		Orderers: map[string]*chain.Orderer{
+			orderName: {
+				Url: "grpcs://10.0.61.23:7050",
+				GrpcOptions: &chain.OrdererGRPCOptions{
+					SslTargetNameOverride: strings.Join([]string{order0NodeName, orderName, orderDomain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TlsCACerts: &chain.OrdererTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+		},
+		Peers: map[string]*chain.Peer{
+			geneses.NodeDomain(org1Name, org1Domain, node1): {
+				Url:      "grpcs://10.0.61.23:7051",
+				EventUrl: "grpcs://10.0.61.23:7052",
+				GrpcOptions: &chain.PeerGRPCOptions{
+					SslTargetNameOverride: strings.Join([]string{node1, org1Name, org1Domain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TlsCACerts: &chain.PeerTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+			geneses.NodeDomain(org2Name, org2Domain, node1): {
+				Url:      "grpcs://10.0.61.23:7061",
+				EventUrl: "grpcs://10.0.61.23:7062",
+				GrpcOptions: &chain.PeerGRPCOptions{
+					SslTargetNameOverride: strings.Join([]string{node1, org2Name, org2Domain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TlsCACerts: &chain.PeerTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+			geneses.NodeDomain(org3Name, org3Domain, node1): {
+				Url:      "grpcs://10.0.61.23:7071",
+				EventUrl: "grpcs://10.0.61.23:7072",
+				GrpcOptions: &chain.PeerGRPCOptions{
+					SslTargetNameOverride: strings.Join([]string{node1, org3Name, org3Domain}, "."),
+					KeepAliveTime:         "0s",
+					KeepAliveTimeout:      "20s",
+					KeepAlivePermit:       false,
+					FailFast:              false,
+					AllowInsecure:         false,
+				},
+				TlsCACerts: &chain.PeerTLSCACerts{
+					Path: tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem"
+				},
+			},
+		},
+		CertificateAuthorities: map[string]*chain.CertificateAuthority{
+			caName: {
+				Url:    "http://10.0.61.22:7054",
+				CaName: caName,
+				TlsCACerts: &chain.CertificateAuthorityTLSCACerts{
+					Cert: tlsCaCertData,
+					Client: &chain.CertificateAuthorityTLSCACertsClient{
+						Key: &chain.CertificateAuthorityTLSCACertsClientKey{
+							Key: tlsCaClientKey,
+						},
+						Cert: &chain.CertificateAuthorityTLSCACertsClientCert{
+							Cert: tlsCaClientCert,
+						},
+					},
+				},
+				Registrar: &chain.CertificateAuthorityRegistrar{
+					EnrollId:     "admin",
+					EnrollSecret: "adminpw",
+				},
+			},
+		},
+	}); nil != err {
+		t.Error(err)
+	}
+	return conf
+}
+
+//func genesisCAConfigCustom(enrollID, enrollSecret, leagueDomain, orgDomain, orgName, orgMspID, caName, url string) *config.Config {
+//	conf := config.Config{}
+//	orgPath := geneses.CryptoUserTmpPath(leagueDomain, orgDomain, orgName)
+//	conf.InitCustomClient(false, orgName, "debug", "", "", "",
+//		nil, nil, nil, nil,
+//		&config.ClientCredentialStore{
+//			Path:        orgPath,
+//			CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: orgPath},
+//		},
+//		&config.ClientBCCSP{
+//			Security: &config.ClientBCCSPSecurity{
+//				Enabled:       true,
+//				HashAlgorithm: "SHA2",
+//				SoftVerify:    true,
+//				Level:         256,
+//				Default:       &config.ClientBCCSPSecurityDefault{Provider: "SW"},
+//			},
+//		})
+//	conf.AddOrSetOrgForOrganizations(orgName, orgMspID, "/Users/aberic/Documents/code/ca/demo/msp", map[string]string{}, []string{}, []string{caName})
+//	conf.AddOrSetCertificateAuthority(caName, url,
+//		"/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp384/rootCA.crt",
+//		"/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.key",
+//		"/Users/aberic/Documents/path/go/src/github.com/aberic/gnomon/tmp/example/ca/pemp256/rootCA.crt",
+//		caName, enrollID, enrollSecret)
+//	return &conf
+//}
+
+//func configGenerateConfig2(orgName, orgDomain, nodeName, orgUserName string) *config.Config {
+//	rootPath := geneses.CryptoConfigPath(leagueDomain)
+//	//rootPath := "/Users/admin/Documents/code/git/go/src/github.com/aberic/fabric-client/example"
+//	conf := config.Config{}
+//	_, orgUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orgDomain, orgName, orgUserName, true, geneses.CcnAdmin)
+//	conf.InitCustomClient(true, orgName, "debug", rootPath, // rootPath+"/config/crypto-config"
+//		filepath.Join(orgUserPath, "tls", "client.key"),    // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.key",
+//		filepath.Join(orgUserPath, "tls", "client.crt"),    // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/tls/client.crt")
+//		&config.ClientPeer{
+//			Timeout: &config.ClientPeerTimeout{Connection: "10s", Response: "180s",
+//				Discovery: &config.ClientPeerTimeoutDiscovery{GreyListExpiry: "10s"},
+//			},
+//		},
+//		&config.ClientEventService{Timeout: &config.ClientEventServiceTimeout{RegistrationResponse: "15s"}},
+//		&config.ClientOrder{Timeout: &config.ClientOrderTimeout{Connection: "15s", Response: "15s"}},
+//		&config.ClientGlobal{
+//			Timeout: &config.ClientGlobalTimeout{
+//				Query:   "180s",
+//				Execute: "180s",
+//				Resmgmt: "180s",
+//			},
+//			Cache: &config.ClientGlobalCache{
+//				ConnectionIdle:    "30s",
+//				EventServiceIdle:  "2m",
+//				ChannelConfig:     "30m",
+//				ChannelMembership: "30s",
+//				Discovery:         "10s",
+//				Selection:         "10m",
+//			},
+//		},
+//		&config.ClientCredentialStore{
+//			Path:        path.Join(orgUserPath, "msp", "signcerts"),
+//			CryptoStore: &config.ClientCredentialStoreCryptoStore{Path: path.Join(orgUserPath, "msp")},
+//		},
+//		&config.ClientBCCSP{
+//			Security: &config.ClientBCCSPSecurity{
+//				Enabled:       true,
+//				HashAlgorithm: "SHA2",
+//				SoftVerify:    true,
+//				Level:         256,
+//				Default:       &config.ClientBCCSPSecurityDefault{Provider: "SW"},
+//			},
+//		},
+//	)
+//	//conf.AddOrSetPeerForChannel("cc6519b67c4177fc11", "peer0",
+//	//	true, true, true, true)
+//	conf.AddOrSetPeerForChannel(channelID, geneses.NodeDomain(orgName, orgDomain, nodeName),
+//		true, true, true, true)
+//	conf.AddOrSetQueryChannelPolicyForChannel(channelID, "500ms", "5s",
+//		1, 1, 5, 2.0)
+//	conf.AddOrSetDiscoveryPolicyForChannel(channelID, "500ms", "5s",
+//		2, 4, 2.0)
+//	conf.AddOrSetEventServicePolicyForChannel(channelID, "PreferOrg", "RoundRobin",
+//		"6s", 5, 8)
+//	_, orderUserPath := geneses.CryptoOrgAndNodePath(leagueDomain, orderDomain, orderName, admin, false, geneses.CcnAdmin)
+//	conf.AddOrSetOrdererForOrganizations(orderName, strings.Join([]string{orderName, "MSP"}, ""),
+//		path.Join(orderUserPath, "msp"), // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp",
+//		map[string]string{
+//			//"Admin": rootPath + "/config/crypto-config/ordererOrganizations/20de78630ef6a411/users/Admin@20de78630ef6a411/msp/signcerts/Admin@20de78630ef6a411-cert.pem",
+//			admin: filepath.Join(orderUserPath, "msp", "signcerts", geneses.CertUserCAName(orderName, orderDomain, admin)),
+//		},
+//	)
+//
+//	_, org1UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org1Domain, org1Name, admin, true, geneses.CcnAdmin)
+//	_, org2UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org2Domain, org2Name, admin, true, geneses.CcnAdmin)
+//	_, org3UserPath := geneses.CryptoOrgAndNodePath(leagueDomain, org3Domain, org3Name, admin, true, geneses.CcnAdmin)
+//	conf.AddOrSetOrgForOrganizations(org1Name, strings.Join([]string{org1Name, "MSP"}, ""),
+//		path.Join(org1UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+//		map[string]string{
+//			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
+//			admin: filepath.Join(org1UserPath, "msp", "signcerts", geneses.CertUserCAName(org1Name, org1Domain, admin)),
+//		},
+//		[]string{geneses.NodeDomain(org1Name, org1Domain, node1), geneses.NodeDomain(org1Name, org1Domain, node2)}, //"peer0", "peer1",
+//		[]string{},
+//	)
+//	conf.AddOrSetOrgForOrganizations(org2Name, strings.Join([]string{org2Name, "MSP"}, ""),
+//		path.Join(org2UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+//		map[string]string{
+//			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
+//			admin: filepath.Join(org2UserPath, "msp", "signcerts", geneses.CertUserCAName(org2Name, org2Domain, admin)),
+//		},
+//		[]string{geneses.NodeDomain(org2Name, org2Domain, node1), geneses.NodeDomain(org2Name, org2Domain, node2)}, //"peer0", "peer1",
+//		[]string{},
+//	)
+//	conf.AddOrSetOrgForOrganizations(org3Name, strings.Join([]string{org3Name, "MSP"}, ""),
+//		path.Join(org3UserPath, "msp"), // rootPath+"/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp",
+//		map[string]string{
+//			//"Admin": rootPath + "/config/crypto-config/peerOrganizations/20de78630ef6a411-org1/users/Admin@20de78630ef6a411-org1/msp/signcerts/Admin@20de78630ef6a411-org1-cert.pem",
+//			admin: filepath.Join(org3UserPath, "msp", "signcerts", geneses.CertUserCAName(org3Name, org3Domain, admin)),
+//		},
+//		[]string{geneses.NodeDomain(org3Name, org3Domain, node1), geneses.NodeDomain(org3Name, org3Domain, node2)}, //"peer0", "peer1",
+//		[]string{},
+//	)
+//	tlsRootCaFilePath := filepath.Join(geneses.CryptoRootTLSCAPath(leagueDomain), geneses.CertRootTLSCAName(leagueDomain))
+//	conf.AddOrSetOrderer(orderName, "grpcs://10.0.61.23:7050",
+//		strings.Join([]string{order0NodeName, orderName, orderDomain}, "."), "0s", "20s",
+//		tlsRootCaFilePath, // rootPath+"/config/crypto-config/ordererOrganizations/20de78630ef6a411/tlsca/tlsca.20de78630ef6a411-cert.pem",
+//		false, false, false)
+//	conf.AddOrSetPeer(geneses.NodeDomain(org1Name, org1Domain, node1), "grpcs://10.0.61.23:7051",
+//		"grpcs://10.0.61.23:7052", strings.Join([]string{node1, org1Name, org1Domain}, "."),
+//		"0s", "20s",
+//		tlsRootCaFilePath,
+//		false, false, false)
+//	conf.AddOrSetPeer(geneses.NodeDomain(org2Name, org2Domain, node1), "grpcs://10.0.61.23:7061",
+//		"grpcs://10.0.61.23:7062", strings.Join([]string{node1, org2Name, org2Domain}, "."),
+//		"0s", "20s",
+//		tlsRootCaFilePath,
+//		false, false, false)
+//	conf.AddOrSetPeer(geneses.NodeDomain(org3Name, org3Domain, node1), "grpcs://10.0.61.23:7071",
+//		"grpcs://10.0.61.23:7072", strings.Join([]string{node1, org3Name, org3Domain}, "."),
+//		"0s", "20s",
+//		tlsRootCaFilePath,
+//		false, false, false)
+//	return &conf
+//}
 
 func TestGenerateConfig_eccSKI(t *testing.T) {
 	//priKey, err := gnomon.CryptoECC().LoadPriPemFP("/tmp/366428000/pri.key")

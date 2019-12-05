@@ -59,6 +59,21 @@ func NodeDomain(orgName, orgDomain, nodeName string) string {
 	return strings.Join([]string{nodeName, orgName, orgDomain}, ".")
 }
 
+// CertificateAuthorityPath CertificateAuthorityPath
+func CertificateAuthorityFilePath(leagueDomain, caName string) string {
+	return filepath.Join(dataPath, leagueDomain, "ca", caName, "cert.pem")
+}
+
+// CertificateAuthorityClientKeyFilePath CertificateAuthorityPath
+func CertificateAuthorityClientKeyFilePath(leagueDomain, caName string) string {
+	return filepath.Join(dataPath, leagueDomain, "ca", caName, "client.key")
+}
+
+// CertificateAuthorityClientCertFilePath CertificateAuthorityPath
+func CertificateAuthorityClientCertFilePath(leagueDomain, caName string) string {
+	return filepath.Join(dataPath, leagueDomain, "ca", caName, "client.crt")
+}
+
 // CryptoRootCAPath CryptoCAPath
 func CryptoRootCAPath(leagueDomain string) string {
 	return filepath.Join(dataPath, leagueDomain, "crypto-config", "root", "ca")

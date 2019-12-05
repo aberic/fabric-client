@@ -6,29 +6,49 @@ option go_package = "grpc/proto/chain";
 
 package chain;
 
+// Config 网络连接配置为客户端应用程序提供有关目标区块链网络的信息
 message Config {
+    // Version 内容的版本。用于SDK应用相应的解析规则
     string version = 1;
+    // Client GO SDK使用的客户端
     Client client = 2;
+    // Channels 可选，如果有通道操作则需要补充完整
     map<string, Channel> channels = 3;
+    // Organizations 此网络的参与机构名单
     map<string, Organization> organizations = 4;
+    // 发送事务和通道创建/更新请求的Order列表。如果定义了多个，那么SDK将根据文档定义来使用特定的Order
     map<string, Orderer> orderers = 5;
+    // 发送各种请求的节点列表，包括背书、查询和事件侦听器注册。
     map<string, Peer> peers = 6;
+    // Fabric- ca是由Hyperledger Fabric提供的一种特殊的证书颁发机构，它允许通过REST api进行证书管理。
+    //
+    // 应用程序可以选择使用标准的证书颁发机构，而不是Fabric-CA，在这种情况下，不会指定此部分。
     map<string, CertificateAuthority> certificateAuthorities = 7;
 }
 
+// Client go sdk 使用的客户端
 message Client {
+    // 这个应用程序实例属于哪个组织?值必须是在“组织”下定义的组织的名称，如：Org1或league-org1
     string organization = 1;
+    // 日志级别，debug、info、warn、error等
     ClientLogging logging = 2;
+    // 节点超时的全局配置，如果省略此部分，则将使用缺省值
     ClientPeer peer = 3;
+    // 事件服务超时的全局配置，如果省略此部分，则将使用缺省值
     ClientEventService eventService = 4;
+    // orderer超时的全局配置，如果省略此部分，则将使用缺省值
     ClientOrder order = 5;
+    // 超时的全局配置，如果省略此部分，则将使用缺省值
     ClientGlobal global = 6;
+    // 客户端
     ClientCryptoConfig cryptoConfig = 7;
     ClientCredentialStore credentialStore = 8;
+    // 客户端的BCCSP配置
     ClientBCCSP BCCSP = 9;
     ClientTLSCerts tlsCerts = 10;
 }
 
+// 客户端日志设置对象
 message ClientLogging {
     string level = 1;
 }
@@ -44,6 +64,11 @@ message ClientPeerTimeout {
 }
 
 message ClientPeerTimeoutDiscovery {
+    // GreyListExpiry 发现服务失效列表筛选器的有效期。
+    //
+    // 通道客户端将列出脱机的失效节点名单，防止在后续重试中重新选择它们。
+    //
+    // 这个间隔将定义一个节点被灰列出的时间
     string greyListExpiry = 1;
 }
 
@@ -114,7 +139,9 @@ message ClientBCCSPSecurityDefault {
 }
 
 message ClientTLSCerts {
+    // 是否开启TLS，默认false
     bool systemCertPool = 1;
+    // 客户端密钥和证书，用于TLS与节点和排序服务的握手
     ClientTLSCertsClient client = 2;
 }
 
@@ -132,104 +159,224 @@ message ClientTLSCertsClientCert {
 }
 
 message Channel {
+    // 可选参数，参与组织的节点列表
     map<string, ChannelPeer> peers = 1;
+    // 可选参数，应用程序可以使用这些选项来执行通道操作，如检索通道配置等。
     Policy Policies = 2;
 }
 
+// 可选参数，参与组织的节点列表
 message ChannelPeer {
+    // 可选参数
+    //
+    // 是否会向该节点发送交易以供其背书，节点必须安装chaincode。应用程序也可以使用这个属性来决定发送chaincode安装请求的节点。
+    //
+    // 默认值:true
     bool endorsingPeer = 1;
+    // 可选参数
+    //
+    // 这个节点是否可被发送查询建议，节点必须安装chaincode。应用程序也可以使用这个属性来决定发送chaincode安装请求的节点。
+    //
+    // 默认值:true
     bool chaincodeQuery = 2;
+    // 可选参数
+    //
+    // 这个节点是否可发送不需要链码的查询建议，如queryBlock()、queryTransaction()等。
+    //
+    // 默认值:true
     bool ledgerQuery = 3;
+    // 可选参数
+    //
+    // 这个节点是否是SDK侦听器注册的目标，所有的对等点都可以产生事件，但应用程序通常只需要连接一个来监听事件。
+    //
+    // 默认值:true
     bool eventSource = 4;
 }
 
+// 可选参数，应用程序可以使用这些选项来执行通道操作，如检索通道配置等
 message Policy {
+    // 可选参数，用于检索通道配置块的选项
     PolicyQueryChannelConfig queryChannelConfig = 1;
+    // 可选参数，检索发现信息的选项
     PolicyDiscovery discovery = 2;
+    // 可选参数，事件服务的选项
     PolicyEventService eventService = 3;
 }
 
+// 可选参数，用于检索通道配置块的选项
 message PolicyQueryChannelConfig {
+    // 可选参数，最小成功响应数(来自目标/节点)
     int32 minResponses = 1;
+    // 可选参数，通道配置将为这些数目的随机目标检索
     int32 maxTargets = 2;
+    // 可选参数，查询配置块的重试选项
     PolicyCommonRetryOpts retryOpts = 3;
 }
 
+// 可选参数，查询配置块的重试选项
 message PolicyCommonRetryOpts {
+    // 可选参数，number of retry attempts
     int32 attempts = 1;
+    // 可选参数，第一次重试尝试的回退间隔
     string initialBackoff = 2;
+    // 可选参数，任何重试尝试的最大回退间隔
     string maxBackoff = 3;
+    // 可选参数，该因子使初始回退期呈指数递增
     float backoffFactor = 4;
 }
 
+// 可选参数，检索发现信息的选项
 message PolicyDiscovery {
+    // 可选参数，发现信息将检索这些随机目标的数量
     int32 maxTargets = 1;
+    // 可选参数，查询配置块的重试选项
     PolicyCommonRetryOpts retryOpts = 2;
 }
 
+// 可选参数，事件服务的选项
 message PolicyEventService {
+    // 可选参数
+    //
+    // PreferOrg:
+    // 根据块高度滞后阈值确定哪些对等点是合适的，尽管它们更适用当前组织中的对等点(只要它们的块高度高于配置的阈值)。如果当前组织中的对等点都不合适，则选择另一个组织中的对等点
+    //
+    // MinBlockHeight:
+    // 根据块高度滞后阈值选择最佳的对等点。所有对等点的最大块高度被确定，那些块高度低于最大高度但高于规定的“滞后”阈值的对等点被负载均衡。不考虑其他节点
+    //
+    // Balanced:
+    // 使用配置的平衡器选择对等点
     string resolverStrategy = 1;
+    // 可选参数
+    //
+    // 当选择一个对等点连接到可能的值时使用的负载均衡[Random (default), RoundRobin]
     string balancer = 2;
+    // 可选参数
+    //
+    // 设置块高度滞后阈值。此值用于选择要连接的对等点。如果一个节点落后于最新的节点超过给定的块数，那么它将被排除在选择之外
+    // 注意，此参数仅适用于minBlockHeightResolverMode设置为ResolveByThreshold时
+    // 默认值:5
     int64 blockHeightLagThreshold = 3;
+    // 可选参数
+    //
+    // reconnectBlockHeightLagThreshold—如果对等方的块高度低于指定的块数，则事件客户机将断开与对等方的连接，并重新连接到性能更好的对等方
+    //
+    // 注意，此参数仅适用于peerMonitor设置为Enabled(默认)的情况
+    //
+    // 默认值:10
+    //
+    // 注意:设置此值过低可能会导致事件客户端过于频繁地断开/重新连接，从而影响性能
     int64 reconnectBlockHeightLagThreshold = 4;
+    // 可选参数
+    //
+    // peerMonitorPeriod是监视连接的对等点以查看事件客户端是否应该断开连接并重新连接到另一个对等点的时间段
+    //
+    // 默认:0(禁用)用于平衡冲突解决策略;优先级和MinBlockHeight策略的5s
     string peerMonitorPeriod = 5;
 }
 
+// 此网络的参与机构
 message Organization {
     string mspID = 1;
+    // 这个组织的MSP存储(绝对路径或相对于client.cryptoconfig)
     string cryptoPath = 2;
     repeated string peers = 3;
+    // 在基于Fabric的网络中，证书颁发机构颁发证书用于身份验证
+    //
+    // 通常，证书供应是在运行时网络之外的独立进程中完成的
+    //
+    // ca是一个特殊的证书颁发机构，它为动态证书管理(注册、撤销、重新注册)提供了REST api
+    //
+    // CertificateAuthorities只针对fabric-ca服务
     repeated string certificateAuthorities = 4;
 }
 
+// 发送事务和通道创建/更新请求
 message Orderer {
+    // grpcs://127.0.0.1:7050
     string url = 1;
+    // 这些是由gRPC库定义的标准属性，它们将按原样传递给gRPC客户端构造函数
     OrdererGRPCOptions grpcOptions = 2;
     OrdererTLSCACerts tlsCACerts = 3;
 }
 
 message OrdererGRPCOptions {
+    // orderer.example.com
     string sslTargetNameOverride = 1;
+    // keepAliveTime
+    //
+    // 这些参数应该与服务器上的keepalive策略协调设置，因为不兼容的设置可能导致连接关闭
+    //
+    // 当“keep-alive-time”的持续时间设置为0或更少时，将禁用keep alive客户端参数
     string keepAliveTime = 2;
+    // keepAliveTimeout
+    //
+    // 这些参数应该与服务器上的keepalive策略协调设置，因为不兼容的设置可能导致连接关闭
+    //
+    // 当“keep-alive-time”的持续时间设置为0或更少时，将禁用keep alive客户端参数
     string keepAliveTimeout = 3;
+    // keepAlivePermit
+    //
+    // 这些参数应该与服务器上的keepalive策略协调设置，因为不兼容的设置可能导致连接关闭
+    //
+    // 当“keep-alive-time”的持续时间设置为0或更少时，将禁用keep alive客户端参数
     bool keepAlivePermit = 4;
     bool failFast = 5;
+    // 如果地址没有定义协议，则考虑允许不安全;如果为true，则考虑grpc或其他grpc
     bool allowInsecure = 6;
 }
 
 message OrdererTLSCACerts {
+    // 证书位置绝对路径
     string path = 1;
 }
 
+// 节点，用于发送各种请求的节点列表，包括背书、查询和事件侦听器注册
 message Peer {
+    // 此URL用于发送背书和查询请求
     string url = 1;
+    // eventUrl只在使用eventhub时才需要(默认是交付服务)
     string eventUrl = 2;
+    // 这些是由gRPC库定义的标准属性，它们将按原样传递给gRPC客户端构造函数
     PeerGRPCOptions grpcOptions = 3;
     PeerTLSCACerts tlsCACerts = 4;
 }
 
 message PeerGRPCOptions {
+    // peer0.org1.example.com
     string sslTargetNameOverride = 1;
+    // 这些参数应该与服务器上的keepalive策略协调设置，因为不兼容的设置可能导致连接关闭
+    //
+    // 当“keep-alive-time”的持续时间设置为0或更少时，将禁用keep alive客户端参数
     string keepAliveTime = 2;
+    // 这些参数应该与服务器上的keepalive策略协调设置，因为不兼容的设置可能导致连接关闭
+    //
+    // 当“keep-alive-time”的持续时间设置为0或更少时，将禁用keep alive客户端参数
     string keepAliveTimeout = 3;
+    // 这些参数应该与服务器上的keepalive策略协调设置，因为不兼容的设置可能导致连接关闭
+    //
+    // 当“keep-alive-time”的持续时间设置为0或更少时，将禁用keep alive客户端参数
     bool keepAlivePermit = 4;
     bool failFast = 5;
+    // 如果地址没有定义协议，则考虑允许不安全;如果为true，则考虑grpc或其他grpc
     bool allowInsecure = 6;
 }
 
 message PeerTLSCACerts {
+    // 证书位置绝对路径
     string path = 1;
 }
 
 message CertificateAuthority {
+    // https://ca.org1.example.com:7054
     string url = 1;
+    // 可选参数，name of the CA
     string caName = 2;
     CertificateAuthorityTLSCACerts tlsCACerts = 3;
     CertificateAuthorityRegistrar registrar = 4;
 }
 
 message CertificateAuthorityTLSCACerts {
-    string path = 1;
+    bytes cert = 1;
     CertificateAuthorityTLSCACertsClient client = 2;
 }
 
@@ -239,11 +386,11 @@ message CertificateAuthorityTLSCACertsClient {
 }
 
 message CertificateAuthorityTLSCACertsClientKey {
-    string path = 1;
+    bytes key = 1;
 }
 
 message CertificateAuthorityTLSCACertsClientCert {
-    string path = 1;
+    bytes cert = 1;
 }
 
 message CertificateAuthorityRegistrar {
@@ -251,6 +398,23 @@ message CertificateAuthorityRegistrar {
     string enrollSecret = 2;
 }
 
+message OrgInfo {
+    string leagueDomain = 1;
+    string domain = 2;
+    string name = 3;
+    string username = 4;
+}
+
+message ReqConfigSet {
+    string version = 1;
+    Client client = 2;
+    OrgInfo orgInfo = 3;
+    map<string, Channel> channels = 4;
+    map<string, Organization> organizations = 5;
+    map<string, Orderer> orderers = 6;
+    map<string, Peer> peers = 7;
+    map<string, CertificateAuthority> certificateAuthorities = 8;
+}
 
 message ReqConfigList {
     int32 list = 1;
